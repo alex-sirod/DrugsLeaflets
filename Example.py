@@ -6,29 +6,21 @@ from time import sleep
 from spacy import displacy
 import re
 from IPython.display import display, HTML
+from nltk.stem import PorterStemmer
+stemmer = PorterStemmer()
+
 
 nlp = spacy.load('pt_core_news_lg')
-doc = nlp(u'''APRESENTAÇÃO  
-Pó para suspensão oral de 250 mg/5 mL: embalagem com frasco contendo pó para reconstituição de 150 mL de 
-suspensão acompanhado de uma seringa dosadora de 10 mL. 
- 
-USO ORAL  
-USO ADULTO E PEDIÁTRICO 
- 
-COMPOSIÇÃO 
-Cada 5 mL de suspensão oral contém: 
-amoxicilina tri-hidratada (equivalente a 250 mg de amoxicilina) ............................................................. 287,0 mg 
-Excipientes: sorbitol, dióxido de silício, celulose microcristalina, crospovidona, goma xantana, aspartamo, 
-ciclamato de sódio, sacarina sódica di-hidratada, ácido cítrico, citrato de sódio, propilparabeno, metilparabeno, 
-benzoato de sódio, aroma de laranja e estearato de magnésio. 
- 
-II – INFORMAÇÕES AO PACIENTE 
- 
-1. PARA QUE ESTE MEDICAMENTO É InDICADO? ''')
+doc = nlp('''não use medicamentos sem o conhecimento de sua profissional médica''')
 
 
 
 if __name__ == '__main__':
+    a = [t for t in doc if t.is_stop]
+    b = [t.lemma_ for t in doc]
+    c = [t.pos_ for t in doc]
+    print(a)
+    print(" ".join(b),"\n",c)
 
     def ingredientes():
         #for s in doc.sents:

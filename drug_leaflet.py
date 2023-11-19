@@ -253,7 +253,8 @@ II – INFORMAÇÕES AO PACIENTE
         pattern1 = [nlp("Interações medicamentosas"),
                     nlp("INTERAÇÕES MEDICAMENTOSAS"),
                     ]
-        pattern2 = nlp("ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?")
+        pattern2 = nlp("5. ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?")
+
 
         for pattern in pattern1:
             matcher.add("interaction", [pattern])
@@ -275,10 +276,10 @@ II – INFORMAÇÕES AO PACIENTE
             # print("Matched span:", span2.text)
             # print(f"Encontrado padrão: '{phrase_id}'. Início: {start}. Fim: {end}")
 
-        print("------------------INICIO DE INTERAÇÕES---------------\n", self.doc[span.start:span2.start - 2].text,
+        print("------------------INICIO DE INTERAÇÕES---------------\n", self.doc[span.start:span2.start].text,
               "\n----------------FIM DE INTERAÇÕES-----------------")
-        return self.doc[span.start:span2.start - 2].sents
-        # -2 para retirar os tokens "5" e ".", que é o início da próxima frase após o padrão "Interações medicamentosas"
+        return [s for s in self.doc[span.start:span2.start].sents][:-2]
+        # [:-2] para retirar os tokens "5" e ".", que  é o início da próxima frase após o padrão "Interações medicamentosas"
 
 
     def get_metadata(self):
@@ -353,6 +354,7 @@ if __name__ == '__main__':
     # print(leaflet4.extract_second_page_text())
     # print(leaflet4.get_text_from_page(2))
     # leaflet4.most_common_words()
-    leaflet3.get_interactions_flags()
-    # print(leaflet3.get_composition())
+    # leaflet3.get_interactions_flags()
+        # print(leaflet3.get_composition())
     # print(leaflet3.get_attributes())
+    leaflet3.get_interactions_section()

@@ -61,3 +61,66 @@ def concordance_in(word):
 
 print(freq_dist(text1))
 #concordance_in("de")
+
+
+import nltk
+from nltk.stem import RSLPStemmer
+from nltk.tokenize import word_tokenize
+
+# Baixe o lematizador RSLP
+#nltk.download('rslp')
+
+def stemming_portuguese_text(text):
+    # Tokenize o texto em palavras
+    words = word_tokenize(text, language='portuguese')
+
+    # Inicialize o lematizador RSLP
+    lemmatizer = RSLPStemmer()
+
+    # Lematize cada palavra
+    lemmatized_words = [lemmatizer.stem(word) for word in words]
+
+    # Recrie o texto lematizado
+    lemmatized_text = ' '.join(lemmatized_words)
+
+    return lemmatized_text
+
+import nltk
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+
+# Baixe o lematizador WordNet
+# nltk.download('wordnet')
+
+def lemmatize_portuguese_text(text):
+    # Tokenize o texto em palavras
+    words = word_tokenize(text, language='portuguese')
+
+    # Inicialize o lematizador WordNet
+    lemmatizer = WordNetLemmatizer()
+
+    # Lematize cada palavra
+    lemmatized_words = [lemmatizer.lemmatize(word) for word in words]
+
+    # Recrie o texto lematizado
+    lemmatized_text = ' '.join(lemmatized_words)
+
+    return lemmatized_text
+
+# Exemplo de uso:
+# texto_original = "não use medicamentos sem o conhecimento da sua médica."
+texto_original = "não use medicamentos sem o conhecimento da sua profissional médica"
+texto_lemmatizado = lemmatize_portuguese_text(texto_original)
+texto_stemming = stemming_portuguese_text(texto_original)
+
+print("Texto Original:")
+for a in texto_original.split():
+    print(a)
+print("Texto Lematizado:")
+for a in texto_lemmatizado.split():
+    print(a)
+
+print("Texto stemming:")
+for a in texto_stemming.split():
+    print(a)
+
