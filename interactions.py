@@ -7,7 +7,7 @@ class InteractionParser:
 
     def __init__(self, leaflet_path):
         self.leaflet = Leaflet(leaflet_path)
-        self.stopwords_interactions = [
+        self.stoplist_interactions = [
             "Não há interações medicamentosas descritas para este medicamento",
             "Informe ao seu médico ou cirurgião-dentista se você está fazendo uso de algum outro medicamento.",
             "Não use medicamento sem o conhecimento do seu médico.",
@@ -27,7 +27,7 @@ class InteractionParser:
 
         for s in self.leaflet.get_interactions_section():
             text = s.text
-            if text not in self.stopwords_interactions:
+            if text not in self.stoplist_interactions:
                 triggers_words.append(s.text)
                 lista_sem_n = [s.replace('\n', '').strip() for s in triggers_words]
 
@@ -44,7 +44,7 @@ class InteractionParser:
             # print("VERBOS ---> ", [token for token in s if token.pos_ == 'VERB'])
             # print("VERBOS LEMMA ---> ", [token.lemma_ for token in s if token.pos_ == 'VERB'])
             # print("SUBSTANTIVOS ---> ", [token for token in s if token.pos_ == 'NOUN'
-            #                              and token.lemma_ not in self.stopwords_interactions])
+            #                              and token.lemma_ not in self.stoplist_interactions])
             # print("SUBSTANTIVOS LEMMA ---> ", [token.lemma_ for token in s if token.pos_ == 'NOUN'])
             # print("ADJETIVOS ---> ", [token for token in s if token.pos_ == 'ADJ'])
             # print("ADJETIVOS LEMMA ---> ", [token.lemma_ for token in s if token.pos_ == 'ADJ'])
@@ -61,22 +61,22 @@ class InteractionParser:
             # print("ENTIDADES ---> ", [ent for ent in s.ents if ent.label_ == 'DRUG'])
             # print("---------- fim da sentença -----------")
             # for token in s:
-            #     # if token.pos_ == 'NOUN': # and token.lemma_ not in self.stopwords_interactions:
+            #     # if token.pos_ == 'NOUN': # and token.lemma_ not in self.stoplist_interactions:
             #     print(token.lemma_)
-                    # if token.lemma_.lower() not in self.stopwords_interactions:
+                    # if token.lemma_.lower() not in self.stoplist_interactions:
                     #
                     #     triggers_words.append(token.lemma_.lower())
             # set(triggers_words)
 
             # for c in s.noun_chunks:
             #     print("Noun Chunk ------------> ", c)
-            #     if not any(value in c.lemma_ for value in self.stopwords_interactions):
+            #     if not any(value in c.lemma_ for value in self.stoplist_interactions):
             #         print("Noun Chunk na lista ---> ", c)
             #
             #         triggers_words.append(c.lemma_)
             # word_freq = Counter(triggers_words)
             # common_words = word_freq.most_common(15)
-        # chunks_limpos = [c for c in s.noun_chunks if not any(value in c.text for value in self.stopwords_interactions)]
+        # chunks_limpos = [c for c in s.noun_chunks if not any(value in c.text for value in self.stoplist_interactions)]
         # print("KEY FLAGS -------> ", len(triggers_words),triggers_words)
         # print("CHUNKS LIMPOS ---> ", word_freq.most_common())
 
