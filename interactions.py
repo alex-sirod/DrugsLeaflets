@@ -1,86 +1,83 @@
-from drug_leaflet import Leaflet
 from collections import Counter
+
+from drug_leaflet import Leaflet
 
 
 class InteractionParser:
     """Class to parse interaction data from a file."""
 
     def __init__(self, leaflet_path):
+
         self.leaflet = Leaflet(leaflet_path)
+
+        self.doc = self.leaflet.get_doc()
+
         self.stoplist_interactions = [
+            # FRASES sem relevância para a RECUPERAÇÃO
+            "Interações medicamentosas", "Interações Medicamentosas",
             "Não há interações medicamentosas descritas para este medicamento",
             "Informe ao seu médico ou cirurgião-dentista se você está fazendo uso de algum outro medicamento.",
             "Não use medicamento sem o conhecimento do seu médico.",
-            "Pode ser perigoso para a sua saúde. ", "Pode ser perigoso para a sua saúde.  5.",
+            "Pode ser perigoso para a sua saúde. ",
+            # PALAVRAS sem relevância para a RECUPERAÇÃO
             "precaução", "necessário", "adicionais", "efeito", "tratamento", "medicamento",
             "adicional", "refeição", "médico", "cirurgião-dentista", "conhecimento", "Interações medicamentosas",
-            "ação", "o gravidez", "gravidez", "amamentação", "criança", "idoso", "uso", "os", "caso", "saúde", "pílulas"
-            "indesejável",
+            "ação", "o gravidez", "gravidez", "amamentação", "criança", "idoso", "uso", "os", "caso", "saúde",
+            "pílulas", "indesejável", "indesejáveis", "Pílulas", "interação", "interações", "medicamentoso",
         ]
 
     def get_interactions_flags(self):
         """Get interactions from a leaflet."""
 
         global word_freq
-        triggers_words = []
-        triggers_words2 = []
+        triggers_words_init = []
+        triggers_words_temp = []
+        clean_sents = []
 
-        for s in self.leaflet.get_interactions_section():
+        for s in self.leaflet.get_interactions_section_sents():
+            # print("SENTENÇA ---> ", s.text)
             text = s.text
             if text not in self.stoplist_interactions:
-                triggers_words.append(s.text)
-                lista_sem_n = [s.replace('\n', '').strip() for s in triggers_words]
+                clean_sents.append(s)
+                for token in s:
+                    if (token.pos_ == 'NOUN' or token.pos_ == 'ADJ'):
+                        if token.lemma_.lower() not in self.stoplist_interactions:
+                            print(token.text, token.lemma_, "está na lista?",
+                                  token.lemma_.lower() in self.stoplist_interactions)
+                            triggers_words_init.append(token.lemma_.lower())
 
-        # for i, v in enumerate(lista_sem_n):
-        #     print(i, "|" + v + "|")
-        print(triggers_words)
-        #print(lista_sem_n)|
-            # print("FRASE ---> ", s, s.root.text, s.root.dep_, s.root.head.text)
-            # for c in s.noun_chunks:
-            #     print("Noun Chunk ---> ", c, "[ROOT]->", c.root.text, "[DEPEND]->", c.root.dep_, "[HEAD]->",
-            #           c.root.head.text)
+                for nc in s.noun_chunks:
+                    print("Noun Chunk ------------> ", nc.root.text, nc.root.dep_, nc.root.head.text)
+                    if not any(value in nc.lemma_ for value in self.stoplist_interactions):
 
-            # print("---------- início da sentença -----------")
-            # print("VERBOS ---> ", [token for token in s if token.pos_ == 'VERB'])
-            # print("VERBOS LEMMA ---> ", [token.lemma_ for token in s if token.pos_ == 'VERB'])
-            # print("SUBSTANTIVOS ---> ", [token for token in s if token.pos_ == 'NOUN'
-            #                              and token.lemma_ not in self.stoplist_interactions])
-            # print("SUBSTANTIVOS LEMMA ---> ", [token.lemma_ for token in s if token.pos_ == 'NOUN'])
-            # print("ADJETIVOS ---> ", [token for token in s if token.pos_ == 'ADJ'])
-            # print("ADJETIVOS LEMMA ---> ", [token.lemma_ for token in s if token.pos_ == 'ADJ'])
-            # print("PREPOSIÇÕES ---> ", [token for token in s if token.pos_ == 'ADP'])
-            # print("ADVÉRBIOS ---> ", [token for token in s if token.pos_ == 'ADV'])
-            # print("PRONOMES ---> ", [token for token in s if token.pos_ == 'PRON'])
-            # print("CONJUNÇÕES ---> ", [token for token in s if token.pos_ == 'CONJ'])
-            # print("PARTÍCULAS ---> ", [token for token in s if token.pos_ == 'PART'])
-            # print("INTERJEIÇÕES ---> ", [token for token in s if token.pos_ == 'INTJ'])
-            # print("NUMERAIS ---> ", [token for token in s if token.pos_ == 'NUM'])
-            # print("PONTUAÇÕES ---> ", [token for token in s if token.pos_ == 'PUNCT'])
-            # print("OUTROS ---> ", [token for token in s if token.pos_ == 'X'])
-            # print("ENTIDADES ---> ", [ent for ent in s.ents])
-            # print("ENTIDADES ---> ", [ent for ent in s.ents if ent.label_ == 'DRUG'])
-            # print("---------- fim da sentença -----------")
-            # for token in s:
-            #     # if token.pos_ == 'NOUN': # and token.lemma_ not in self.stoplist_interactions:
-            #     print(token.lemma_)
-                    # if token.lemma_.lower() not in self.stoplist_interactions:
-                    #
-                    #     triggers_words.append(token.lemma_.lower())
-            # set(triggers_words)
+                        print("Noun Chunk na lista ---> ", nc)
+                        print("Text:", nc.text)
+                        print("Root Text:", nc.root.text)
+                        print("Root Dependency Relation:", nc.root.dep_)
+                        print("Start Index:", nc.start)
+                        print("End Index:", nc.end)
+                        print("Sentence:", nc.sent.text)
 
-            # for c in s.noun_chunks:
-            #     print("Noun Chunk ------------> ", c)
-            #     if not any(value in c.lemma_ for value in self.stoplist_interactions):
-            #         print("Noun Chunk na lista ---> ", c)
-            #
-            #         triggers_words.append(c.lemma_)
-            # word_freq = Counter(triggers_words)
-            # common_words = word_freq.most_common(15)
-        # chunks_limpos = [c for c in s.noun_chunks if not any(value in c.text for value in self.stoplist_interactions)]
-        # print("KEY FLAGS -------> ", len(triggers_words),triggers_words)
-        # print("CHUNKS LIMPOS ---> ", word_freq.most_common())
+                        print("span", [a for a in self.doc[nc.start:nc.end].as_doc() if not a.is_stop])
+                        print("---")
+                        x = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.is_stop]
+                        Y = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.text == 'eles']
+                        print("X ---> ", x), print("Y ---> ", Y)
+                        if x:
+                            triggers_words_temp.append(x[0])
 
+                        triggers_words_init.append(nc.lemma_.lower())
 
+        print("TRIGGERS WORDS INIT---> ", triggers_words_init)
+        print("TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
+
+        triggers_words_final = [item for item in triggers_words_init if item not in set(triggers_words_temp)]
+        triggers_words_final.remove("eles")  # ??? o termo "eles" não deveria estar na lista
+        print("T1 sem T2 ---> ", triggers_words_final)
+        word_freq = Counter(triggers_words_final)
+        common_words = word_freq.most_common()
+        print("TRIGGERS WORDS FINAL ---> ", common_words)
+        return common_words
 
         # for token in s:
         #     if token.pos_ == 'NOUN':

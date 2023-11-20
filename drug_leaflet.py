@@ -245,7 +245,7 @@ II – INFORMAÇÕES AO PACIENTE
             l_sentences.append(sent.text)
         return l_sentences
 
-    def get_interactions_section(self):
+    def get_interactions_section_sents(self):
         global span, span2
         matcher = PhraseMatcher(nlp.vocab)
         matcher2 = PhraseMatcher(nlp.vocab)
@@ -276,8 +276,8 @@ II – INFORMAÇÕES AO PACIENTE
             # print("Matched span:", span2.text)
             # print(f"Encontrado padrão: '{phrase_id}'. Início: {start}. Fim: {end}")
 
-        print("------------------INICIO DE INTERAÇÕES---------------\n", self.doc[span.start:span2.start].text,
-              "\n----------------FIM DE INTERAÇÕES-----------------")
+        # print("------------------INICIO DE INTERAÇÕES---------------\n", self.doc[span.start:span2.start].text,
+        #       "\n----------------FIM DE INTERAÇÕES-----------------")
         return [s for s in self.doc[span.start:span2.start].sents][:-2]
         # [:-2] para retirar os tokens "5" e ".", que  é o início da próxima frase após o padrão "Interações medicamentosas"
 
