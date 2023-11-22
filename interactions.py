@@ -1,6 +1,10 @@
 from collections import Counter
 
 from drug_leaflet import Leaflet
+import spacy
+from spacy.matcher import DependencyMatcher
+import spacy
+from spacy.matcher import DependencyMatcher
 
 
 class InteractionParser:
@@ -11,6 +15,7 @@ class InteractionParser:
         self.leaflet = Leaflet(leaflet_path)
 
         self.doc = self.leaflet.get_doc()
+        self.drug_name = self.leaflet.get_drug_name()
 
         self.stoplist_interactions = [
             # FRASES sem relevância para a RECUPERAÇÃO
@@ -27,7 +32,9 @@ class InteractionParser:
         ]
 
     def get_interactions_flags(self):
-        """Get interactions from a leaflet."""
+        """ Return a bag of words with the most common triggers of interactions.
+        a list of tuple words and their frequency.
+        """
 
         global word_freq
         triggers_words_init = []
@@ -79,15 +86,75 @@ class InteractionParser:
         print("TRIGGERS WORDS FINAL ---> ", common_words)
         return common_words
 
-        # for token in s:
-        #     if token.pos_ == 'NOUN':
-        #         print("{:>20}{:>20}{:>10}{:>15}{:>10}{:>5}{:>5}{:>5}{:>5}".format(
-        #         token.text, " lemma: " + token.lemma_, token.pos_, token.tag_, token.dep_,
-        #         token.shape_ + " is: ", token.is_sent_start, token.orth_,
-        #         token.is_stop, token.is_title, token.is_ancestor(s.root)))
-        #         print('---------------------')
+
+
+    def get_whats_is(self):
+        """ Return a list of root words of the noun chunks in the document. self.doc.noun_chunks
+        """
+        list_whats_is = ["este medicamento", "este remédio",
+                         "este produto", "Este medicamento contém",
+                         ]
+        section_def = self.leaflet.get_definition_drug_section()
+        for s in section_def:
+            s = s.as_doc()
+            print("SENTENÇA ---> ", s.text)
+            print("Noum Chunks ---> ", [nc for nc in s.noun_chunks])
+            for token in s:
+                if token.text == self.drug_name:
+                    print("SUJEITO:", token.text, token.dep_)
+                    print("HEAD:", token.head.text, token.head.pos_, [t for t in token.subtree])
+        # count = 0
+        # whats_is = []
+        # for sentence in self.doc.sents:
+        #     # print("SENTENÇA ---> ", sentence.text)
+        #     for nc in sentence.noun_chunks:
+        #         if self.drug_name in nc.text and self.drug_name == nc.root.text:
+        #             print("SENTENÇA ---> ", sentence.text)
+        #             print("Noun Chunk ------------> ", nc.root.text, nc.root.dep_, nc.root.head.text)
+        #             if not any(value in nc.lemma_ for value in self.stoplist_interactions):
+        #                 print("Noun Chunk na lista ---> ", nc)
+        #                 print("Text:", nc.text)
+        #                 print("Root Text:", nc.root.text)
+        #                 print("Root Dependency Relation:", nc.root.dep_)
+        #                 print("Start Index:", nc.start)
+        #                 print("End Index:", nc.end)
+        #                 print("Sentence:", nc.sent.text)
+        #                 print("span", [a for a in self.doc[nc.start:nc.end].as_doc() if not a.is_stop])
+        #                 print("---count---", count, "---count---")
+        #                 count += 1
+        #                 whats_is.append(nc.root.text)
+
+        # return whats_is
+
+    def dependency_drug(self):
+
+        nlp = spacy.load("pt_core_news_sm")
+        doc = nlp("A amoxicilina, um antibiótico eficaz contra grande variedade de bactérias.")
+
+        # Encontrar o sujeito (nsubj) e o objeto (obj)
+        subject = None
+        obj = None
+        for s in doc.sents:
+            print("SENTENÇA ---> ", s.text)
+
+            for token in s:
+                if token.text == self.drug_name:
+                    print("SUJEITO:", token.text, token.dep_)
+                    print("HEAD:", token.head.text, token.head.pos_, [t for t in token.subtree])
+
+
+        if "nsubj" in token.dep_:
+            subject = " ".join([child.text for child in token.subtree])
+        elif "amod" in token.dep_:
+            obj = " ".join([child.text for child in token.subtree])
+
+            # Imprimir os resultados
+            print(f"Sujeito: {subject}")
+            print(f"Objeto: {obj}")
 
 
 if __name__ == '__main__':
     leaflet3 = InteractionParser(r'leaflets_pdf/bula_1689362421673 - Amoxicilina.pdf')
-    leaflet3.get_interactions_flags()
+    # leaflet3.get_interactions_flags()
+    leaflet3.get_whats_is()
+    # leaflet3.dependency_drug()

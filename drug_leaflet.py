@@ -95,12 +95,24 @@ II – INFORMAÇÕES AO PACIENTE
         return doc
 
     def get_manufacturer(self):
+        aux_list = ["registrado por", "fabricado por", "importado por", "distribuído por", "embalado por",]
         manufacturers = []
         for entity in self.doc.ents:
-            if entity.label_ == 'ORG':
-                manufacturers.append(entity.text)
+            if entity.label_ == 'ORG' and entity.start != 0:
+                e = entity.text.split('\n')[0]
+                manufacturers.append(e.strip())
+            if entity.label_ == 'ORG' and entity.start != 0:
+                prev_token = self.doc[entity.start - 4:entity.start - 2].text.lower()
+                if prev_token in aux_list:
+                    e = entity.text.split('\n')[0]
+                    manufacturers.append(e.strip())
+                # print(prev_token, entity.text)
+
+        word_freq = Counter(manufacturers)
+        common_words = word_freq.most_common(15)
+        # print(common_words)
         if manufacturers:
-            return manufacturers[0]
+            return common_words[0][0]
         else:
             return "Não encontrado"
 
@@ -170,18 +182,18 @@ II – INFORMAÇÕES AO PACIENTE
 
         for match_id, start, end in matcher(doc):
             match_text = doc[start:end].text
-            print(f"Encontrado padrão: '{match_text}'. Início: {start}. Fim: {end}")
+            # print(f"Encontrado padrão: '{match_text}'. Início: {start}. Fim: {end}")
 
         indice_token_anterior = matcher(doc)[-1][2] - 2
 
         span_entre_padroes = doc[0:indice_token_anterior].text.split('\n')
-        print(span_entre_padroes)
+        #print(span_entre_padroes)
         for i in span_entre_padroes:
             if i.islower():
-                print("NOME DO MEDICAMENTO:", i)
+                # print("NOME DO MEDICAMENTO:", i)
 
-                print("Span entre padrões:", span_entre_padroes)
-                return i
+                # print("Span entre padrões:", span_entre_padroes)
+                return i.strip()
 
     def get_entity(self):
         for entity in self.doc.ents:
@@ -281,6 +293,41 @@ II – INFORMAÇÕES AO PACIENTE
         return [s for s in self.doc[span.start:span2.start].sents][:-2]
         # [:-2] para retirar os tokens "5" e ".", que  é o início da próxima frase após o padrão "Interações medicamentosas"
 
+    def get_definition_drug_section(self):
+        global span, span2
+        span = None
+        span2 = None
+
+        matcher = PhraseMatcher(nlp.vocab)
+        matcher2 = PhraseMatcher(nlp.vocab)
+
+        pattern1 = [nlp("PARA QUE ESTE MEDICAMENTO É INDICADO?"),]
+        pattern2 = nlp("QUANDO NÃO DEVO USAR ESTE MEDICAMENTO?")
+
+        for pattern in pattern1:
+            matcher.add("definition", [pattern])
+
+        matcher2.add("end_definition", [pattern2])
+
+        # Iterar nas correspondências
+        for phrase_id, start, end in matcher(self.doc):
+            # Obter a partição que houve correspondência
+            span = self.doc[start:end]
+            # print("Matched span:", span.text)
+            # print(f"Encontrado padrão: '{phrase_id}'. Início: {start}. Fim: {end}")
+            # print(matcher(self.doc)[-1][2], "Início da próxima frase após o padrão: \"" +
+            #       self.doc[matcher(self.doc)[-1][2] + 1].text, "...\"")
+            # if span:  # TODO verificar se o spn é um início de sentença ou título
+            #     break
+        for phrase_id, start, end in matcher2(self.doc):
+            span2 = self.doc[start:end]
+            # print("Matched span:", span2.text)
+            # print(f"Encontrado padrão: '{phrase_id}'. Início: {start}. Fim: {end}")
+
+        # print("------------------INICIO DE DEFINIÇÃO    ---------------\n", self.doc[span.start-2:span2.start -2 ].text,
+        #       "\n----------------FIM DE DEFINIÇÃO -----------------")
+        return [s for s in self.doc[span.start:span2.start].sents][:-2]
+        # [:-2] para retirar os tokens "5" e ".", que  é o início da próxima frase após o padrão "Interações medicamentosas"
 
     def get_metadata(self):
         # tika.initVM()
@@ -306,11 +353,16 @@ II – INFORMAÇÕES AO PACIENTE
 
     def get_excipients(self):
         global excipients_list
+        excipients_list = []
+        list_empty = ["", " "]
+
         for s in self.doc.sents:
-            if s[0].is_title and s[0].lemma_ == 'excipiente':
-                excipients = re.sub(r'\s*,\s*|\n', ',', s.text.split('Excipientes: ', 1)[1])
-                list_empty = ["", " "]
+            if s.lemma_.__contains__('Excipientes') or (s[0].is_title and s[0].lemma_ == 'excipiente'):
+                # s2 = re.sub(r'\n', '', s.lemma_).replace("\n", "")
+                excipients = re.sub(r'\s*,\s*|\s* e \s*|\n', ',', s.text.split('Excipientes: ', 1)[1])
+                excipients = excipients.split('.', 1)[0]
                 excipients_list = [i for i in excipients.split(',') if i not in list_empty]
+                break
 
         return excipients_list, len(excipients_list)
 
@@ -334,27 +386,29 @@ II – INFORMAÇÕES AO PACIENTE
                 return dict(ingredients=ingredients)
 
 
-    def get_interactions_flags(self):
-        for s in self.get_interactions_section():
-            print("FRASE ---> ",s, s.root.text, s.root.dep_, s.root.head.text)
-            for token in s:
-                if token.pos_ == 'NOUN' :
-                    print("{:>20}{:>20}{:>10}{:>15}{:>10}{:>5}{:>5}{:>5}{:>5}".format(
-                    token.text, " lemma: " + token.lemma_, token.pos_, token.tag_, token.dep_,
-                    token.shape_ + " is: ", token.is_sent_start, token.orth_,
-                    token.is_stop, token.is_title, token.is_ancestor(s.root)))
 
 if __name__ == '__main__':
     # leaflet = Leaflet('leaflets_pdf/bula_1689362421673.pdf') # amoxicilina
-    # leaflet2 = Leaflet('leaflets_pdf/bula_1697765645208.pdf')# Heptar - heparina sódica bovina
+    leaflet2 = Leaflet('leaflets_pdf/bula_1697765645208 - Heparina Sódica Bovina.pdf')
+
     leaflet3 = Leaflet(r'leaflets_pdf/bula_1689362421673 - Amoxicilina.pdf')
-    # leaflet4 = Leaflet(r'leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
-    leaflet3.save_text()
-    # print(leaflet3.get_drug_name())
-    # print(leaflet4.extract_second_page_text())
-    # print(leaflet4.get_text_from_page(2))
+    leaflet4 = Leaflet(r'leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
+    # leaflet3.save_text()
+    #print(leaflet3.get_drug_name())
+    # print(leaflet3.get_text_from_page(2))
     # leaflet4.most_common_words()
     # leaflet3.get_interactions_flags()
-        # print(leaflet3.get_composition())
+    # print(leaflet3.get_composition())
     # print(leaflet3.get_attributes())
-    leaflet3.get_interactions_section()
+    # leaflet3.get_interactions_section()
+    # leaflet3.get_definition_drug_section()
+    # print(leaflet3.get_manufacturer())
+    print(leaflet3.get_excipients())
+    # print(leaflet3.get_composition())
+    # print(leaflet3.get_drug_name())
+    # print(leaflet3.get_manufacturer())
+    # print(leaflet4.get_drug_name())
+    # print(leaflet4.get_manufacturer())
+    print(leaflet4.get_excipients())
+    print(leaflet2.get_excipients())
+    #print(leaflet4.get_composition())
