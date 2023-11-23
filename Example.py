@@ -10,7 +10,22 @@ from nltk.stem import PorterStemmer
 stemmer = PorterStemmer()
 
 nlp = spacy.load('pt_core_news_lg')
-doc = nlp('''não use medicamentos sem o conhecimento de sua profissional médica''')
+doc = nlp('''APRESENTAÇÃO 
+Suspensão oral de 50 mg/mL em embalagem com 1 frasco de 30 mL. 
+ 
+USO ORAL 
+USO ADULTO E PEDIÁTRICO ACIMA DE 6 MESES 
+ 
+COMPOSIÇÃO 
+Cada mL (10 gotas) da suspensão oral contém:  
+ibuprofeno............................................. 50 mg 
+veículo q.s.p.......................................... 1 mL 
+Excipientes: sacarina sódica, benzoato de sódio, celulose microcristalina, carmelose sódica, laurilsulfato de 
+sódio, sorbitol, propilenoglicol, glicerol, goma xantana, manitol, acessulfame potássico, simeticona, sucralose, 
+aroma de morango, aroma de bala, aroma de açúcar, dióxido de titânio, ácido cítrico e água purificada. 
+Cada gota deste medicamento contém 5 mg de ibuprofeno. 
+ 
+1. PARA QUE ESTE MEDICAMENTO É INDICADO? ''')
 
 
 def ingredientes():
@@ -76,42 +91,41 @@ def ingredientes():
 
 def ingredientes_matcher():
     matcher = Matcher(nlp.vocab)
-    pattern = [{"lower": "contém"}, ]
+    pattern = [{'LOWER': 'contém'},
+               {'IS_PUNCT': True}]
     matcher.add("composicao_medicamento", [pattern])
 
     matcher2 = Matcher(nlp.vocab)
     pattern2 = [{"lower": {"in": ["excipientes"]}},
-
-                ]
+               ]
     matcher2.add("informacao_paciente", [pattern2])
 
     for match_id, start, end in matcher(doc):
         match_text = doc[start:end].text
-        print(f"Encontrado padrão: '{match_text}'. Início: {start}. Fim: {end}")
-        print(matcher(doc)[-1][2], "próximo token após o padrão:",
-              doc[matcher(doc)[-1][2] + 1].text)
+        print(f"Encontrado padrão 1: '{match_text}'. Início: {start}. Fim: {end}")
+        print(matcher(doc)[-1][2], "próximo token após o padrão:", doc[matcher(doc)[-1][2] + 1].text)
 
     for match_id, start, end in matcher2(doc):
         match_text2 = doc[start:end].text
-        print(f"Encontrado padrão: '{match_text2}'. Início: {start}. Fim: {end}")
+        print(f"Encontrado padrão 2: '{match_text2}'. Início: {start}. Fim: {end}")
 
         indice_token_anterior = matcher2(doc)[-1][2] - 1
-
-        if indice_token_anterior >= 0:
-            token_anterior = doc[indice_token_anterior]
-            print(f"Token anterior: {token_anterior.text}")
-        else:
-            print("Não há token anterior, pois o último token é o primeiro token do documento.")
+    #
+    #     if indice_token_anterior >= 0:
+    #         token_anterior = doc[indice_token_anterior]
+    #         print(f"Token anterior: {token_anterior.text}")
+    #     else:
+    #         print("Não há token anterior, pois o último token é o primeiro token do documento.")
 
     # find the span between the patterns
-    indice_fim_primeiro_padrao = matcher(doc)[-1][2]
-    indice_inicio_segundo_padrao = matcher2(doc)[0][1]
-    span_entre_padroes = doc[indice_fim_primeiro_padrao:indice_inicio_segundo_padrao]  # .text.split('\n')
-    print('Span entre padrões:', span_entre_padroes)
-
-    for i, s in enumerate(span_entre_padroes.sents):
-        if s.root.text != 'contém' and not s.root.is_ancestor(s[0]):
-            print('Toda sentença:', [c for c in s.noun_chunks])
+    # indice_fim_primeiro_padrao = matcher(doc)[-1][2]
+    # indice_inicio_segundo_padrao = matcher2(doc)[0][1]
+    # span_entre_padroes = doc[indice_fim_primeiro_padrao:indice_inicio_segundo_padrao]  # .text.split('\n')
+    # print('Span entre padrões:', span_entre_padroes)
+    #
+    # for i, s in enumerate(span_entre_padroes.sents):
+    #     if s.root.text != 'contém' and not s.root.is_ancestor(s[0]):
+    #         print('Toda sentença:', [c for c in s.noun_chunks])
 
         # if s.root.text == 'contém' and s.root.is_ancestor(s[0]):  # or s.root.lemma_ == 'conter':
         #     print('NOMES', [i for i in s.noun_chunks])
@@ -169,34 +183,12 @@ def example2():
     matches = matcher(doc)
     print([doc[start:end] for match_id, start, end in matches])
 
-def add_entity_named():
-    from spacy.tokens import Doc, Span
-
-    # Carregar o modelo em português
-    nlp = spacy.load("pt_core_news_sm")
-
-    # Exemplo de texto
-    texto = "EMS S/A é uma empresa farmacêutica."
-
-    # Processar o texto com spaCy
-    doc = nlp(texto)
-
-    # Adicionar 'EMS S.A' como uma entidade nomeada
-    start_idx = texto.find("EMS S.A")
-    end_idx = start_idx + len("EMS S.A")
-    ent_label = "ORG"  # ou qualquer rótulo de entidade desejado
-
-    # Adicionar a entidade ao documento
-    #doc.ents = list(doc.ents) + [Span(doc, start_idx, end_idx, label=ent_label)]
-
-    # Imprimir as entidades
-    for ent in doc.ents:
-        print(f"Entidade: {ent.text}, Rótulo: {ent.label_}")
-
-    # Agora 'EMS S.A' deve ser reconhecido como uma entidade nomeada no documento
 
 
 if __name__ == '__main__':
-    add_entity_named()
+    # ingredientes()
+    ingredientes_matcher()
+
+
 
 
