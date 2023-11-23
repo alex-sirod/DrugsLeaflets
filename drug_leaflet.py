@@ -28,7 +28,7 @@ class Leaflet:
 
         self.text = self.get_text()
         self.doc = self.get_doc()
-        self.manufacturer = self.get_manufacturer()
+        # self.manufacturer = self.get_manufacturer()
         self.file_name_txt = 'sample.txt'
         self.doc_test = nlp(u'''APRESENTAÇÃO
 Pó para suspensão oral de 250 mg/5 mL: embalagem com frasco contendo pó para reconstituição de 150 mL de suspensão acompanhado de uma seringa dosadora de 10 mL.
@@ -95,22 +95,57 @@ II – INFORMAÇÕES AO PACIENTE
         return doc
 
     def get_manufacturer(self):
-        aux_list = ["registrado por", "fabricado por", "importado por", "distribuído por", "embalado por",]
+        """
+        This method extract the manufacturer from the leaflet
+        based on the patterns and selects the Entity Named by majority vote
+        """
+
+        page_one = self.get_text_from_page(1).text.lower()
+        aux_list = ["registrado por", "fabricado por", "importado por", "distribuído por", "embalado por",
+                    "s/a", "s.a.", "indústria brasileira", "indústria nacional", "indústria estrangeira",
+                    "ltda", "indústria"
+                    ]
         manufacturers = []
         for entity in self.doc.ents:
-            if entity.label_ == 'ORG' and entity.start != 0:
+            if entity.label_ == 'ORG':  # one vote for each entity
                 e = entity.text.split('\n')[0]
                 manufacturers.append(e.strip())
-            if entity.label_ == 'ORG' and entity.start != 0:
+            if entity.label_ == 'ORG' and entity.start != 0:  # one vote for each entity
                 prev_token = self.doc[entity.start - 4:entity.start - 2].text.lower()
+                #print(prev_token, entity.text)
                 if prev_token in aux_list:
                     e = entity.text.split('\n')[0]
                     manufacturers.append(e.strip())
+                    # print(prev_token, entity.text)
+                    #print("o termo é uma entidade:", entity.text.lower().split('\n')[0], "fim")
+
+            if entity.label_ == 'ORG' and entity.start != 0:  # one vote for each entity
+                prev_token = self.doc[entity.start - 3:entity.start - 1].text.lower()
+                #print(prev_token, entity.text)
+                if prev_token in aux_list:
+                    e = entity.text.split('\n')[0]
+                    manufacturers.append(e.strip())
+                    # print(prev_token, entity.text)
+                    #print("o termo é uma entidade:", entity.text.lower().split('\n')[0], "fim")
+
                 # print(prev_token, entity.text)
+            if entity.label_ == 'ORG':  # two votes for each entity
+                # print("o termo é uma entidade", entity.text.lower().split('\n')[0])
+                if entity.text.lower().split('\n')[0] in page_one:
+                    # print("o termo está na página 1 ------------------>", entity.text)
+                    for _ in range(2):
+                        e = entity.text.split('\n')[0]
+                        manufacturers.append(e.strip())
+            #
+            if entity.label_ == 'ORG' and entity.start != 0:  # one vote for each entity
+                if any(subst in entity.lemma_.lower() for subst in aux_list):
+                    # print("o termo contem S/A", entity.text)
+                    manufacturers.append(e.strip())
 
         word_freq = Counter(manufacturers)
         common_words = word_freq.most_common(15)
         # print(common_words)
+
         if manufacturers:
             return common_words[0][0]
         else:
@@ -187,7 +222,7 @@ II – INFORMAÇÕES AO PACIENTE
         indice_token_anterior = matcher(doc)[-1][2] - 2
 
         span_entre_padroes = doc[0:indice_token_anterior].text.split('\n')
-        #print(span_entre_padroes)
+        # print(span_entre_padroes)
         for i in span_entre_padroes:
             if i.islower():
                 # print("NOME DO MEDICAMENTO:", i)
@@ -197,7 +232,8 @@ II – INFORMAÇÕES AO PACIENTE
 
     def get_entity(self):
         for entity in self.doc.ents:
-            print(entity.text, entity.label_)
+            if entity.label_ == "ORG":
+                print(f"Entidade: {entity.text}, Rótulo: {entity.label_}")
 
     def most_common_words(self):
         char_list = [' \n', '\n\n', '\n \n', ' \n \n']
@@ -267,7 +303,6 @@ II – INFORMAÇÕES AO PACIENTE
                     ]
         pattern2 = nlp("5. ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?")
 
-
         for pattern in pattern1:
             matcher.add("interaction", [pattern])
 
@@ -301,7 +336,7 @@ II – INFORMAÇÕES AO PACIENTE
         matcher = PhraseMatcher(nlp.vocab)
         matcher2 = PhraseMatcher(nlp.vocab)
 
-        pattern1 = [nlp("PARA QUE ESTE MEDICAMENTO É INDICADO?"),]
+        pattern1 = [nlp("PARA QUE ESTE MEDICAMENTO É INDICADO?"), ]
         pattern2 = nlp("QUANDO NÃO DEVO USAR ESTE MEDICAMENTO?")
 
         for pattern in pattern1:
@@ -386,29 +421,28 @@ II – INFORMAÇÕES AO PACIENTE
                 return dict(ingredients=ingredients)
 
 
-
 if __name__ == '__main__':
-    # leaflet = Leaflet('leaflets_pdf/bula_1689362421673.pdf') # amoxicilina
-    leaflet2 = Leaflet('leaflets_pdf/bula_1697765645208 - Heparina Sódica Bovina.pdf')
-
+    print("-------------------------------------------------------------------")
+    leaflet = Leaflet('leaflets_pdf/bula_1700662857659.pdf') # ibuprofeno
+    print("NOME:", leaflet.get_drug_name())
+    print("FABRICANTE:", leaflet.get_manufacturer())
+    print("Excipientes:", leaflet.get_excipients())
+    print("Composição:", leaflet.get_composition())
+    print("-------------------------------------------------------------------")
+    leaflet2 = Leaflet('leaflets_pdf/bula_1694968816746 - Rivaroxabana.pdf')
+    print("NOME:", leaflet2.get_drug_name())
+    print("FABRICANTE:", leaflet2.get_manufacturer())
+    print("Excipientes:", leaflet2.get_excipients())
+    print("Composição:", leaflet2.get_composition())
+    print("-------------------------------------------------------------------")
     leaflet3 = Leaflet(r'leaflets_pdf/bula_1689362421673 - Amoxicilina.pdf')
+    print("NOME:", leaflet3.get_drug_name())
+    print("FABRICANTE:", leaflet3.get_manufacturer())
+    print("Excipientes:", leaflet3.get_excipients())
+    print("Composição:", leaflet3.get_composition())
+    print("-------------------------------------------------------------------")
     leaflet4 = Leaflet(r'leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
-    # leaflet3.save_text()
-    #print(leaflet3.get_drug_name())
-    # print(leaflet3.get_text_from_page(2))
-    # leaflet4.most_common_words()
-    # leaflet3.get_interactions_flags()
-    # print(leaflet3.get_composition())
-    # print(leaflet3.get_attributes())
-    # leaflet3.get_interactions_section()
-    # leaflet3.get_definition_drug_section()
-    # print(leaflet3.get_manufacturer())
-    print(leaflet3.get_excipients())
-    # print(leaflet3.get_composition())
-    # print(leaflet3.get_drug_name())
-    # print(leaflet3.get_manufacturer())
-    # print(leaflet4.get_drug_name())
-    # print(leaflet4.get_manufacturer())
-    print(leaflet4.get_excipients())
-    print(leaflet2.get_excipients())
-    #print(leaflet4.get_composition())
+    print("NOME:", leaflet4.get_drug_name())
+    print("FABRICANTE:", leaflet4.get_manufacturer())
+    print("Excipientes:", leaflet4.get_excipients())
+    print("Composição:", leaflet4.get_composition())
