@@ -114,4 +114,4 @@ class LeafletSection:
             "Alterações na capacidade de dirigir veículos e operar máquinas",
 
             ]
-        self.measures_units = ['mg', 'ml', 'g', 'mcg', 'ui', 'mg/ml', 'g/ml', 'mg/g', 'mg/ml,']
+        self.measures_units = ['mg', 'ml', 'g', 'mcg', 'ui', 'mg/ml', 'g/ml', 'mg/g', 'mg/ml,', 'q.s.p']
