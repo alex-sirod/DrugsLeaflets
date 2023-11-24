@@ -41,7 +41,7 @@ Excipientes: sorbitol, dióxido de silício, celulose microcristalina, crospovid
 II – INFORMAÇÕES AO PACIENTE
 1. PARA QUE ESTE MEDICAMENTO É INDICADO?''')
 
-    def get_text_1(self):
+    def get_text_full(self):
 
         pattern_end_of_text = r"(?i)\bhist[oó]rico de altera[çc][õo]es da bula\b"
         pattern_end_of_text2 = r"(?i)\Hist[oó]rico de altera[çc][õo]es do texto de bula\b"
@@ -64,19 +64,21 @@ II – INFORMAÇÕES AO PACIENTE
                 return None
 
     def get_text(self):
-        the_end = ['Histórico de Alterações da Bula',
-                   'Histórico de Alterações do Texto de Bula'
-                   ]
+        print("Star extraction...")
+        list_the_end = ['histórico de alterações da bula', 'histórico de alteração da bula',
+                        'histórico de alterações do texto de bula', "histórico de alteração do texto de bula",
+                        'histórico de alterações para a bula', 'histórico de alteração para a bula'
+                        ]
         try:
             parsed_pdf = parser.from_file(self.file_name_leaflet)
             data_prev = parsed_pdf['content']
-            data_next = ""
 
-            for i in the_end:
-                if i in data_prev:
-                    data_prev = data_prev.split(i, 1)[0]
+            for line in data_prev.splitlines():
+                if any(item in line.lower() for item in list_the_end):
+                    data_prev = data_prev.split(line, 1)[0]
+                    print("Extraction finished!")
                     break
-            # print(data_prev)
+
             return data_prev
         except FileNotFoundError:
             print(f'File {self.file_name_leaflet} not found')
@@ -101,6 +103,7 @@ II – INFORMAÇÕES AO PACIENTE
         """
 
         page_one = self.get_text_from_page(1).text.lower()
+        name_drug = self.get_drug_name().lower()
         aux_list = ["registrado por", "fabricado por", "importado por", "distribuído por", "embalado por",
                     "s/a", "s.a.", "indústria brasileira", "indústria nacional", "indústria estrangeira",
                     "ltda", "indústria"
@@ -131,7 +134,7 @@ II – INFORMAÇÕES AO PACIENTE
                 # print(prev_token, entity.text)
             if entity.label_ == 'ORG':  # two votes for each entity
                 # print("o termo é uma entidade", entity.text.lower().split('\n')[0])
-                if entity.text.lower().split('\n')[0] in page_one:
+                if entity.text.lower().split('\n')[0] in page_one and entity.text.lower() != name_drug:
                     # print("o termo está na página 1 ------------------>", entity.text)
                     for _ in range(2):
                         e = entity.text.split('\n')[0]
@@ -162,7 +165,7 @@ II – INFORMAÇÕES AO PACIENTE
                     if page_number == number_page - 1:
                         text_readed += page.extract_text()
 
-                print(f'File {self.file_name_leaflet} The page {number_page} has been extracted to text object')
+                print(f'File {self.file_name_leaflet} - page {number_page}')
                 doc_pag = nlp(text_readed)
 
                 return doc_pag
@@ -405,8 +408,8 @@ II – INFORMAÇÕES AO PACIENTE
         matcher = Matcher(nlp.vocab)
         matcher2 = Matcher(nlp.vocab)
 
-        pattern = [{"lower": "contém"},{'IS_PUNCT': True}]
-        pattern2 = [{"lower": {"in": ["excipientes"]}}]
+        pattern = [{"lower": "contém"}, {'IS_PUNCT': True}]
+        pattern2 = [{"lower": {"in": ["excipientes"]}}, {'IS_PUNCT': True}]
 
         matcher.add("composicao_medicamento", [pattern])
         matcher2.add("excipiente", [pattern2])
@@ -414,7 +417,7 @@ II – INFORMAÇÕES AO PACIENTE
         ind_end_first_pattern = matcher(self.doc)[-1][2]
         ind_start_second_pattern = matcher2(self.doc)[0][1]
         span_between_patterns = self.doc[ind_end_first_pattern:ind_start_second_pattern]  # .text.split('\n')
-        ingredients = []
+        print('Span entre padrões:', span_between_patterns)
         for s in span_between_patterns.sents:
             if s.root.text != 'contém' and not s.root.is_ancestor(s[0]):
                 ingredients = [c.text for c in s.noun_chunks if not any(
@@ -422,7 +425,8 @@ II – INFORMAÇÕES AO PACIENTE
                 if ingredients:
                     return ingredients
 
-        list_final = []
+        # A second way to get the ingredients whether the first way doesn't work and return an empty list
+        ingredients = []
         for t in span_between_patterns:
             if (not t.is_punct
                     and not t.is_digit
@@ -431,25 +435,26 @@ II – INFORMAÇÕES AO PACIENTE
                     and not t.is_stop
                     and not t.is_space
                     and t.text.lower() not in LeafletSection().measures_units):
-                list_final.append(t.text)
-        # print("Span entre padrões:", span_entre_padroes)
-        # print(list_final)
-        return list_final
+                ingredients.append(t.text)
+        return ingredients
 
     def aux_get_composition(self):
         matcher = Matcher(nlp.vocab)
         matcher2 = Matcher(nlp.vocab)
 
         pattern = [{'LOWER': 'contém'}, {'IS_PUNCT': True}]
-        pattern2 = [{"lower": {"in": ["excipientes"]}}]
+        pattern2 = [{"lower": {"in": ["excipientes"]}}, {'IS_PUNCT': True}]
 
         matcher.add("composicao_medicamento", [pattern])
         matcher2.add("excipiente", [pattern2])
-
+        for match_id, start, end in matcher(self.doc):
+            match_text = self.doc[start:end].text
+            print(f"Encontrado padrão 1: '{match_text}'. Início: {start}. Fim: {end}")
+            print(matcher(self.doc)[-1][2], "próximo token após o padrão:", self.doc[matcher(self.doc)[-1][2] + 1].text)
         indice_fim_primeiro_padrao = matcher(self.doc)[-1][2]
         indice_inicio_segundo_padrao = matcher2(self.doc)[0][1]
         span_entre_padroes = self.doc[indice_fim_primeiro_padrao:indice_inicio_segundo_padrao]  # .text.split('\n')
-        # print('Span entre padrões:', span_entre_padroes)
+        print('Span entre padrões:', span_entre_padroes)
 
         list_final = []
         for t in span_entre_padroes:
@@ -467,32 +472,39 @@ II – INFORMAÇÕES AO PACIENTE
 
 
 if __name__ == '__main__':
-    print("-------------------------------------------------------------------")
-    leaflet = Leaflet('leaflets_pdf/bula_1700662857659.pdf')  # ibuprofeno
-    print("-------------------------------------------------------------------")
-    print("NOME:", leaflet.get_drug_name())
-    print("FABRICANTE:", leaflet.get_manufacturer())
-    print("Excipientes:", leaflet.get_excipients())
-    print("Composição:", leaflet.get_composition())
-    # print("COMPOSICAO-2", leaflet.aux_get_composition())
-    print("-------------------------------------------------------------------")
-    leaflet2 = Leaflet('leaflets_pdf/bula_1694968816746 - Rivaroxabana.pdf')
-    print("NOME:", leaflet2.get_drug_name())
-    print("FABRICANTE:", leaflet2.get_manufacturer())
-    print("Excipientes:", leaflet2.get_excipients())
-    print("Composição:", leaflet2.get_composition())
-    # # print("COMPOSICAO-2", leaflet2.aux_get_composition())
     # print("-------------------------------------------------------------------")
-    leaflet3 = Leaflet(r'leaflets_pdf/bula_1689362421673 - Amoxicilina.pdf')
-    print("NOME:", leaflet3.get_drug_name())
-    print("FABRICANTE:", leaflet3.get_manufacturer())
-    print("Excipientes:", leaflet3.get_excipients())
-    print("Composição:", leaflet3.get_composition())
+    # leaflet = Leaflet('leaflets_pdf/bula_1700662857659_ibuprofeno.pdf')  # ibuprofeno
+    # print("-------------------------------------------------------------------")
+    # print("NOME:", leaflet.get_drug_name())
+    # print("FABRICANTE:", leaflet.get_manufacturer())
+    # print("Excipientes:", leaflet.get_excipients())
+    # print("Composição:", leaflet.get_composition())
+    # print("COMPOSICAO-2", leaflet.aux_get_composition())
+    # print("-------------------------------------------------------------------")
+    # leaflet2 = Leaflet('leaflets_pdf/bula_1694968816746 - Rivaroxabana.pdf')
+    # print("NOME:", leaflet2.get_drug_name())
+    # print("FABRICANTE:", leaflet2.get_manufacturer())
+    # print("Excipientes:", leaflet2.get_excipients())
+    # print("Composição:", leaflet2.get_composition())
+    # # # print("COMPOSICAO-2", leaflet2.aux_get_composition())
+    # # print("-------------------------------------------------------------------")
+    # leaflet3 = Leaflet(r'leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
+    # print("NOME:", leaflet3.get_drug_name())
+    # print("FABRICANTE:", leaflet3.get_manufacturer())
+    # print("Excipientes:", leaflet3.get_excipients())
+    # print("Composição:", leaflet3.get_composition())
     # print("COMPOSICAO-2", leaflet3.aux_get_composition())
-    print("-------------------------------------------------------------------")
-    leaflet4 = Leaflet(r'leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
-    print("NOME:", leaflet4.get_drug_name())
-    print("FABRICANTE:", leaflet4.get_manufacturer())
-    print("Excipientes:", leaflet4.get_excipients())
-    print("Composição:", leaflet4.get_composition())
-    # print("COMPOSICAO-AUX", leaflet4.aux_get_composition())
+    # print("-------------------------------------------------------------------")
+    # leaflet4 = Leaflet(r'leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
+    # print("NOME:", leaflet4.get_drug_name())
+    # print("FABRICANTE:", leaflet4.get_manufacturer())
+    # print("Excipientes:", leaflet4.get_excipients())
+    # print("Composição:", leaflet4.get_composition())
+    # # print("COMPOSICAO-AUX", leaflet4.aux_get_composition())
+
+    leaflet5 = Leaflet(r'leaflets_pdf/bula_1700827705685_Omeprazol.pdf')
+    # print("NOME:", leaflet5.get_drug_name())
+    # print("FABRICANTE:", leaflet5.get_manufacturer())
+    # print("Excipientes:", leaflet5.get_excipients())
+    print("Composição:", leaflet5.get_composition())
+    # print("COMPOSICAO-AUX", leaflet5.aux_get_composition())
