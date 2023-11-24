@@ -7,6 +7,7 @@ from spacy.matcher import Matcher
 from spacy.matcher import PhraseMatcher
 from tika import parser
 
+from datasources import leaflets_section
 from datasources.leaflets_section import LeafletSection
 
 nlp = spacy.load('pt_core_news_lg')
@@ -405,6 +406,7 @@ II – INFORMAÇÕES AO PACIENTE
         return len(excipients_list), excipients_list
 
     def get_composition(self):
+
         matcher = Matcher(nlp.vocab)
         matcher2 = Matcher(nlp.vocab)
 
@@ -417,11 +419,11 @@ II – INFORMAÇÕES AO PACIENTE
         ind_end_first_pattern = matcher(self.doc)[-1][2]
         ind_start_second_pattern = matcher2(self.doc)[0][1]
         span_between_patterns = self.doc[ind_end_first_pattern:ind_start_second_pattern]  # .text.split('\n')
-        print('Span entre padrões:', span_between_patterns)
         for s in span_between_patterns.sents:
             if s.root.text != 'contém' and not s.root.is_ancestor(s[0]):
                 ingredients = [c.text for c in s.noun_chunks if not any(
-                    value in c.text for value in LeafletSection().measures_units)]
+                    value in c.text for value in LeafletSection().MEASURE_UNITS) and not any(
+                    value in c.text for value in LeafletSection().PRESENTATION)]
                 if ingredients:
                     return ingredients
 
@@ -434,7 +436,8 @@ II – INFORMAÇÕES AO PACIENTE
                     and not t.text.__contains__('\n')
                     and not t.is_stop
                     and not t.is_space
-                    and t.text.lower() not in LeafletSection().measures_units):
+                    and t.text.lower() not in LeafletSection().MEASURE_UNITS
+                    and t.text.lower() not in LeafletSection().PRESENTATION):
                 ingredients.append(t.text)
         return ingredients
 
@@ -464,7 +467,7 @@ II – INFORMAÇÕES AO PACIENTE
                     and not t.text.__contains__('\n')
                     and not t.is_stop
                     and not t.is_space
-                    and t.text.lower() not in LeafletSection().measures_units):
+                    and t.text.lower() not in LeafletSection().MEASURE_UNITS):
                 list_final.append(t.text)
         # print("Span entre padrões:", span_entre_padroes)
         # print(list_final)
@@ -472,39 +475,39 @@ II – INFORMAÇÕES AO PACIENTE
 
 
 if __name__ == '__main__':
-    # print("-------------------------------------------------------------------")
-    # leaflet = Leaflet('leaflets_pdf/bula_1700662857659_ibuprofeno.pdf')  # ibuprofeno
-    # print("-------------------------------------------------------------------")
-    # print("NOME:", leaflet.get_drug_name())
-    # print("FABRICANTE:", leaflet.get_manufacturer())
-    # print("Excipientes:", leaflet.get_excipients())
-    # print("Composição:", leaflet.get_composition())
-    # print("COMPOSICAO-2", leaflet.aux_get_composition())
-    # print("-------------------------------------------------------------------")
+    print("-------------------------------------------------------------------")
+    leaflet = Leaflet('leaflets_pdf/bula_1700662857659_ibuprofeno.pdf')  # ibuprofeno
+    print("-------------------------------------------------------------------")
+    print("NOME:", leaflet.get_drug_name())
+    print("FABRICANTE:", leaflet.get_manufacturer())
+    print("Excipientes:", leaflet.get_excipients())
+    print("Composição:", leaflet.get_composition())
+    print("COMPOSICAO-2", leaflet.aux_get_composition())
+    print("-------------------------------------------------------------------")
     # leaflet2 = Leaflet('leaflets_pdf/bula_1694968816746 - Rivaroxabana.pdf')
     # print("NOME:", leaflet2.get_drug_name())
     # print("FABRICANTE:", leaflet2.get_manufacturer())
     # print("Excipientes:", leaflet2.get_excipients())
     # print("Composição:", leaflet2.get_composition())
-    # # # print("COMPOSICAO-2", leaflet2.aux_get_composition())
-    # # print("-------------------------------------------------------------------")
-    # leaflet3 = Leaflet(r'leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
-    # print("NOME:", leaflet3.get_drug_name())
-    # print("FABRICANTE:", leaflet3.get_manufacturer())
-    # print("Excipientes:", leaflet3.get_excipients())
-    # print("Composição:", leaflet3.get_composition())
-    # print("COMPOSICAO-2", leaflet3.aux_get_composition())
+    # print("COMPOSICAO-2", leaflet2.aux_get_composition())
     # print("-------------------------------------------------------------------")
-    # leaflet4 = Leaflet(r'leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
-    # print("NOME:", leaflet4.get_drug_name())
-    # print("FABRICANTE:", leaflet4.get_manufacturer())
-    # print("Excipientes:", leaflet4.get_excipients())
-    # print("Composição:", leaflet4.get_composition())
-    # # print("COMPOSICAO-AUX", leaflet4.aux_get_composition())
+    leaflet3 = Leaflet(r'leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
+    print("NOME:", leaflet3.get_drug_name())
+    print("FABRICANTE:", leaflet3.get_manufacturer())
+    print("Excipientes:", leaflet3.get_excipients())
+    print("Composição:", leaflet3.get_composition())
+    print("COMPOSICAO-2", leaflet3.aux_get_composition())
+    print("-------------------------------------------------------------------")
+    leaflet4 = Leaflet(r'leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
+    print("NOME:", leaflet4.get_drug_name())
+    print("FABRICANTE:", leaflet4.get_manufacturer())
+    print("Excipientes:", leaflet4.get_excipients())
+    print("Composição:", leaflet4.get_composition())
+    # print("COMPOSICAO-AUX", leaflet4.aux_get_composition())
 
     leaflet5 = Leaflet(r'leaflets_pdf/bula_1700827705685_Omeprazol.pdf')
-    # print("NOME:", leaflet5.get_drug_name())
-    # print("FABRICANTE:", leaflet5.get_manufacturer())
-    # print("Excipientes:", leaflet5.get_excipients())
+    print("NOME:", leaflet5.get_drug_name())
+    print("FABRICANTE:", leaflet5.get_manufacturer())
+    print("Excipientes:", leaflet5.get_excipients())
     print("Composição:", leaflet5.get_composition())
     # print("COMPOSICAO-AUX", leaflet5.aux_get_composition())
