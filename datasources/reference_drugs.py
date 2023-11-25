@@ -163,8 +163,15 @@ if __name__ == '__main__':
     print("--------------------------------------------------------")
     group = input(str("Type a letter to show or zero to exit and press <enter>: "))
     while group != '0':
-        for key, value in ATC.items():
-            if key == group.upper():
-                print(f"The drugs of category \"{group.upper()}\" is:", value[0][2])
-                # for item in value:
+        for i in ATC_LABELS:
+            for k, v in i.items():
+                if k == group.upper():
+                    print("--------------------------------------------------------")
+                    print(f"The drugs of category \"{v}\" is:")
+                    print("--------------------------------------------------------")
+                    for key, value in ATC.items():
+                        if key == group.upper():
+                            for item in value:
+                                print(item[0], item[1], item[2])
+        print("--------------------------------------------------------")
         group = input(str("Choose other letter: "))
