@@ -144,4 +144,4 @@ if __name__ == '__main__':
     # leaflet3.dependency_drug()
     print(leaflet.cod_atc)
     print(leaflet3.drug_name)
-    print(leaflet3.get_atc_code()[1])
+    print(leaflet.get_atc_code()[1])

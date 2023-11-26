@@ -91,7 +91,19 @@ class LeafletSection:
             "Interação medicamento-substância química",
         ]
 
-        self.MEASURE_UNITS = ["mg", "ml", "g", "mcg", "ui", "mg/ml", "g/ml", "mg/g", "mg/ml", "q.s.p", "qsp"]
+        self.MEASURE_UNITS = ["mg", "ml", "g", "mcg", "ui", "mg/ml", "g/ml", "mg/g",
+                              "mcl", "l", "u", "q.s.p", "qsp", "%"]
+
+        # MCG = micrograma
+        # MG = miligrama
+        # G = grama
+        # MCL = microlitro
+        # ML = mililitro
+        # L = litro
+        # UI = unidade
+        # internacional
+        # U = unidade
+        # % = porcentagem
 
         self.PRESENTATION = ["cápsula", "comprimido", "cápsulas", "comprimidos", "drágea", "drágeas",
                              "solução", "solução oral", "solução injetável",
