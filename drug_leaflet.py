@@ -65,7 +65,7 @@ II – INFORMAÇÕES AO PACIENTE
                 return None
 
     def get_text(self):
-        print("Star extraction...")
+        print("Start extraction...")
         list_the_end = ['histórico de alterações da bula', 'histórico de alteração da bula',
                         'histórico de alterações do texto de bula', "histórico de alteração do texto de bula",
                         'histórico de alterações para a bula', 'histórico de alteração para a bula'
@@ -476,9 +476,10 @@ II – INFORMAÇÕES AO PACIENTE
 
 if __name__ == '__main__':
     print("-------------------------------------------------------------------")
-    leaflet = Leaflet('leaflets_pdf/bula_1700662857659_ibuprofeno.pdf')  # ibuprofeno
+    leaflet = Leaflet('datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf')  # ibuprofeno
     print("-------------------------------------------------------------------")
-    print("NOME:", leaflet.get_drug_name())
+    print("drug"
+          ":", leaflet.get_drug_name())
     print("FABRICANTE:", leaflet.get_manufacturer())
     print("Excipientes:", leaflet.get_excipients())
     print("Composição:", leaflet.get_composition())
@@ -491,21 +492,20 @@ if __name__ == '__main__':
     # print("Composição:", leaflet2.get_composition())
     # print("COMPOSICAO-2", leaflet2.aux_get_composition())
     # print("-------------------------------------------------------------------")
-    leaflet3 = Leaflet(r'leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
+    leaflet3 = Leaflet(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
     print("NOME:", leaflet3.get_drug_name())
     print("FABRICANTE:", leaflet3.get_manufacturer())
     print("Excipientes:", leaflet3.get_excipients())
     print("Composição:", leaflet3.get_composition())
-    print("COMPOSICAO-2", leaflet3.aux_get_composition())
     print("-------------------------------------------------------------------")
-    leaflet4 = Leaflet(r'leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
+    leaflet4 = Leaflet(r'datasources/leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
     print("NOME:", leaflet4.get_drug_name())
     print("FABRICANTE:", leaflet4.get_manufacturer())
     print("Excipientes:", leaflet4.get_excipients())
     print("Composição:", leaflet4.get_composition())
     # print("COMPOSICAO-AUX", leaflet4.aux_get_composition())
 
-    leaflet5 = Leaflet(r'leaflets_pdf/bula_1700827705685_Omeprazol.pdf')
+    leaflet5 = Leaflet(r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf')
     print("NOME:", leaflet5.get_drug_name())
     print("FABRICANTE:", leaflet5.get_manufacturer())
     print("Excipientes:", leaflet5.get_excipients())

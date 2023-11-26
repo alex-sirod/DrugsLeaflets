@@ -188,7 +188,19 @@ def example2():
     matches = matcher(doc)
     print([doc[start:end] for match_id, start, end in matches])
 
+def example_re():
+    import re
 
+    padrao = r'hist[óo]rico de altera[çc][õo]es( do texto)?( para a)? bula'
+
+    textos = ['histórico de alterações da bula', 'histórico de alteração da bula',
+              'histórico de alterações do texto de bula', "histórico de alteração do texto de bula",
+              'histórico de alterações para a bula', 'histórico de alteração para a bula']
+
+    for texto in textos:
+        if re.search(padrao, texto):
+            print(f'Match encontrado em: {texto}')
 if __name__ == '__main__':
     # ingredientes()
-    ingredientes_matcher()
+    # ingredientes_matcher()
+    example_re()
