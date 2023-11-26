@@ -327,8 +327,8 @@ II – INFORMAÇÕES AO PACIENTE
             # print("Matched span:", span2.text)
             # print(f"Encontrado padrão: '{phrase_id}'. Início: {start}. Fim: {end}")
 
-        # print("------------------INICIO DE INTERAÇÕES---------------\n", self.doc[span.start:span2.start].text,
-        #       "\n----------------FIM DE INTERAÇÕES-----------------")
+        print("------------------INICIO DE INTERAÇÕES---------------\n", self.doc[span.start:span2.start].text,
+              "\n----------------FIM DE INTERAÇÕES-----------------")
         return [s for s in self.doc[span.start:span2.start].sents][:-2]
         # [:-2] para retirar os tokens "5" e ".", que  é o início da próxima frase após o padrão "Interações medicamentosas"
 
@@ -363,8 +363,8 @@ II – INFORMAÇÕES AO PACIENTE
             # print("Matched span:", span2.text)
             # print(f"Encontrado padrão: '{phrase_id}'. Início: {start}. Fim: {end}")
 
-        # print("------------------INICIO DE DEFINIÇÃO    ---------------\n", self.doc[span.start-2:span2.start -2 ].text,
-        #       "\n----------------FIM DE DEFINIÇÃO -----------------")
+        print("------------------INICIO DE DEFINIÇÃO    ---------------\n", self.doc[span.start-2:span2.start -2 ].text,
+              "\n----------------FIM DE DEFINIÇÃO -----------------")
         return [s for s in self.doc[span.start:span2.start].sents][:-2]
         # [:-2] para retirar os tokens "5" e ".", que  é o início da próxima frase após o padrão "Interações medicamentosas"
 
@@ -478,36 +478,41 @@ if __name__ == '__main__':
     print("-------------------------------------------------------------------")
     leaflet = Leaflet('datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf')  # ibuprofeno
     print("-------------------------------------------------------------------")
-    print("drug"
-          ":", leaflet.get_drug_name())
+    print("drug:", leaflet.get_drug_name())
     print("FABRICANTE:", leaflet.get_manufacturer())
     print("Excipientes:", leaflet.get_excipients())
     print("Composição:", leaflet.get_composition())
     print("COMPOSICAO-2", leaflet.aux_get_composition())
-    print("-------------------------------------------------------------------")
-    # leaflet2 = Leaflet('leaflets_pdf/bula_1694968816746 - Rivaroxabana.pdf')
-    # print("NOME:", leaflet2.get_drug_name())
-    # print("FABRICANTE:", leaflet2.get_manufacturer())
-    # print("Excipientes:", leaflet2.get_excipients())
-    # print("Composição:", leaflet2.get_composition())
-    # print("COMPOSICAO-2", leaflet2.aux_get_composition())
+    # leaflet.get_interactions_section_sents()
+    leaflet.get_definition_drug_section()
     # print("-------------------------------------------------------------------")
-    leaflet3 = Leaflet(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
-    print("NOME:", leaflet3.get_drug_name())
-    print("FABRICANTE:", leaflet3.get_manufacturer())
-    print("Excipientes:", leaflet3.get_excipients())
-    print("Composição:", leaflet3.get_composition())
-    print("-------------------------------------------------------------------")
-    leaflet4 = Leaflet(r'datasources/leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
-    print("NOME:", leaflet4.get_drug_name())
-    print("FABRICANTE:", leaflet4.get_manufacturer())
-    print("Excipientes:", leaflet4.get_excipients())
-    print("Composição:", leaflet4.get_composition())
-    # print("COMPOSICAO-AUX", leaflet4.aux_get_composition())
-
+    # # leaflet2 = Leaflet('leaflets_pdf/bula_1694968816746 - Rivaroxabana.pdf')
+    # # # print("NOME:", leaflet2.get_drug_name())
+    # # # print("FABRICANTE:", leaflet2.get_manufacturer())
+    # # # print("Excipientes:", leaflet2.get_excipients())
+    # # # print("Composição:", leaflet2.get_composition())
+    # # # print("COMPOSICAO-2", leaflet2.aux_get_composition())
+    # # leaflet2.get_interactions_section_sents()
+    # # print("-------------------------------------------------------------------")
+    # leaflet3 = Leaflet(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
+    # # print("NOME:", leaflet3.get_drug_name())
+    # # print("FABRICANTE:", leaflet3.get_manufacturer())
+    # # print("Excipientes:", leaflet3.get_excipients())
+    # # print("Composição:", leaflet3.get_composition())
+    # leaflet3.get_interactions_section_sents()
+    # # print("-------------------------------------------------------------------")
+    # leaflet4 = Leaflet(r'datasources/leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
+    # # print("NOME:", leaflet4.get_drug_name())
+    # # print("FABRICANTE:", leaflet4.get_manufacturer())
+    # # print("Excipientes:", leaflet4.get_excipients())
+    # # print("Composição:", leaflet4.get_composition())
+    # # # print("COMPOSICAO-AUX", leaflet4.aux_get_composition())
+    # leaflet4.get_interactions_section_sents()
     leaflet5 = Leaflet(r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf')
     print("NOME:", leaflet5.get_drug_name())
     print("FABRICANTE:", leaflet5.get_manufacturer())
     print("Excipientes:", leaflet5.get_excipients())
     print("Composição:", leaflet5.get_composition())
     # print("COMPOSICAO-AUX", leaflet5.aux_get_composition())
+    leaflet5.get_interactions_section_sents()
+    leaflet5.get_definition_drug_section()

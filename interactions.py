@@ -4,6 +4,7 @@ from drug_leaflet import Leaflet
 import spacy
 from spacy.matcher import DependencyMatcher
 import spacy
+import pandas as pd
 from spacy.matcher import DependencyMatcher
 
 
@@ -11,6 +12,8 @@ class InteractionParser:
     """Class to parse interaction data from a file."""
 
     def __init__(self, leaflet_path):
+
+        self.cod_atc = pd.read_csv("datasources/ATC_reduzida.csv")
 
         self.leaflet = Leaflet(leaflet_path)
 
@@ -29,6 +32,10 @@ class InteractionParser:
             "adicional", "refeição", "médico", "cirurgião-dentista", "conhecimento", "Interações medicamentosas",
             "ação", "o gravidez", "gravidez", "amamentação", "criança", "idoso", "uso", "os", "caso", "saúde",
             "pílulas", "indesejável", "indesejáveis", "Pílulas", "interação", "interações", "medicamentoso",
+            "ouro","inibidor", "inibidores", "inibidora", "inibidoras", "inibitório", "inibitórios", "inibitória",
+            "exame", "exames",  "examinado", "examinada", "examinados", "examinadas", "o exame", "os exames", "fez",
+            "seguinte"
+
         ]
 
     def get_interactions_flags(self):
@@ -79,14 +86,13 @@ class InteractionParser:
         print("TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
 
         triggers_words_final = [item for item in triggers_words_init if item not in set(triggers_words_temp)]
-        triggers_words_final.remove("eles")  # ??? o termo "eles" não deveria estar na lista
+        if "eles" in triggers_words_final:
+            triggers_words_final.remove("eles")  # ??? o termo "eles" não deveria estar na lista
         print("T1 sem T2 ---> ", triggers_words_final)
         word_freq = Counter(triggers_words_final)
         common_words = word_freq.most_common()
         print("TRIGGERS WORDS FINAL ---> ", common_words)
         return common_words
-
-
 
     def get_whats_is(self):
         """ Return a list of root words of the noun chunks in the document. self.doc.noun_chunks
@@ -95,36 +101,6 @@ class InteractionParser:
                          "este produto", "Este medicamento contém",
                          ]
         section_def = self.leaflet.get_definition_drug_section()
-        for s in section_def:
-            s = s.as_doc()
-            print("SENTENÇA ---> ", s.text)
-            print("Noum Chunks ---> ", [nc for nc in s.noun_chunks])
-            for token in s:
-                if token.text == self.drug_name:
-                    print("SUJEITO:", token.text, token.dep_)
-                    print("HEAD:", token.head.text, token.head.pos_, [t for t in token.subtree])
-        # count = 0
-        # whats_is = []
-        # for sentence in self.doc.sents:
-        #     # print("SENTENÇA ---> ", sentence.text)
-        #     for nc in sentence.noun_chunks:
-        #         if self.drug_name in nc.text and self.drug_name == nc.root.text:
-        #             print("SENTENÇA ---> ", sentence.text)
-        #             print("Noun Chunk ------------> ", nc.root.text, nc.root.dep_, nc.root.head.text)
-        #             if not any(value in nc.lemma_ for value in self.stoplist_interactions):
-        #                 print("Noun Chunk na lista ---> ", nc)
-        #                 print("Text:", nc.text)
-        #                 print("Root Text:", nc.root.text)
-        #                 print("Root Dependency Relation:", nc.root.dep_)
-        #                 print("Start Index:", nc.start)
-        #                 print("End Index:", nc.end)
-        #                 print("Sentence:", nc.sent.text)
-        #                 print("span", [a for a in self.doc[nc.start:nc.end].as_doc() if not a.is_stop])
-        #                 print("---count---", count, "---count---")
-        #                 count += 1
-        #                 whats_is.append(nc.root.text)
-
-        # return whats_is
 
     def dependency_drug(self):
 
@@ -153,8 +129,19 @@ class InteractionParser:
             print(f"Objeto: {obj}")
 
 
+    def get_atc_code(self):
+        """ Return the ATC code of the drug. """
+
+        for i in range(len(self.cod_atc)):
+            if self.cod_atc.iloc[i, 0].lower() == self.drug_name:
+                return self.cod_atc.iloc[i, 0].lower(), self.cod_atc.iloc[i, 1]
+
 if __name__ == '__main__':
-    leaflet3 = InteractionParser(r'leaflets_pdf/bula_1689362421673 - Amoxicilina.pdf')
-    # leaflet3.get_interactions_flags()
-    leaflet3.get_whats_is()
+    leaflet3 = InteractionParser(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
+    leaflet = InteractionParser(r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf')
+    # leaflet.get_interactions_flags()
+    # leaflet3.get_whats_is()
     # leaflet3.dependency_drug()
+    print(leaflet.cod_atc)
+    print(leaflet3.drug_name)
+    print(leaflet3.get_atc_code()[1])
