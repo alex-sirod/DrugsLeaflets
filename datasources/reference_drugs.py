@@ -132,15 +132,74 @@ ATC = {
          }, ],  # Fim do grupo B
 
     'C': [{
-        "01": "estimulantes cardíacos, cardiotônicos e glicosídeos",
-        "02": "anti-hipertensivos",
-        "03": "diuréticos",
-        "04": "vasodilatadores periféricos",
-        "05": "vasoprotetores",
-        "07": "beta-bloqueadores",
-        "08": "bloqueadores de canal de cálcio",
-        "09": "sistema renina-angiotensina",
-        "10": "hipolipemiantes"
+        "01": ["estimulantes cardíacos, cardiotônicos e glicosídeos",
+               {"A": ["GLICOSÍDEOS CARDÍACOS"],
+                "B": ["ANTIARRÍTMICOS CLASSE I E III"],
+                "C": ["ESTIMULANTES CARDÍACOS exceto GLICOSÍDEOS CARDÍACOS"],
+                "D": ["VASODILATADORES USADOS EM DOENÇAS CARDÍACAS"],
+                "E": ["OUTRAS PREPARAÇÕES CARDÍACAS"],
+                }],
+
+        "02": ["anti-hipertensivos",
+               {"A": ["AGENTES ANTIADRENERGICOS DE ATUAÇÃO CENTRAL"],
+                "B": ["AGENTES ANTIADRENERGICOS, BLOQUEADORES DE GÂNGLIOS"],
+                "C": ["AGENTES ANTIADRENERGICOS DE ATUAÇÃO PERIFÉRICA"],
+                "D": ["MÚSCULO LISO ARTERIOLAR, AGENTES ATUANDO"],
+                "K": ["OUTROS ANTI-HIPERTENSIVOS"],
+                "L": ["ANTI-HIPERTENSIVOS E DIURÉTICOS EM COMBINAÇÃO"],
+                "N": ["COMBINAÇÕES DE ANTI-HIPERTENSIVOS EM ATC-GR. C02"],
+
+                }],
+
+        "03": ["diuréticos",
+               {"A": ["DIURÉTICOS DE BAIXO TETO, TIAZIDAS"],
+                "B": ["DIURÉTICOS DE BAIXO TETO, exceto TIAZIDAS"],
+                "C": ["DIURÉTICOS DE TETO ALTO"],
+                "D": ["ANTAGONISTAS DA ALDOSTERONA E OUTROS AGENTES POUPADORES DE POTÁSSIO"],
+                "E": ["DIURÉTICOS E AGENTES POUPADORES DE POTÁSSIO EM COMBINAÇÃO"],
+                "X": ["OUTROS DIURÉTICOS"],
+                }],
+
+        "04": ["vasodilatadores periféricos", {
+            "A": ["VASODILATADORES PERIFÉRICOS"],
+        }],
+
+        "05": ["vasoprotetores", {
+            "A": ["Agentes para o tratamento de hemorróidas e fissuras anais para uso tópico"],
+            "B": ["Terapia antivaricose"],
+            "C": ["Agentes estabilizadores capilares"],
+        }],
+
+        "07": ["]beta-bloqueadores", {
+            "A": ["AGENTES BLOQUEADORES BETA"],
+            "B": ["AGENTES BLOQUEADORES BETA E TIAZIDAS"],
+            "C": ["AGENTES BLOQUEADORES BETA E OUTROS DIURÉTICOS"],
+            "D": ["AGENTES BLOQUEADORES BETA, TIAZIDAS E OUTROS DIURÉTICOS"],
+            "E": ["AGENTES BLOQUEADORES BETA E VASODILATADORES"],
+            "F": ["AGENTES BLOQUEADORES BETA, OUTRAS COMBINAÇÕES"],
+
+        }],
+
+        "08": ["bloqueadores de canal de cálcio", {
+            "C": ["BLOQUEADORES DE CANAIS DE CÁLCIO COM EFEITOS PRINCIPALMENTE VASCULARES"],
+            "D": ["BLOQUEADORES SELETIVOS DE CANAIS DE CÁLCIO COM EFEITOS CARDÍACOS DIRETOS"],
+            "E": ["BLOQUEADORES DE CANAIS DE CÁLCIO NÃO SELETIVOS"],
+            "G": ["BLOQUEADORES DE CANAIS DE CÁLCIO E DIURÉTICOS"],
+        }],
+
+        "09": ["sistema renina-angiotensina", {
+            "A": ["INIBIDORES ECA, SIMPLES"],
+            "B": ["INIBIDORES DA ECA, COMBINAÇÕES"],
+            "C": ["BLOQUEADORES DO RECEPTOR DE ANGIOTENSINA II (BRA), SIMPLES"],
+            "D": ["BLOQUEADORES DO RECEPTOR DE ANGIOTENSINA II (BRA), COMBINAÇÕES"],
+            "X": ["OUTROS AGENTES QUE ATUAM NO SISTEMA RENINA-ANGIOTENSINA"],
+        }],
+
+        "10": ["hipolipemiantes", {
+            "A": ["Agentes modificadores de lipídeos, simples"],
+            "B": ["Agentes modificadores de lipídeos, combinações"],
+        }],
+
     }, ],  # Fim do grupo C
 
     'D': {
@@ -292,3 +351,15 @@ print(ATC['B'][0]['03'][1]['A'])
 print(ATC['B'][0]['05'][1]['A'])
 print(ATC['B'][0]['05BA'])
 print(ATC['B'][0]['06'][1]['A'])
+print(ATC['C'][0]['01'][1]['A'])
+print(ATC['C'][0]['02'][1]['A'])
+print(ATC['C'][0]['03'][1]['A'])
+print(ATC['C'][0]['04'][1]['A'])
+print(ATC['C'][0]['05'][1]['A'])
+print(ATC['C'][0]['07'][1]['A'])
+print(ATC['C'][0]['08'][1]['C'])
+print(ATC['C'][0]['09'][1]['A'])
+print(ATC['C'][0]['10'][1]['A'])
+print(ATC['C'][0]['10'][1]['B'])
+
+
