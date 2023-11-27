@@ -56,39 +56,40 @@ class InteractionParser:
                 for token in s:
                     if (token.pos_ == 'NOUN' or token.pos_ == 'ADJ'):
                         if token.lemma_.lower() not in self.stoplist_interactions:
-                            print(token.text, token.lemma_, "está na lista?",
-                                  token.lemma_.lower() in self.stoplist_interactions)
+                            # print(token.text, token.lemma_, "está na lista?",
+                            #       token.lemma_.lower() in self.stoplist_interactions)
                             triggers_words_init.append(token.lemma_.lower())
 
                 for nc in s.noun_chunks:
-                    print("Noun Chunk ------------> ", nc.root.text, nc.root.dep_, nc.root.head.text)
+                    # print("Noun Chunk ------------> ", nc.root.text, nc.root.dep_, nc.root.head.text)
                     if not any(value in nc.lemma_ for value in self.stoplist_interactions):
 
-                        print("Noun Chunk na lista ---> ", nc)
-                        print("Text:", nc.text)
-                        print("Root Text:", nc.root.text)
-                        print("Root Dependency Relation:", nc.root.dep_)
-                        print("Start Index:", nc.start)
-                        print("End Index:", nc.end)
-                        print("Sentence:", nc.sent.text)
+                        # print("Noun Chunk na lista ---> ", nc)
+                        # print("Text:", nc.text)
+                        # print("Root Text:", nc.root.text)
+                        # print("Root Dependency Relation:", nc.root.dep_)
+                        # print("Start Index:", nc.start)
+                        # print("End Index:", nc.end)
+                        # print("Sentence:", nc.sent.text)
+                        #
+                        # print("span", [a for a in self.doc[nc.start:nc.end].as_doc() if not a.is_stop])
+                        # print("---")
 
-                        print("span", [a for a in self.doc[nc.start:nc.end].as_doc() if not a.is_stop])
-                        print("---")
+                        #Y = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.text == 'eles']
+                        # print("X ---> ", x), print("Y ---> ", Y)
+
                         x = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.is_stop]
-                        Y = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.text == 'eles']
-                        print("X ---> ", x), print("Y ---> ", Y)
                         if x:
                             triggers_words_temp.append(x[0])
-
                         triggers_words_init.append(nc.lemma_.lower())
 
-        print("TRIGGERS WORDS INIT---> ", triggers_words_init)
-        print("TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
+        # print("TRIGGERS WORDS INIT---> ", triggers_words_init)
+        # print("TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
 
         triggers_words_final = [item for item in triggers_words_init if item not in set(triggers_words_temp)]
         if "eles" in triggers_words_final:
             triggers_words_final.remove("eles")  # ??? o termo "eles" não deveria estar na lista
-        print("T1 sem T2 ---> ", triggers_words_final)
+        # print("T1 sem T2 ---> ", triggers_words_final)
         word_freq = Counter(triggers_words_final)
         common_words = word_freq.most_common()
         print("TRIGGERS WORDS FINAL ---> ", common_words)
@@ -139,7 +140,7 @@ class InteractionParser:
 if __name__ == '__main__':
     leaflet3 = InteractionParser(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
     leaflet = InteractionParser(r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf')
-    # leaflet.get_interactions_flags()
+    leaflet.get_interactions_flags()
     # leaflet3.get_whats_is()
     # leaflet3.dependency_drug()
     print(leaflet.drug_name)
