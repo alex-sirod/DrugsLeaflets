@@ -5,13 +5,11 @@ ATC = {
     'A': [{
         "01": ["preparados estomatológicos (boca e dentes)",
                {"A": ["preparados estomatológicos",
-                      {"A": "Agentes profiláticos contra cárie"},
-                      {"B": "Antiinfecciosos e anti-sépticos para tratamento oral local"},
-                      {"C": "Corticosteróides para tratamento oral local"},
-                      {"D": "Outros agentes para tratamento oral local"}
+                      {"A": "Agentes profiláticos contra cárie",
+                       "B": "Antiinfecciosos e anti-sépticos para tratamento oral local",
+                       "C": "Corticosteróides para tratamento oral local",
+                       "D": "Outros agentes para tratamento oral local"}
                       ]}, ],
-
-
 
         "02": ["antiácidos, inibidores da secreção gástrica e tratamento das úlceras",
                {"A": "antiácidos",
@@ -19,30 +17,121 @@ ATC = {
                 "C": "tratamento das úlceras",
                 }],
 
-        "03": "antiespasmódicos, anticolinérgicos e propulsivos",
-        "04": "antieméticos e antinauseantes",
-        "05": "tratamento biliar e hepático",
-        "06": "laxativos",
-        "07": "antidiarréicos, anti-inflamatórios e anti-infecciosos intestinais",
-        "08": "preparados antiobesidade",
-        "09": "digestivos e enzimas digestivas",
-        "10": "medicamentos utilizados na diabetes",
-        "11/12": "vitaminas, suplementos minerais e associações",
-        "13": "tônicos e repositores hidroeletrolíticos orais",
-        "14": "anabolizantes para o uso sistêmico",
-        "15": "estimulantes do apetite",
-        "16": "outros medicamentos para o sistema digestivo e o metabolismo"
-    },],
+        "03": ["antiespasmódicos, anticolinérgicos e propulsivos",
+               {"A": "Medicamentos para distúrbios gastrointestinais funcionais",
+                "B": "BELADONA E DERIVADOS, SIMPLES",
+                "C": "ANTISPASMÓDICOS EM COMBINAÇÃO COM PSICOLÉPTICOS",
+                "D": "ANTISPASMÓDICOS EM COMBINAÇÃO COM ANALGÉSICOS",
+                "E": "ANTISPASMÓDICOS E ANTICOLINÉRGICOS EM COMBINAÇÃO COM OUTRAS MEDICAMENTOS",
+                "F": "PROPULSIVOS",
+                }],
 
-    'B': {
-        "01": "anticoagulantes, antitrombóticos e trombolíticos",
-        "02": "anti-hemorrágicos, fatores de coagulação e correlatos",
-        "03": "preparados antianêmicos",
-        "05": "hemodiálises, diálises e soluções para perfusão e irrigação",
-        "05BA": "nutrição parenteral",
-        "06": "outros preparados hematológicos"
-    },
-    'C': {
+        "04": ["antieméticos e antinauseantes",
+               {"A": ["ANTIEMÉTICOS E ANTINAUSEANTES",
+                      {"A": "Antagonistas da serotonina (5HT3)",
+                       "D": "Outros antieméticos",
+                       }], }],
+
+        "05": ["tratamento biliar e hepático",
+               {"A": ["TERAPIA BILE"],
+                "B": ["TERAPIA DO FÍGADO, LIPOTRÓPICOS"],
+                "C": ["MEDICAMENTOS PARA TERAPIA BILE E LIPOTRÓPICOS EM COMBINAÇÃO"]
+                }],
+
+        "06": ["laxativos",
+               {"A": ["Medicamentos para constipação"],
+                }],
+
+        "07": ["antidiarréicos, anti-inflamatórios e anti-infecciosos intestinais",
+               {"A": ["ANTIINFECCIOSOS INTESTINAIS"],
+                "B": ["ADSORVENTES INTESTINAIS"],
+                "C": ["ELETRÓLITOS COM CARBOIDRATOS"],
+                "D": ["ANTIPROPULSIVOS"],
+                "E": ["AGENTES ANTIINFLAMATÓRIOS INTESTINAIS"],
+                "F": ["MICRORGANISMOS ANTIDIARRÉICOS"],
+                "X": ["OUTROS ANTIDIARRÉICOS"],
+                }],
+
+        "08": ["preparados antiobesidade",
+               {"A": ["PREPARAÇÕES ANTIOBESIDADE"],  # (EXCLUINDO DIETAS)"],
+                }],
+
+        "09": ["digestivos e enzimas digestivas",
+               {"A": ["digestivos e enzimas digestivas"],
+                }],
+
+        "10": ["medicamentos utilizados na diabetes",
+               {"A": ["INSULINAS E ANÁLOGOS"],
+                "B": ["MEDICAMENTOS PARA REDUÇÃO DA GLICOSE NO SANGUE, exceto INSULINAS"],
+                "X": ["OUTROS MEDICAMENTOS USADOS NO DIABETES"],
+                }],
+
+        "11": ["vitaminas e associações",
+               {"A": ["MULTIVITAMINAS, COMBINAÇÕES"],
+                "B": ["MULTIVITAMINAS, SIMPLES"],
+                "C": ["VITAMINAS A E D, inclusive. COMBINAÇÕES DOS DOIS"],
+                "D": ["VITAMINA B1, SIMPLES E EM COMBINAÇÃO COM VITAMINA B6 E B12"],
+                "E": ["COMPLEXO DE VITAMINA B, inclusive COMBINAÇÕES"],
+                "G": ["ÁCIDO ASCÓRBICO (VITAMINA C), inclusive COMBINAÇÕES"],
+                "H": ["OUTRAS PREPARAÇÕES DE VITAMINAS SIMPLES"],
+                "J": ["OUTROS PRODUTOS VITAMINOSOS, COMBINAÇÕES"],
+                }],
+
+        "12": ["suplementos minerais e associações",
+               {"A": ["CÁLCIO"],
+                "B": ["POTÁSSIO"],
+                "C": ["OUTROS SUPLEMENTOS MINERAIS"],
+                }],
+
+        "13": ["tônicos e repositores hidroeletrolíticos orais",
+               {"A": ["Tônicos"],
+                }],
+
+        "14": ["anabolizantes para o uso sistêmico",
+               {"A": ["ESTEROIDES anabolizantes"],
+                "B": ["OUTROS AGENTES ANABÓLICOS"],
+                }],
+
+        "15": ["estimulantes do apetite"],
+
+        "16": ["outros medicamentos para o sistema digestivo e o metabolismo",
+               {"A": ["outros medicamentos para o sistema digestivo e o metabolismo"],
+                }],
+    }, ],  # Fim do grupo A
+
+    'B': [
+        {"01": ["anticoagulantes, antitrombóticos e trombolíticos",
+                {"A": ["anticoagulantes e antitrombóticos"], }
+                ],
+
+         "02": ["anti-hemorrágicos, fatores de coagulação e correlatos",
+                {"A": ["ANTIFIBRINOLÍTICOS"], }
+                ],
+
+         "03": ["preparados antianêmicos",
+                {"A": ["PREPARAÇÕES DE FERRO"],
+                 "B": ["VITAMINA B12 E ÁCIDO FÓLICO"],
+                 "X": ["OUTRAS PREPARAÇÕES ANTIANÊMICAS"],
+                 }],
+
+         "05": ["hemodiálises, diálises e soluções para perfusão e irrigação",
+                {"A": ["sangue e produtos relacionados"],
+                 "B": ["soluções intravenosas"],
+                 "C": ["soluções de irrigação"],
+                 "D": ["diálise peritoneal"],
+                 "X": ["aditivos de solução intravenosa"],
+                 "Z": ["hemodiálise e hemofiltração"],
+
+                 }],
+
+         "05BA": ["nutrição parenteral"],
+
+         "06": ["outros preparados hematológicos",
+                {"A": ["outros preparados hematológicos"],
+                 }],
+         }, ],  # Fim do grupo B
+
+    'C': [{
         "01": "estimulantes cardíacos, cardiotônicos e glicosídeos",
         "02": "anti-hipertensivos",
         "03": "diuréticos",
@@ -52,7 +141,8 @@ ATC = {
         "08": "bloqueadores de canal de cálcio",
         "09": "sistema renina-angiotensina",
         "10": "hipolipemiantes"
-    },
+    }, ],  # Fim do grupo C
+
     'D': {
         "01/06/07": "anti-infecciosos, antibióticos e anti-inflamatórios tópicos",
         "02": "emolientes, hidratantes, protetores e filtro solar",
@@ -179,13 +269,26 @@ ATC_LABELS = [{"A": "SISTEMA DIGESTIVO E METABOLISMO"},
 #     group = input(str("Type a letter to show or zero to exit and press <enter>: "))
 
 # Teste de impressão para verificar a estrutura do dicionário resultante
-print(ATC)
-# print(ATC['A'])
-# print(ATC['A'][0])
-# print(ATC['A'][0]['01'])
-# print(ATC['A'][0]['01'][0])
-# print(ATC['A'][0]['01'][1])
-# print(ATC['A'][0]['01'][1]['A'])
+# print(ATC)
 
-print(ATC['A'][0]['01'][1]['A'][4]['D'])
-
+print(ATC['A'][0])
+print(ATC['A'][0]['01'])
+print(ATC['A'][0]['03'][1]['A'])
+print(ATC['A'][0]['05'][1]['B'])
+print(ATC['A'][0]['06'][1]['A'])
+print(ATC['A'][0]['07'][1]['A'])
+print(ATC['A'][0]['08'][1]['A'])
+print(ATC['A'][0]['09'][1]['A'])
+print(ATC['A'][0]['10'][1]['A'])
+print(ATC['A'][0]['11'][1]['A'])
+print(ATC['A'][0]['12'][1]['A'])
+print(ATC['A'][0]['13'][1]['A'])
+print(ATC['A'][0]['14'][1]['A'])
+print(ATC['A'][0]['15'][0])
+print(ATC['A'][0]['16'])
+print(ATC['B'][0]['01'][1]['A'])
+print(ATC['B'][0]['02'][1]['A'])
+print(ATC['B'][0]['03'][1]['A'])
+print(ATC['B'][0]['05'][1]['A'])
+print(ATC['B'][0]['05BA'])
+print(ATC['B'][0]['06'][1]['A'])
