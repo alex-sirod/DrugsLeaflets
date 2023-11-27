@@ -348,7 +348,7 @@ ATC = {
             "B": ["IMUNOGLOBULINAS"],
         }],
 
-        "07": ["vacinas",{
+        "07": ["vacinas", {
             "A": ["VACINAS BACTERIANAS"],
             "B": ["VACINAS VIRAIS"],
             "C": ["VACINAS BACTERIANAS E VIRAIS, COMBINADAS"],
@@ -356,63 +356,248 @@ ATC = {
         }],
     }, ],  # Fim do grupo J
 
+    'L': [{
+        "01": ["antineoplásicos", {
+            "A": ["AGENTES ALQUILANTES"],
+            "B": ["ANTIMETABOLITOS"],
+            "C": ["ALCALOIDES DE PLANTAS E OUTROS PRODUTOS NATURAIS"],
+            "D": ["ANTIBIÓTICOS CITOTÓXICOS E SUBSTÂNCIAS RELACIONADAS"],
+            "E": ["INIBIDORES DE PROTEÍNA QUINASE"],
+            "F": ["ANTICORPOS MONOCLONAIS E CONJUGADOS DE ANTICORPOS DROGAS"],
+            "X": ["OUTROS ANTINEOPLÁSICOS"],
+        }],
 
-    'L': {
-        "01": "antineoplásicos",
-        "02": "terapias endócrinas",
-        "03": "imunoestimulantes",
-        "04": "imunossupressores"
-    },
-    'M': {
-        "01": "anti-inflamatórios e antirreumáticos",
-        "02": "produtos tópicos para dores articulares e musculares",
-        "03": "relaxantes musculares",
-        "04": "antigotosos",
-        "05": "tratamento de doenças ósseas",
-        "09": "outros medicamentos para o sistema músculo-esquelético"
-    },
-    'N': {
-        "01": "anestésicos",
-        "02": "analgésicos",
-        "03": "antiepiléticos",
-        "04": "antiparksonianos",
-        "05A": "antipsicóticos",
-        "05B": "ansiolíticos",
-        "05C": "hipnóticos e sedativos",
-        "06A": "antidepressivos",
-        "06B": "psicoestimulantes",
-        "06C": "psicoléticos e psicoanapléticos em associação",
-        "06D": "tratamento do Alzheimer e demência",
-        "07": "outros medicamentos para o sistema nervoso"
-    },
-    'P': {
-        "01": "antiprotozoários",
-        "02": "anti-helmínticos",
-        "03": "inseticidas, repelentes, escabicidas e ectoparasiticidas"
-    },
-    'R': {
-        "01": "preparados para o uso nasal",
-        "02": "preparados para o uso faríngeo",
-        "03": "antiasmáticos",
-        "05": "medicamentos para tosse e resfriado",
-        "06": "anti-histamínicos sistêmicos",
-        "07": "outros medicamentos para o sistema respiratório"
-    },
-    'S': {
-        "01": "produtos oftálmicos",
-        "02": "produtos otológicos"
-    },
-    'V': {
-        "03AB": "antídotos, agentes desintoxicantes e agentes quelantes",
-        "03AN": "gases medicinais",
-        "04": "testes e agentes de diagnóstico",
+        "02": ["terapias endócrinas", {
+            "A": ["HORMÔNIOS E AGENTES RELACIONADOS"],
+            "B": ["ANTAGONISTAS HORMÔNICOS E AGENTES RELACIONADOS"],
+        }],
+
+        "03": ["imunoestimulantes", {
+            "A": ["IMUNOESTIMULANTES"],
+        }],
+
+        "04": ["imunossupressores", {
+            "A": ["IMUNOSSUPRESSORES , IMUNOSSUPRESSANTES"],
+        }],
+    }, ],  # Fim do grupo L
+
+    'M': [{
+        "01": ["anti-inflamatórios e antirreumáticos", {
+            "A": ["PRODUTOS ANTIINFLAMATÓRIOS E ANTIRREUMÁTICOS, NÃO ESTERÓIDES"],
+            "B": ["AGENTES ANTIINFLAMATÓRIOS/ANTIRREUMÁTICOS EM COMBINAÇÃO"],
+            "C": ["AGENTES ANTIRREUMÁTICOS ESPECÍFICOS"],
+
+        }],
+
+        "02": ["produtos tópicos para dores articulares e musculares", {
+            "A": ["PRODUTOS TÓPICOS PARA DORES ARTICULARES E MUSCULARES"],
+        }],
+
+        "03": ["relaxantes musculares", {
+            "A": ["RELAXANTES MUSCULARES, AGENTES DE ATUAÇÃO PERIFÉRICA"],
+            "B": ["RELAXANTES MUSCULARES, AGENTES DE ATUAÇÃO CENTRAL"],
+            "C": ["RELAXANTES MUSCULARES, AGENTES DE AÇÃO DIRETA"],
+        }],
+
+        "04": ["antigotosos", {
+            "A": ["ANTIGOTOSOS"],
+        }],
+
+        "05": ["tratamento de doenças ósseas", {
+            "B": ["OUTROS MEDICAMENTOS PARA O TRATAMENTO DE DOENÇAS ÓSSEAS"],
+        }],
+
+        "09": ["outros medicamentos para o sistema músculo-esquelético", {
+            "A": ["OUTROS MEDICAMENTOS PARA O SISTEMA MÚSCULO-ESQUELÉTICO"],
+        }],
+    }, ],  # Fim do grupo M
+
+    'N': [{
+        "01": ["anestésicos", {
+            "A": ["ANESTÉSICOS GERAIS"],
+            "B": ["ANESTÉSICOS LOCAIS"],
+        }],
+
+        "02": ["analgésicos", {
+            "A": ["OPIOIDES"],
+            "B": ["OUTROS ANALGÉSICOS E ANTIPIRÉTICOS"],
+            "C": ["PREPARAÇÕES ANTIMIGRÂNICAS"],
+        }],
+
+        "03": ["antiepiléticos", {
+            "A": ["ANTIEPILÉTICOS"],
+        }],
+        "04": ["antiparksonianos", {
+            "A": ["AGENTES ANTICOLINÉRGICOS"],
+            "B": ["AGENTES DOPAMINÉRGICOS"],
+            "C": ["OUTROS MEDICAMENTOS ANTIPARKINSON"],
+        }],
+
+        "05": ["antipsicóticos", {
+            "A": ["ANTIPSICÓTICOS"],
+            "B": ["Anxiolíticos"],
+            "C": ["Hipnóticos e sedativos"],
+        }],
+
+        "06A": ["antidepressivos", {
+
+            "A": ["ANTIDEPRESSIVOS"],
+            "B": ["PSICOESTIMULANTES, AGENTES USADOS PARA TDAH E NOOTRÓPICOS"],
+            "C": ["PSICOLÉPTICOS E PSICANALÉPTICOS EM COMBINAÇÃO"],
+            "D": ["MEDICAMENTOS ANTI-DEMÊNCIA"],
+        }],
+
+        "07": ["outros medicamentos para o sistema nervoso", {
+            "A": ["PARASIMPATHOMIMÉTICOS"],
+            "B": ["DROGAS USADAS EM TRANSTORNOS ADICIONAIS"],
+            "C": ["AGENTES ANTIVERTIGO"],
+            "X": ["OUTROS MEDICAMENTOS PARA O SISTEMA NERVOSO"],
+        }],
+    }, ],  # Fim do grupo N
+
+    'P': [{
+        "01": ["antiprotozoários", {
+            "A": ["AGENTES CONTRA AMEBÍASE E OUTRAS DOENÇAS PROTOZOÁRIAS"],
+            "B": ["ANTIMALÁRICOS"],
+            "C": ["AGENTES CONTRA LEISHMANIOSE E TRIPANOSSOMOSE"],
+        }],
+
+        "02": ["anti-helmínticos", {
+
+            "A": ["ANTITREMATÓDICOS"],
+            "B": ["ANTINEMATÓDICOS"],
+            "C": ["ANTICESTODAIS"],
+        }],
+
+        "03": ["inseticidas, repelentes, escabicidas e ectoparasiticidas", {
+            "A": ["ECTOPARASITICIDAS, inclusive ESCABICIDAS"],
+            "B": ["INSECTICIDAS E REPELENTES"],
+        }],
+
+    }, ],  # Fim do grupo P
+
+    'R': [{
+        "01": ["preparados para o uso nasal", {
+            "A": ["DESCONGESTANTES E OUTRAS PREPARAÇÕES NASAIS PARA USO TÓPICO"],
+            "B": ["CORTICOSTEROIDES PARA USO NASAL,  DESCONGESTANTES NASAIS PARA USO SISTÊMICO"],
+        }],
+
+        "02": ["preparados para o uso faríngeo", {
+            "A": ["PREPARAÇÕES PARA O TRATAMENTO DA DOR DE GARGANTA"],
+        }],
+
+        "03": ["antiasmáticos", {
+            "A": ["MEDICAMENTOS PARA DOENÇAS OBSTRUTIVAS DAS VIAS AÉREAS"],
+            "B": ["OUTROS MEDICAMENTOS PARA DOENÇAS OBSTRUTIVAS DAS VIAS AÉREAS"],
+            "C": [" ADRENÉRGICOS PARA USO SISTÊMICO"],
+            "D": ["OUTROS MEDICAMENTOS SISTÊMICOS PARA DOENÇAS OBSTRUTIVAS DAS VIAS AÉREAS"],
+        }],
+
+        "05": ["medicamentos para tosse e resfriado", {
+            "C": ["EXPETORANTES, EXCL. COMBINAÇÕES COM SUPRESSANTES PARA TOSSE"],
+            "D": ["EXPECTORANTES E SUPRESSANTES PARA TOSSE EM COMBINAÇÃO"],
+            "F": ["SUPRESSANTES PARA TOSSE E EXPECTORANTES EM COMBINAÇÃO"],
+            "X": ["OUTROS MEDICAMENTOS PARA TOSSE E RESFRIADO"],
+
+        }],
+
+        "06": ["anti-histamínicos sistêmicos", {
+            "A": ["ANTIHISTAMÍNICOS PARA USO SISTÊMICO"],
+        }],
+
+        "07": ["outros medicamentos para o sistema respiratório", {
+            "A": ["OUTROS MEDICAMENTOS PARA O SISTEMA RESPIRATÓRIO"],
+        }],
+    }, ],  # Fim do grupo R
+
+    'S': [{
+        "01": ["produtos oftálmicos", {
+            "A": ["ANTIINFECCIOSOS"],
+            "B": ["AGENTES ANTIINFLAMATÓRIOS"],
+            "C": ["AGENTES ANTIINFLAMATÓRIOS E ANTIINFECTIVOS EM COMBINAÇÃO"],
+            "E": ["PREPARAÇÕES ANTIGLAUCOMA E MIÓTICOS"],
+            "F": ["MIDRIÁTICOS E CICLOPLÉGICOS"],
+            "G": ["DESCONGESTANTES E ANTIALÉRGICOS"],
+            "H": ["ANESTÉSICOS LOCAIS"],
+            "J": ["AGENTES DE DIAGNÓSTICO"],
+            "K": ["AJUDA CIRÚRGICA"],
+            "L": ["AGENTES DE TRANSTORNO VASCULAR OCULAR"],
+            "X": ["OUTROS OFTALMOLOGICOS"],
+
+        }],
+        "02": ["produtos otológicos", {
+            "A": ["ANTIINFECCIOSOS"],
+            "B": ["CORTICOSTERÓIDES"],
+            "C": ["CORTICOSTERÓIDES E ANTIINFECTIVOS EM COMBINAÇÃO"],
+            "D": ["OUTROS OTOLÓGICOS"],
+        }],
+
+        "03": ["PREPARAÇÕES OFTALMOLÓGICAS E OTOLÓGICAS", {
+            "A": ["ANTIINFECCIOSOS"],
+            "B": ["CORTICOSTERÓIDES"],
+            "C": ["CORTICOSTERÓIDES E ANTIINFECTIVOS EM COMBINAÇÃO"],
+            "D": ["OUTROS OTOLÓGICOS"],
+        }],
+
+    }, ],  # Fim do grupo S
+    'V': [{
+        "01": ["antídotos, agentes desintoxicantes e agentes quelantes", {
+            "A": ["Alérgicos e antialérgicos"],
+        }],
+
+        "03": ["antídotos, agentes desintoxicantes e agentes quelantes", {
+            "A": ["TODOS OS OUTROS PRODUTOS TERAPÊUTICOS"],
+        }],
+        "03AN": ["gases medicinais"],
+
+        "04": ["testes e agentes de diagnóstico", {
+            "A": ["AGENTES DE DIAGNÓSTICO, RADIOFÁRMACOS"],
+            "B": ["TESTES DE URINA"],
+            "C": ["OUTROS AGENTES DE DIAGNÓSTICO"],
+
+        }],
+        "06": ["Nutrientes Gerais", {
+            "A": ["FORMULAÇÕES DIETAS PARA TRATAMENTO DA OBESIDADE"],
+            "B": ["SUPLEMENTOS DE PROTEÍNA"],
+            "C": ["FÓRMULAS INFANTIS"],
+            "D": [" OUTROS NUTRIENTES"],
+        }],
+
         "07A": "equipamentos, reagentes, solventes e outros insumos farmacêuticos",
-        "08": "meios de contraste",
-        "10": "radiofármacos",
-        "03": "outros produtos terapêuticos",
+        "08": ["meios de contraste", {
+            "A": ["MEIOS DE CONTRASTE PARA USO RADIOLÓGICO  RAIOS X, IODINADO"],
+            "B": ["MEIOS DE CONTRASTE PARA USO RADIOLÓGICO  RAIOS X, NÃO IODINADO"],
+            "C": ["MEIOS DE CONTRASTE DE IMAGEM RESSONÂNCIA MAGNÉTICA"],
+            "D": ["MEIOS DE CONTRASTE DE ULTRASSOM"],
+        }],
+        "09": ["meios de contraste", {
+            "A":["SISTEMA NERVOSO CENTRAL"],
+            "B":["ESQUELETO"],
+            "C":["SISTEMA RENAL"],
+            "D":["SISTEMA HEPÁTICO E RETÍCULO ENDOTELIAL"],
+            "E":["SISTEMA RESPIRATÓRIO"],
+            "F":["TIREÓIDE"],
+            "G":["SISTEMA CARDIOVASCULAR"],
+            "H":["DETECÇÃO DE INFLAMAÇÃO E INFECÇÃO"],
+            "I":["DETECÇÃO DE TUMORES"],
+            "X":["OUTROS RADIOFARMACÊUTICOS PARA DIAGNÓSTICO"],
+
+        }],
+        "10": ["radiofármacos",{
+            "A":["AGENTES ANTIINFLAMATÓRIOS"],
+            "B":["PALIAÇÃO DA DOR, AGENTES DE BUSCA DE OSSO"],
+            "X":["OUTROS RADIOFARMACÊUTICOS TERAPÊUTICOS"],
+
+        }],
+
+        "20": ["CURATIVOS CIRÚRGICOS", {
+            "": ["CURATIVOS CIRÚRGICOS"],
+
+        }],
+
         "": "antroposóficos, fitoterápicos e homeopáticos fórmulas ou associações manipuladas, medicamentos veterinários"
 
-    }
+    }]  # Fim do grupo V
 }
 
 ATC_LABELS = [{"A": "SISTEMA DIGESTIVO E METABOLISMO"},
@@ -492,3 +677,13 @@ print(ATC['D'][0]['03'][1]['A'])
 print(ATC['D'][0]['04'][1]['A'])
 print(ATC['D'][0]['05'][1]['A'])
 print(ATC['G'][0]['01'][1]['A'])
+print(ATC['G'][0]['02'][1]['A'])
+print(ATC['G'][0]['03'][1]['A'])
+print(ATC['G'][0]['04'][1]['A'])
+
+print(ATC['H'][0]['01'][1]['A'])
+
+print(ATC['H'][0]['02'][1]['A'])
+
+print(ATC['H'][0]['03'][1]['A'])
+
