@@ -12,18 +12,18 @@ ATC = {
                       ]}, ],
 
         "02": ["antiácidos, inibidores da secreção gástrica e tratamento das úlceras",
-               {"A": "antiácidos",
-                "B": "inibidores da secreção gástrica",
-                "C": "tratamento das úlceras",
+               {"A": ["antiácidos"],
+                "B": ["inibidores da secreção gástrica"],
+                "C": ["tratamento das úlceras"],
                 }],
 
         "03": ["antiespasmódicos, anticolinérgicos e propulsivos",
-               {"A": "Medicamentos para distúrbios gastrointestinais funcionais",
-                "B": "BELADONA E DERIVADOS, SIMPLES",
-                "C": "ANTISPASMÓDICOS EM COMBINAÇÃO COM PSICOLÉPTICOS",
-                "D": "ANTISPASMÓDICOS EM COMBINAÇÃO COM ANALGÉSICOS",
-                "E": "ANTISPASMÓDICOS E ANTICOLINÉRGICOS EM COMBINAÇÃO COM OUTRAS MEDICAMENTOS",
-                "F": "PROPULSIVOS",
+               {"A": ["Medicamentos para distúrbios gastrointestinais funcionais"],
+                "B": ["BELADONA E DERIVADOS, SIMPLES"],
+                "C": ["ANTISPASMÓDICOS EM COMBINAÇÃO COM PSICOLÉPTICOS"],
+                "D": ["ANTISPASMÓDICOS EM COMBINAÇÃO COM ANALGÉSICOS"],
+                "E": ["ANTISPASMÓDICOS E ANTICOLINÉRGICOS EM COMBINAÇÃO COM OUTRAS MEDICAMENTOS"],
+                "F": ["PROPULSIVOS"],
                 }],
 
         "04": ["antieméticos e antinauseantes",
@@ -683,5 +683,5 @@ if __name__ == '__main__':
 
     print(ATC['H'][0]['02'][1]['A'])
 
-print(ATC['H'][0]['03'][1]['A'])
+    print(ATC['H'][0]['03'][1]['A'])
 

@@ -1,5 +1,5 @@
 from collections import Counter
-
+from datasources import atc_reference
 from drug_leaflet import Leaflet
 import spacy
 from spacy.matcher import DependencyMatcher
@@ -32,8 +32,8 @@ class InteractionParser:
             "adicional", "refeição", "médico", "cirurgião-dentista", "conhecimento", "Interações medicamentosas",
             "ação", "o gravidez", "gravidez", "amamentação", "criança", "idoso", "uso", "os", "caso", "saúde",
             "pílulas", "indesejável", "indesejáveis", "Pílulas", "interação", "interações", "medicamentoso",
-            "ouro","inibidor", "inibidores", "inibidora", "inibidoras", "inibitório", "inibitórios", "inibitória",
-            "exame", "exames",  "examinado", "examinada", "examinados", "examinadas", "o exame", "os exames", "fez",
+            "ouro", "inibidor", "inibidores", "inibidora", "inibidoras", "inibitório", "inibitórios", "inibitória",
+            "exame", "exames", "examinado", "examinada", "examinados", "examinadas", "o exame", "os exames", "fez",
             "seguinte"
 
         ]
@@ -75,7 +75,7 @@ class InteractionParser:
                         # print("span", [a for a in self.doc[nc.start:nc.end].as_doc() if not a.is_stop])
                         # print("---")
 
-                        #Y = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.text == 'eles']
+                        # Y = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.text == 'eles']
                         # print("X ---> ", x), print("Y ---> ", Y)
 
                         x = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.is_stop]
@@ -119,7 +119,6 @@ class InteractionParser:
                     print("SUJEITO:", token.text, token.dep_)
                     print("HEAD:", token.head.text, token.head.pos_, [t for t in token.subtree])
 
-
         if "nsubj" in token.dep_:
             subject = " ".join([child.text for child in token.subtree])
         elif "amod" in token.dep_:
@@ -129,46 +128,55 @@ class InteractionParser:
             print(f"Sujeito: {subject}")
             print(f"Objeto: {obj}")
 
-
     def get_atc_code(self):
         """ Return the ATC code of the drug. """
 
         for i in range(len(self.cod_atc)):
             if self.cod_atc.iloc[i, 0].lower() == self.drug_name:
                 return self.cod_atc.iloc[i, 0].lower(), self.cod_atc.iloc[i, 1]
-    def get_group_atc_code(self):
-        """ Return the ATC code of the drug. """
-
-        for i in range(len(self.cod_atc)):
-            if self.cod_atc.iloc[i, 0].lower() == self.drug_name:
-                return self.cod_atc.iloc[i, 0].lower(), self.cod_atc.iloc[i, 2]
 
 
-def get_similarity_index(leaflet1, leaflet2):
+###### ESTAS FUNÇÕES NÃO PERTENCEM A CLASSE INTERACTIONPARSER, MAS ESTÃO AQUI POR ENQUANTO ########
+def get_group_atc_code(code_atc):
+    """ Return the ATC code of the drug. """
+    print(code_atc)
+    if len(code_atc) < 4:
+        return f"Código ATC {code_atc} inválido! Deve ter ao menos 4 caracteres."
+    else:
+
+        first_level = code_atc[0]
+        second_level = code_atc[1:3]
+        third_level = code_atc[3]
+        print(first_level, second_level, third_level)
+        result0 = atc_reference.ATC[first_level][0][second_level][0]
+        result1 = result0 + ", " + "".join(atc_reference.ATC[first_level][0][second_level][1][third_level])
+        # print(result0)
+        # print(result1)
+        return [r for r in result1.split(", ") if r != ""]
+
+
+def get_similarity_lists(sim_leaflet1, sim_leaflet2):
     """ Return the similarity index between two leaflets. """
     # Get the interactions flags of each leaflet
-    interactions_flags1 = leaflet1.get_interactions_flags()
-    interactions_flags2 = leaflet2.get_interactions_flags()
-    print("interactions_flags1", interactions_flags1)
-    print("interactions_flags2", interactions_flags2)
+    interactions_flags1 = sim_leaflet1.get_interactions_flags()
+    interactions_flags2 = sim_leaflet2.get_interactions_flags()
+    # print("interactions_flags1", interactions_flags1)
+    # print("interactions_flags2", interactions_flags2)
     # Get the ATC code of each leaflet
-    atc_code1 = leaflet1.get_atc_code()[1]
-    atc_code2 = leaflet2.get_atc_code()[1]
-    # Get the definition of each ATC code
-    definition1 = leaflet1.leaflet.get_definition_drug_section()
-    definition2 = leaflet2.leaflet.get_definition_drug_section()
+    atc_code1 = sim_leaflet1.get_atc_code()[1]
+    atc_code2 = sim_leaflet2.get_atc_code()[1]
+    # Get drug name
+    drug_name1 = sim_leaflet1.get_atc_code()[0]
+    drug_name2 = sim_leaflet2.get_atc_code()[0]
 
+    # Get group ATC code
+    group_atc_code1 = get_group_atc_code(atc_code1)
+    group_atc_code2 = get_group_atc_code(atc_code2)
+    # print("group_atc_code1", group_atc_code1)
+    # print("group_atc_code2", group_atc_code2)
 
-    # Get the similarity index
-    similarity_index = 0
-    if atc_code1 != atc_code2:
-        similarity_index += 1
-    if definition1 == definition2:
-        similarity_index += 1
-    if interactions_flags1 == interactions_flags2:
-        similarity_index += 1
-
-    return similarity_index
+    return (atc_code1, drug_name1, interactions_flags1, group_atc_code1,
+            drug_name2, atc_code2, interactions_flags2, group_atc_code2)
 
 if __name__ == '__main__':
     leaflet1 = InteractionParser(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
@@ -176,8 +184,12 @@ if __name__ == '__main__':
     # leaflet.get_interactions_flags()
     # leaflet3.get_whats_is()
     # leaflet3.dependency_drug()
-    print(f"Nome na Bula : {leaflet1.drug_name}")
-    print(f"Código ATC {leaflet1.get_atc_code()[0]}: {leaflet1.get_atc_code()[1]}")
-    print(f"Nome na Bula : {leaflet2.drug_name}")
+    # print(f"Nome na Bula : {leaflet1.drug_name}")
+    # print(f"Código ATC {leaflet1.get_atc_code()[0]}: {leaflet1.get_atc_code()[1]}")
+    # print(f"Nome na Bula : {leaflet2.drug_name}")
     print(f"Código ATC {leaflet2.get_atc_code()[0]}: {leaflet2.get_atc_code()[1]}")
-    print(get_similarity_index(leaflet1, leaflet2))
+    # print(get_similarity_index(leaflet1, leaflet2))
+    # print(get_group_atc_code("A0"))
+    # print(get_group_atc_code(leaflet2.get_atc_code()[1]))
+    for i in get_similarity_lists(leaflet1, leaflet2):
+        print(i)
