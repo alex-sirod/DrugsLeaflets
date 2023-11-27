@@ -1,8 +1,17 @@
 # https://www.paho.org/pt/oms-uma-organizacao-global-saude
+
+
 ATC = {
-    'A': {
+    'A': [{
         "01": ["preparados estomatológicos (boca e dentes)",
-               {"A": "preparados estomatológicos"}],
+               {"A": ["preparados estomatológicos",
+                      {"A": "Agentes profiláticos contra cárie"},
+                      {"B": "Antiinfecciosos e anti-sépticos para tratamento oral local"},
+                      {"C": "Corticosteróides para tratamento oral local"},
+                      {"D": "Outros agentes para tratamento oral local"}
+                      ]}, ],
+
+
 
         "02": ["antiácidos, inibidores da secreção gástrica e tratamento das úlceras",
                {"A": "antiácidos",
@@ -23,7 +32,8 @@ ATC = {
         "14": "anabolizantes para o uso sistêmico",
         "15": "estimulantes do apetite",
         "16": "outros medicamentos para o sistema digestivo e o metabolismo"
-    },
+    },],
+
     'B': {
         "01": "anticoagulantes, antitrombóticos e trombolíticos",
         "02": "anti-hemorrágicos, fatores de coagulação e correlatos",
@@ -146,10 +156,6 @@ ATC_LABELS = [{"A": "SISTEMA DIGESTIVO E METABOLISMO"},
               {"S": "ÓRGÃOS DO SENTIDO"},
               {"V": "VÁRIOS"}]
 
-
-
-
-
 # if __name__ == '__main__':
 #     print("-----------------------------------------------------------")
 #     print("ATC - Anatomical Therapeutic Chemical Classification System")
@@ -174,6 +180,12 @@ ATC_LABELS = [{"A": "SISTEMA DIGESTIVO E METABOLISMO"},
 
 # Teste de impressão para verificar a estrutura do dicionário resultante
 print(ATC)
-print(ATC['V']['03'])
-print(ATC['A']['01'][1]['A'])
-print(ATC['A']['02'][1]['B'])
+# print(ATC['A'])
+# print(ATC['A'][0])
+# print(ATC['A'][0]['01'])
+# print(ATC['A'][0]['01'][0])
+# print(ATC['A'][0]['01'][1])
+# print(ATC['A'][0]['01'][1]['A'])
+
+print(ATC['A'][0]['01'][1]['A'][4]['D'])
+

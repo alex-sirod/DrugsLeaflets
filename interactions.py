@@ -13,7 +13,7 @@ class InteractionParser:
 
     def __init__(self, leaflet_path):
 
-        self.cod_atc = pd.read_csv("datasources/ATC_reduzida.csv")
+        self.cod_atc = pd.read_csv("datasources/ATC_small.csv")
 
         self.leaflet = Leaflet(leaflet_path)
 
@@ -142,6 +142,5 @@ if __name__ == '__main__':
     # leaflet.get_interactions_flags()
     # leaflet3.get_whats_is()
     # leaflet3.dependency_drug()
-    print(leaflet.cod_atc)
-    print(leaflet3.drug_name)
+    print(leaflet.drug_name)
     print(leaflet.get_atc_code()[1])
