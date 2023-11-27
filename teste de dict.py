@@ -1,37 +1,40 @@
 
 
-ATC = {'A': {"01": "preparados estomatológicos (boca e dentes)",
-                "02": "antiácidos, inibidores da secreção gástrica e tratamento das úlceras",
-                "03": "antiespasmódicos, anticolinérgicos e propulsivos",
-                "04": "antieméticos e antinauseantes",
-                "05": "tratamento biliar e hepático",
-                "06": "laxativos",
-                "07": "antidiarréicos, anti-inflamatórios e anti-infecciosos intestinais",
-                "08": "preparados antiobesidade",
-                "09": "digestivos e enzimas digestivas",
-                "10": "medicamentos utilizados na diabetes",
-                "11/12": "vitaminas, suplementos minerais e associações",
-                "13": "tônicos e repositores hidroeletrolíticos orais",
-                "14": "anabolizantes para o uso sistêmico",
-                "15": "estimulantes do apetite",
-                "16": "outros medicamentos para o sistema digestivo e o metabolismo"},
-        'B': {"01": "anticoagulantes, antitrombóticos e trombolíticos",
-                "02": "anti-hemorrágicos, fatores de coagulação e correlatos",
-                "03": "preparados antianêmicos",
-                "05": "hemodiálises, diálises e soluções para perfusão e irrigação",
-                "05BA": "nutrição parenteral",
-                "06": "outros preparados hematológicos"}
-       }
+from interactions import InteractionParser
+class SimilatyIndex:
+        def __init__(self, leaflet1, leaflet2):
+            self.leaflet1 = InteractionParser(leaflet1)
+            self.leaflet2 = InteractionParser(leaflet2)
+            print(self.leaflet1.get_interactions_flags())
+        def get_similarity_index(self):
+            """ Return the similarity index between two leaflets. """
 
+            # Get the interactions flags of each leaflet
+            interactions_flags1 = self.leaflet1.get_interactions_flags()
+            interactions_flags2 = self.leaflet2.get_interactions_flags()
 
+            # # Get the ATC code of each leaflet
+            # atc_code1 = self.leaflet1.get_atc_code()[1]
+            # atc_code2 = self.leaflet2.get_atc_code()[1]
+            #
+            # # Get the definition of each ATC code
+            # definition1 = self.leaflet1.leaflet.get_definition_drug_section()
+            # definition2 = self.leaflet2.leaflet.get_definition_drug_section()
+            #
+            # # Get the similarity index
+            # similarity_index = 0
+            # if atc_code1 == atc_code2:
+            #     similarity_index += 1
+            # if definition1 == definition2:
+            #     similarity_index += 1
+            # if interactions_flags1 == interactions_flags2:
+            #     similarity_index += 1
+
+            # return similarity_index
+            # return interactions_flags1, interactions_flags2
 
 
 if __name__ == '__main__':
-    print("--------------------------------------------------------")
-    p = "A"
-    d = "10"
-    print (ATC[p][d])
-    for i in ATC:
-        print(i, ATC[i])
-        for j in ATC[i]:
-            print(j, ATC[i][j])
+    leaflet1 = InteractionParser(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
+    leaflet2 = InteractionParser(r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf')
+    similaty_index = SimilatyIndex(leaflet1, leaflet2)

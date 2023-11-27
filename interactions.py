@@ -92,7 +92,7 @@ class InteractionParser:
         # print("T1 sem T2 ---> ", triggers_words_final)
         word_freq = Counter(triggers_words_final)
         common_words = word_freq.most_common()
-        print("TRIGGERS WORDS FINAL ---> ", common_words)
+        # print("TRIGGERS WORDS FINAL ---> ", common_words)
         return common_words
 
     def get_whats_is(self):
@@ -136,12 +136,48 @@ class InteractionParser:
         for i in range(len(self.cod_atc)):
             if self.cod_atc.iloc[i, 0].lower() == self.drug_name:
                 return self.cod_atc.iloc[i, 0].lower(), self.cod_atc.iloc[i, 1]
+    def get_group_atc_code(self):
+        """ Return the ATC code of the drug. """
+
+        for i in range(len(self.cod_atc)):
+            if self.cod_atc.iloc[i, 0].lower() == self.drug_name:
+                return self.cod_atc.iloc[i, 0].lower(), self.cod_atc.iloc[i, 2]
+
+
+def get_similarity_index(leaflet1, leaflet2):
+    """ Return the similarity index between two leaflets. """
+    # Get the interactions flags of each leaflet
+    interactions_flags1 = leaflet1.get_interactions_flags()
+    interactions_flags2 = leaflet2.get_interactions_flags()
+    print("interactions_flags1", interactions_flags1)
+    print("interactions_flags2", interactions_flags2)
+    # Get the ATC code of each leaflet
+    atc_code1 = leaflet1.get_atc_code()[1]
+    atc_code2 = leaflet2.get_atc_code()[1]
+    # Get the definition of each ATC code
+    definition1 = leaflet1.leaflet.get_definition_drug_section()
+    definition2 = leaflet2.leaflet.get_definition_drug_section()
+
+
+    # Get the similarity index
+    similarity_index = 0
+    if atc_code1 != atc_code2:
+        similarity_index += 1
+    if definition1 == definition2:
+        similarity_index += 1
+    if interactions_flags1 == interactions_flags2:
+        similarity_index += 1
+
+    return similarity_index
 
 if __name__ == '__main__':
-    leaflet3 = InteractionParser(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
-    leaflet = InteractionParser(r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf')
-    leaflet.get_interactions_flags()
+    leaflet1 = InteractionParser(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
+    leaflet2 = InteractionParser(r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf')
+    # leaflet.get_interactions_flags()
     # leaflet3.get_whats_is()
     # leaflet3.dependency_drug()
-    print(leaflet.drug_name)
-    print(leaflet.get_atc_code()[1])
+    print(f"Nome na Bula : {leaflet1.drug_name}")
+    print(f"Código ATC {leaflet1.get_atc_code()[0]}: {leaflet1.get_atc_code()[1]}")
+    print(f"Nome na Bula : {leaflet2.drug_name}")
+    print(f"Código ATC {leaflet2.get_atc_code()[0]}: {leaflet2.get_atc_code()[1]}")
+    print(get_similarity_index(leaflet1, leaflet2))
