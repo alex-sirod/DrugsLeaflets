@@ -202,36 +202,161 @@ ATC = {
 
     }, ],  # Fim do grupo C
 
-    'D': {
-        "01/06/07": "anti-infecciosos, antibióticos e anti-inflamatórios tópicos",
-        "02": "emolientes, hidratantes, protetores e filtro solar",
-        "03": "tratamento de feridas e úlceras",
-        "04/05": "antipuriginosos e antipsoriáticos",
-        "08": "antissépticos e desinfetantes",
-        "10": "antiacneicos",
-        "11": "outros preparados dermatológicos"
-    },
-    'G': {
-        "01": "anti-infecciosos e antissépticos ginecológicos",
-        "02": "outros preparados ginecológicos",
-        "03": "anticoncepcionais, hormônios sexuais e moduladores do sistema genital",
-        "04": "medicamentos urológicos"
-    },
-    'H': {
-        "01": "hormônios, hipofisários hipotalâmicos e análogos",
-        "02": "corticoesteróides sistêmicos",
-        "03": "tratamento da tireoide",
-        "04": "hormônios pancreáticos",
-        "05": "medicamentos relacionados à homeostasia do cálcio"
-    },
-    'J': {
-        "01": "antibacterianos sistêmicos",
-        "02": "antifúngicos sistêmicos",
-        "04": "antimicobacterianos sistêmicos",
-        "05": "antivirais sistêmicos",
-        "06": "imunossoros e imunoglobulinas",
-        "07": "vacinas"
-    },
+    'D': [{
+        "01": ["anti-infecciosos, antibióticos e anti-inflamatórios tópicos",
+               {"A": ["ANTIFÚNGICOS TÓPICOS"],
+                "B": ["ANTIFÚNGICOS PARA USO SISTÊMICO"],
+                }],
+
+        "02": ["emolientes, hidratantes, protetores e filtro solar",
+               {"A": ["EMOLIENTES E HIDRATANTES"],
+                "B": ["PROTETORES CONTRA RADIAÇÃO UV"],
+                }],
+
+        "03": ["tratamento de feridas e úlceras",
+               {"A": ["CICATRIZANTES"],
+                "B": ["enzimas"],
+                }],
+
+        "04": ["antipuriginosos",
+               {"A": ["ANTIPRURÍTICOS, INCLUINDO ANTI-HISTAMÍNICOS, ANESTÉSICOS, ETC."],
+                }],
+
+        "05": ["antipsoriáticos",
+               {"A": ["ANTIPSORIÁTICOS PARA USO TÓPICO"],
+                "B": ["ANTIPSORIÁTICOS PARA USO SISTÊMICO"],
+                }],
+        "06": ["ANTIBIÓTICOS E QUIMIOTERAPÊUTICOS PARA USO DERMATOLÓGICO",
+               {"A": ["ANTIBIÓTICOS PARA USO TÓPICO"],
+                "B": ["QUIMIOTERAPÊUTICOS PARA USO TÓPICO"],
+                "C": ["ANTIBIÓTICOS E QUIMIOTERAPÊUTICOS, COMBINAÇÕES"],
+                }],
+
+        "07": ["corticosteróides, dermatológicos",
+               {"A": ["CORTICOSTEROIDES simples, MONOPREPARAÇÕES"],
+                "B": ["CORTICOSTEROIDES, COMBINAÇÕES COM ANTISSÉPTICOS"],
+                "C": ["CORTICOSTEROIDES, COMBINAÇÕES COM ANTIBIÓTICOS"],
+                "X": ["CORTICOSTEROIDES, OUTRAS COMBINAÇÕES"],
+                }],
+
+        "08": ["antissépticos e desinfetantes",
+               {"A": ["ANTISSÉPTICOS E DESINFETANTES"],
+                }],
+
+        "10": ["antiacneicos", {
+            "A": ["PREPARAÇÕES ANTI-ACNE PARA USO TÓPICO"],
+            "B": ["PREPARAÇÕES ANTI-ACNE PARA USO SISTÊMICO"],
+        }],
+
+        "11": ["outros preparados dermatológicos", {
+            "A": ["OUTROS PREPARADOS DERMATOLÓGICOS"],
+        }],
+    }, ],  # Fim do grupo D
+
+    'G': [{
+        "01": ["anti-infecciosos e antissépticos ginecológicos", {
+            "A": ["ANTIINFECTIVOS E ANTISSÉPTICOS, EXCL. COMBINAÇÕES COM CORTICOSTERÓIDES"],
+            "B": ["ANTIINFECTIVOS/ANTISSÉPTICOS EM COMBINAÇÃO COM CORTICOSTERÓIDES"],
+        }],
+
+        "02": ["outros preparados ginecológicos", {
+            "A": ["UTEROTÔNICOS"],
+            "B": ["CONTRACEPTIVOS PARA USO TÓPICO"],
+            "C": ["OUTROS GINECOLÓGICOS"],
+        }],
+
+        "03": ["anticoncepcionais, hormônios sexuais e moduladores do sistema genital", {
+            "A": ["ANTICONCEPCIONAIS HORMONAIS PARA USO SISTÊMICO"],
+            "B": ["ANDRÓGENOS"],
+            "C": ["ESTRÓGENOS"],
+            "D": ["PROGESTOGÊNIOS"],
+            "E": ["ANDRÓGENOS E HORMÔNIOS SEXUAIS FEMININOS EM COMBINAÇÃO"],
+            "F": ["PROGESTOGÊNIOS E ESTROGÊNIOS EM COMBINAÇÃO"],
+            "G": ["GONADOTROFINAS E OUTROS ESTIMULANTES DE OVULAÇÃO"],
+            "H": ["ANTIANDRÓGENOS"],
+            "X": ["OUTROS HORMÔNIOS SEXUAIS E MODULADORES DO SISTEMA GENITAL"],
+        }],
+
+        "04": ["medicamentos urológicos", {
+            "A": ["PREPARAÇÕES PARA O TRATAMENTO DA INCONTINÊNCIA URINÁRIA"],
+            "B": ["UROLÓGICOS"],
+            "C": ["DROGAS USADAS NA HIPERTROFIA PROSTÁTICA BENIGNA"],
+        }],
+    }, ],  # Fim do grupo G
+
+    'H': [{
+        "01": ["hormônios, hipofisários hipotalâmicos e análogos", {
+            "A": ["HORMÔNIOS E ANÁLOGOS DO LOBO PITUITÁRIO ANTERIOR"],
+            "B": ["HORMÔNIOS DO LOBO PITUITÁRIO POSTERIOR"],
+            "C": ["HORMÔNIOS HIPOTALÂMICOS"],
+        }],
+
+        "02": ["corticoesteróides sistêmicos", {
+
+            "A": ["CORTICOSTEROIDES PARA USO SISTÊMICO, SIMPLES"],
+            "B": ["CORTICOSTEROIDES PARA USO SISTÊMICO, COMBINAÇÕES"],
+            "C": ["PREPARAÇÕES ANTIADRENAIS"],
+        }],
+
+        "03": ["tratamento da tireoide", {
+            "A": ["PREPARAÇÕES DA TIREÓIDE"],
+            "B": ["PREPARAÇÕES ANTICIREÓIDES"],
+            "C": ["TERAPIA COM IODO"],
+        }],
+
+        "04": ["hormônios pancreáticos", {
+            "A": ["HORMÔNIOS GLICOGENOLÍTICOS"],
+        }],
+
+        "05": ["medicamentos relacionados à homeostasia do cálcio", {
+            "A": ["HORMÔNIOS PARATIREÓIDEOS E ANÁLOGOS"],
+            "B": ["AGENTES ANTI-PARATIREÓIDES"],
+
+        }],
+
+    }, ],  # Fim do grupo H
+
+    'J': [{
+        "01": ["antibacterianos sistêmicos", {
+            "A": ["TETRACICLINAS"],
+            "B": ["AMFENÍCOLOS"],
+            "C": ["ANTIBACTERIANOS BETA-LACTAM, PENICILINAS"],
+            "D": ["OUTROS ANTIBACTERIANOS BETA-LACTAM"],
+            "E": ["SULFONAMIDAS E TRIMETHOPRIMA"],
+            "F": ["MACROLÍDEOS, LINCOSAMIDAS E ESTREPTOGRAMINAS"],
+            "G": ["ANTIBACTERIANOS AMINOGLICOSÍDEOS"],
+            "M": ["ANTIBACTERIANOS QUINOLONAS"],
+            "R": ["COMBINAÇÕES DE ANTIBACTERIANOS"],
+            "X": ["OUTROS ANTIBACTERIANOS"],
+        }],
+
+        "02": ["antifúngicos sistêmicos", {
+            "A": ["ANTIMICÓTICOS PARA USO SISTÊMIC"]
+        }],
+
+        "04": ["antimicobacterianos sistêmicos", {
+            "A": ["medicamento para o tratamento da tuberculose"],
+            "B": ["medicamento para o tratamento da lepra"],
+        }],
+
+        "05": ["antivirais sistêmicos", {
+            "A": ["ANTIVIRAIS de ação direta"],
+        }],
+
+        "06": ["imunossoros e imunoglobulinas", {
+            "A": ["SOROS IMUNE, IMUNOSSOROS"],
+            "B": ["IMUNOGLOBULINAS"],
+        }],
+
+        "07": ["vacinas",{
+            "A": ["VACINAS BACTERIANAS"],
+            "B": ["VACINAS VIRAIS"],
+            "C": ["VACINAS BACTERIANAS E VIRAIS, COMBINADAS"],
+            "X": ["OUTRAS VACINAS"],
+        }],
+    }, ],  # Fim do grupo J
+
+
     'L': {
         "01": "antineoplásicos",
         "02": "terapias endócrinas",
@@ -361,5 +486,9 @@ print(ATC['C'][0]['08'][1]['C'])
 print(ATC['C'][0]['09'][1]['A'])
 print(ATC['C'][0]['10'][1]['A'])
 print(ATC['C'][0]['10'][1]['B'])
-
-
+print(ATC['D'][0]['01'][1]['A'])
+print(ATC['D'][0]['02'][1]['A'])
+print(ATC['D'][0]['03'][1]['A'])
+print(ATC['D'][0]['04'][1]['A'])
+print(ATC['D'][0]['05'][1]['A'])
+print(ATC['G'][0]['01'][1]['A'])
