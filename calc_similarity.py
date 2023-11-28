@@ -1,12 +1,14 @@
 from interactions import get_similarity_lists, InteractionParser
 import statistics
-import copy
 import nltk
 from nltk.stem import RSLPStemmer
 from nltk.tokenize import word_tokenize
+import jellyfish._jellyfish as pyjellyfish
+import jellyfish  # used in measure similarity by word
 
-import spacy  # used in clean list
+import spacy  # used in clean list and measure similarity by spacy
 
+nlp = spacy.load("pt_core_news_lg")
 
 # # Baixe o stemmer RSLP
 # try:
@@ -28,25 +30,24 @@ class CalcSimilarity:
             self.drug_B_quality = result[6]  # list contains tuples
             self.drug_B_constraint = result[7]  # list simple
 
+        self.qty_A = len(self.drug_A_quality)
+        self.qty_B = len(self.drug_B_quality)
+
         # Calculate the weight_A of each list of tuples
         weight_i = 0
         for w_A in self.drug_A_quality:
             weight_i += w_A[1]
         self.weight_A = weight_i / len(self.drug_A_quality)
-        print("Peso de A", self.weight_A)
+        print(f"Tamanho de A:{self.qty_A}, peso de A:{self.weight_A}")
         print(self.drug_A_quality)
+
         # Calculate the weight_B of each list of tuples
         weight_j = 0
         for w_B in self.drug_B_quality:
             weight_j += w_B[1]
         self.weight_B = weight_j / len(self.drug_B_quality)
-        print("Peso de B", self.weight_B)
+        print(f"Tamanho de B:{self.qty_B}, peso de B:{self.weight_B}")
         print(self.drug_B_quality)
-
-        self.qty_A = len(self.drug_A_quality)
-        self.qty_B = len(self.drug_B_quality)
-        # print(i, type(s), result[i])
-        print("Tamanho de a e B", self.qty_A, self.qty_B)
 
     def set_stemm(self, text):
         words = word_tokenize(text, language='portuguese')
@@ -134,8 +135,9 @@ class CalcSimilarity:
                 local_drug_B_constraint.append(j)
         # print("     Lista Local:", local_drug_B_constraint)
 
-        measure_word = []
         # mensura palavras iguais
+        measure_word = []
+
         for i in local_drug_A_quality:
             # print(self.set_stemm(i[0].lower()))
             for j in local_drug_B_constraint:
@@ -168,10 +170,166 @@ class CalcSimilarity:
 
         return measure_sim_word
 
+    def measure_similarity_by_bigstring(self):
+        measure_spacy_values = []
+        local_drug_A_quality = []
+        local_drug_B_quality = []
+        local_drug_A_constraint = []
+        local_drug_B_constraint = []
+
+        # print("  Lista Original:", self.drug_A_quality)
+        for i in self.drug_A_quality:
+            for j in self.clean_list((i[0].lower().split())):
+                local_drug_A_quality.append((j, i[1]))
+        print("Lista Local:", local_drug_A_quality)
+        # transforma a lista local em uma sentença
+        doc_local_drug_A_quality = nlp(" ".join([i[0] for i in local_drug_A_quality]))
+        print("Sentença Local:", local_drug_A_quality)
+
+        # print("  Lista Original:", self.drug_B_quality)
+        for i in self.drug_B_quality:
+            for j in self.clean_list((i[0].lower().split())):
+                local_drug_B_quality.append((j, i[1]))
+        print("Lista Local:", local_drug_B_quality)
+        # transforma a lista local em uma sentença
+        doc_local_drug_B_quality = nlp(" ".join([i[0] for i in local_drug_B_quality]))
+        print("Sentença Local:", local_drug_B_quality)
+
+
+        # print("  Lista Original:", self.drug_A_constraint)
+        for i in self.drug_A_constraint:
+            for j in self.clean_list((i.lower().split())):
+                local_drug_A_constraint.append(j)
+        print("Lista Local A_constraint:", local_drug_A_constraint)
+        # transforma a lista local em uma sentença
+        doc_local_drug_A_constraint = nlp(" ".join([i for i in local_drug_A_constraint]))
+        print("Sentença Local A_constraint:", local_drug_A_constraint)
+        #
+        #
+        # print("  Lista Original:", self.drug_B_constraint)
+        for i in self.drug_B_constraint:
+            for j in self.clean_list((i.lower().split())):
+                local_drug_B_constraint.append(j)
+        print("Lista Local B_constraint:", local_drug_B_constraint)
+        # transforma a lista local em uma sentença
+        doc_local_drug_B_constraint = nlp(" ".join([i for i in local_drug_B_constraint]))
+        print("Doc B_constraint:", doc_local_drug_B_constraint)
+
+        measure_spacy_values.append(doc_local_drug_A_quality.similarity(doc_local_drug_B_constraint))
+        measure_spacy_values.append(doc_local_drug_B_constraint.similarity(doc_local_drug_A_quality))
+        measure_spacy_values.append(doc_local_drug_A_constraint.similarity(doc_local_drug_B_quality))
+        measure_spacy_values.append(doc_local_drug_B_quality.similarity(doc_local_drug_A_constraint))
+
+        print("Measure Spacy Values:", statistics.mean(measure_spacy_values))
+
+
+        print("-------Calibrando ------------")
+        print("Similaridade por spacy:       A_quality / A_quality", doc_local_drug_A_quality.similarity(doc_local_drug_A_quality))
+        print("Similaridade por spacy:       B_quality / B_quality", doc_local_drug_B_quality.similarity(doc_local_drug_B_quality))
+        print("----------Testando---------")
+        print("Similaridade por spacy:    A_quality / B_constraint", doc_local_drug_A_quality.similarity(doc_local_drug_B_constraint))
+        print("Similaridade por spacy:    B_constraint / A_quality", doc_local_drug_B_constraint.similarity(doc_local_drug_A_quality))
+        print("Similaridade por spacy:    A_constraint / B_quality", doc_local_drug_A_constraint.similarity(doc_local_drug_B_quality))
+        print("Similaridade por spacy:    B_quality / A_constraint", doc_local_drug_B_quality.similarity(doc_local_drug_A_constraint))
+        print("-------------------")
+
+        return statistics.mean(measure_spacy_values)
+
+    def measure_similarity_by_word_jaro(self):
+        measure_jellyfish_values = []
+        jellyfish_drug_A_quality = []
+        jellyfish_drug_B_quality = []
+        jellyfish_drug_A_constraint = []
+        jellyfish_drug_B_constraint = []
+
+        # print("  Lista Original:", self.drug_A_quality)
+        for i in self.drug_A_quality:
+            for j in self.clean_list((i[0].lower().split())):
+                jellyfish_drug_A_quality.append((j, i[1]))
+        print("Lista Local:", jellyfish_drug_A_quality)
+        # transforma a lista local em uma sentença
+        jellyfish_drug_A_quality = " ".join([i[0] for i in jellyfish_drug_A_quality])
+        print("Sentença Jellyfish:", jellyfish_drug_A_quality)
+
+        # print("  Lista Original:", self.drug_B_quality)
+        for i in self.drug_B_quality:
+            for j in self.clean_list((i[0].lower().split())):
+                jellyfish_drug_B_quality.append((j, i[1]))
+        print("Lista Local:", jellyfish_drug_B_quality)
+        # transforma a lista local em uma sentença
+        jellyfish_drug_B_quality = " ".join([i[0] for i in jellyfish_drug_B_quality])
+        print("Sentença Jellyfish:", jellyfish_drug_B_quality)
+
+        # print("  Lista Original:", self.drug_A_constraint)
+        for i in self.drug_A_constraint:
+            for j in self.clean_list((i.lower().split())):
+                jellyfish_drug_A_constraint.append(j)
+        print("Lista Local A_constraint:", jellyfish_drug_A_constraint)
+        # transforma a lista local em uma sentença
+        jellyfish_drug_A_constraint = " ".join([i for i in jellyfish_drug_A_constraint])
+        print("Sentença Local A_constraint:", jellyfish_drug_A_constraint)
+
+        # print("  Lista Original:", self.drug_B_constraint)
+        for i in self.drug_B_constraint:
+            for j in self.clean_list((i.lower().split())):
+                jellyfish_drug_B_constraint.append(j)
+        print("Lista Local B_constraint:", jellyfish_drug_B_constraint)
+        # transforma a lista local em uma sentença
+        jellyfish_drug_B_constraint = " ".join([i for i in jellyfish_drug_B_constraint])
+        print("Doc B_constraint:", jellyfish_drug_B_constraint)
+        jellyfish.jaro_winkler_similarity(jellyfish_drug_A_quality, jellyfish_drug_B_constraint)
+
+        measure_jellyfish_values.append(jellyfish.jaro_winkler_similarity(jellyfish_drug_A_quality, jellyfish_drug_B_constraint))
+        measure_jellyfish_values.append(jellyfish.jaro_winkler_similarity(jellyfish_drug_B_constraint, jellyfish_drug_A_quality))
+        measure_jellyfish_values.append(jellyfish.jaro_winkler_similarity(jellyfish_drug_A_constraint, jellyfish_drug_B_quality))
+        measure_jellyfish_values.append(jellyfish.jaro_winkler_similarity(jellyfish_drug_B_quality, jellyfish_drug_A_constraint))
+
+        print("Measure Jellyfish Jaro-Winkler Values:", statistics.mean(measure_jellyfish_values))
+
+        print("-------Calibrando ------------")
+        print("Similaridade por jellyfish:       A_quality / A_quality", jellyfish.jaro_winkler_similarity(jellyfish_drug_A_quality, jellyfish_drug_A_quality))
+        print("Similaridade por jellyfish:       B_quality / B_quality", jellyfish.jaro_winkler_similarity(jellyfish_drug_B_quality, jellyfish_drug_B_quality))
+        print("----------Testando---------")
+        print("Similaridade por jellyfish:    A_quality / B_constraint", jellyfish.jaro_winkler_similarity(jellyfish_drug_A_quality, jellyfish_drug_B_constraint))
+        print("Similaridade por jellyfish:    B_constraint / A_quality", jellyfish.jaro_winkler_similarity(jellyfish_drug_B_constraint, jellyfish_drug_A_quality))
+        print("Similaridade por jellyfish:    A_constraint / B_quality", jellyfish.jaro_winkler_similarity(jellyfish_drug_A_constraint, jellyfish_drug_B_quality))
+        print("Similaridade por jellyfish:    B_quality / A_constraint", jellyfish.jaro_winkler_similarity(jellyfish_drug_B_quality, jellyfish_drug_A_constraint))
+        print("-------------------")
+
+        return statistics.mean(measure_jellyfish_values)
+
+    def measure_similarity_by_chunk_levenshtein(self, s1, s2):
+
+        if len(s1) > len(s2):
+            v = len(s1)
+        else:
+            v = len(s2)
+
+        l = jellyfish.levenshtein_distance(s1, s2)
+
+        print(f"Maior Valor: {v}")
+        print(f"TAMANHO 1 \'{s1}\' ", len(s1))
+        print(f"TAMANHO 2 \'{s2}\' ", len(s2))
+        print("LEVENSHTEIN", jellyfish.levenshtein_distance(s1, s2))
+
+        print(((100 / v) * l) / 100)
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     leaflet1 = r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf'
     leaflet2 = r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf'
-    calc = CalcSimilarity(leaflet1, leaflet2)
-    calc.measure_similarity_by_chunk()
-    calc.measure_similarity_by_word()
     # calc.clean_list(["O outro cachorro marrom pula alto ."])
+
+
+    calc = CalcSimilarity(leaflet1, leaflet2)
+    # calc.measure_similarity_by_chunk()
+    # calc.measure_similarity_by_word()
+    # calc.measure_similarity_by_bigstring()
+    # calc.measure_similarity_by_word_jaro()
+    calc.measure_similarity_by_chunk_levenshtein("gigant", "gigante")

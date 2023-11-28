@@ -140,6 +140,6 @@ class LeafletMetadata:
             "pílulas", "indesejável", "indesejáveis", "Pílulas", "interação", "interações", "medicamentoso",
             "ouro", "inibidor", "inibidores", "inibidora", "inibidoras", "inibitório", "inibitórios", "inibitória",
             "exame", "exames", "examinado", "examinada", "examinados", "examinadas", "o exame", "os exames", "fez",
-            "seguinte"
+            "seguinte", "pesquisa", "pesquisas", "pesquisado", "pesquisada", "pesquisados", "pesquisadas",
 
         ]
