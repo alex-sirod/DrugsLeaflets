@@ -57,8 +57,14 @@ class CalcSimilarity:
 
     def clean_list(self, list_text):
         doc = self.nlp(" ".join(list_text))
-        det_removed = [token.text for token in doc if token.pos_ != "DET"]
+        det_removed = [token.text for token in doc if token.pos_ != "DET"
+                       and token.is_punct is False
+                       and token.is_stop is False
+                       and token.is_space is False
+                       ]
+
         # print("Tokens sem determinantes:", det_removed)
+
         return det_removed
 
     def measure_similarity_by_chunk(self):
@@ -98,54 +104,74 @@ class CalcSimilarity:
         return measure_sim_chunk
 
     def measure_similarity_by_word(self):
-        measure = []
-        # mensura palavras iguais
-        for i in self.drug_A_quality:
-            # print(self.set_stemm(i[0].lower()))
-            for j in self.drug_B_constraint:
-                # print(self.set_stemm(j.lower()))
-                if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
-                    measure.append(i[1] * self.weight_A)
-                else:
-                    measure.append(0)
 
-        for i in self.drug_B_quality:
-            # print(self.set_stemm(i[0].lower()))
-            for j in self.drug_A_constraint:
-                # print(self.set_stemm(j.lower()))
-                if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
-                    measure.append(i[1] * self.weight_B)
-                else:
-                    measure.append(0)
+        local_drug_A_quality = []
+        local_drug_B_quality = []
+        local_drug_A_constraint = []
+        local_drug_B_constraint = []
 
-        # print("SOMA:", sum(measure))
-        # print("Média:", statistics.mean(measure))
-        # print("Valores:", measure)
-        # print("% Total:", sum([(a / 100) * (100 / sum(measure)) for a in measure if sum(measure) != 0]))
-        # print("% Item:", ([(a / 100) * (100 / sum(measure)) for a in measure if sum(measure) != 0]))
-        # print("Quantidade:", len(measure))
-        #
-        # print(f"********* Similaridade por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
-        #       f" |{self.leaflet2.get_atc_code()[0]}| é {statistics.mean(measure)} *******")
-        print("  Lista Original:", self.drug_A_quality)
-        drug_A_quality_temp = []
+        # print("  Lista Original:", self.drug_A_quality)
         for i in self.drug_A_quality:
             for j in self.clean_list((i[0].lower().split())):
-                drug_A_quality_temp.append((j, i[1]))
+                local_drug_A_quality.append((j, i[1]))
+        # print("     Lista Local:", local_drug_A_quality)
 
-        print("Lista Temporária:", drug_A_quality_temp)
-        self.drug_A_quality = copy.deepcopy(drug_A_quality_temp)
-        print("       Deep Copy:", self.drug_A_quality)
+        # print("  Lista Original:", self.drug_B_quality)
+        for i in self.drug_B_quality:
+            for j in self.clean_list((i[0].lower().split())):
+                local_drug_B_quality.append((j, i[1]))
+        # print("     Lista Local:", local_drug_B_quality)
 
-        # print(self.drug_B_constraint)
-        # print(self.drug_B_quality)
-        # print(self.drug_A_constraint)
+        # print("  Lista Original:", self.drug_A_constraint)
+        for i in self.drug_A_constraint:
+            for j in self.clean_list((i.lower().split())):
+                local_drug_A_constraint.append(j)
+        # print("     Lista Local:", local_drug_A_constraint)
 
+        # print("  Lista Original:", self.drug_B_constraint)
+        for i in self.drug_B_constraint:
+            for j in self.clean_list((i.lower().split())):
+                local_drug_B_constraint.append(j)
+        # print("     Lista Local:", local_drug_B_constraint)
+
+        measure_word = []
+        # mensura palavras iguais
+        for i in local_drug_A_quality:
+            # print(self.set_stemm(i[0].lower()))
+            for j in local_drug_B_constraint:
+                # print(self.set_stemm(j.lower()))
+                if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
+                    measure_word.append(i[1] * self.weight_A)
+                else:
+                    measure_word.append(0)
+
+        for i in local_drug_B_quality:
+            # print(self.set_stemm(i[0].lower()))
+            for j in local_drug_A_constraint:
+                # print(self.set_stemm(j.lower()))
+                if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
+                    measure_word.append(i[1] * self.weight_B)
+                else:
+                    measure_word.append(0)
+
+        print("SOMA:", sum(measure_word))
+        print("Média:", statistics.mean(measure_word))
+        print("Valores:", measure_word)
+        print("% Total:", sum([(a / 100) * (100 / sum(measure_word)) for a in measure_word if sum(measure_word) != 0]))
+        print("% Item:", ([(a / 100) * (100 / sum(measure_word)) for a in measure_word if sum(measure_word) != 0]))
+        print("Quantidade:", len(measure_word))
+        measure_sim_word = sum(
+            [(a / 100) * (100 / sum(measure_word)) for a in measure_word if sum(measure_word) != 0])
+
+        print(f"********* Similaridade por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
+              f" |{self.leaflet2.get_atc_code()[0]}| é {measure_sim_word} *******")
+
+        return measure_sim_word
 
 if __name__ == '__main__':
     leaflet1 = r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf'
     leaflet2 = r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf'
     calc = CalcSimilarity(leaflet1, leaflet2)
-    # calc.measure_similarity_by_chunk()
+    calc.measure_similarity_by_chunk()
     calc.measure_similarity_by_word()
     # calc.clean_list(["O outro cachorro marrom pula alto ."])
