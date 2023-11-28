@@ -1,5 +1,6 @@
 from collections import Counter
 from datasources import atc_reference
+from datasources.leaflets_section import LeafletMetadata
 from drug_leaflet import Leaflet
 import spacy
 from spacy.matcher import DependencyMatcher
@@ -19,24 +20,7 @@ class InteractionParser:
 
         self.doc = self.leaflet.get_doc()
         self.drug_name = self.leaflet.get_drug_name()
-
-        self.stoplist_interactions = [
-            # FRASES sem relevância para a RECUPERAÇÃO
-            "Interações medicamentosas", "Interações Medicamentosas",
-            "Não há interações medicamentosas descritas para este medicamento",
-            "Informe ao seu médico ou cirurgião-dentista se você está fazendo uso de algum outro medicamento.",
-            "Não use medicamento sem o conhecimento do seu médico.",
-            "Pode ser perigoso para a sua saúde. ",
-            # PALAVRAS sem relevância para a RECUPERAÇÃO
-            "precaução", "necessário", "adicionais", "efeito", "tratamento", "medicamento",
-            "adicional", "refeição", "médico", "cirurgião-dentista", "conhecimento", "Interações medicamentosas",
-            "ação", "o gravidez", "gravidez", "amamentação", "criança", "idoso", "uso", "os", "caso", "saúde",
-            "pílulas", "indesejável", "indesejáveis", "Pílulas", "interação", "interações", "medicamentoso",
-            "ouro", "inibidor", "inibidores", "inibidora", "inibidoras", "inibitório", "inibitórios", "inibitória",
-            "exame", "exames", "examinado", "examinada", "examinados", "examinadas", "o exame", "os exames", "fez",
-            "seguinte"
-
-        ]
+        self.stoplist_interactions = LeafletMetadata().stoplist_interactions
 
     def get_interactions_flags(self):
         """ Return a bag of words with the most common triggers of interactions.
@@ -139,7 +123,7 @@ class InteractionParser:
 ###### ESTAS FUNÇÕES NÃO PERTENCEM A CLASSE INTERACTIONPARSER, MAS ESTÃO AQUI POR ENQUANTO ########
 def get_group_atc_code(code_atc):
     """ Return the ATC code of the drug. """
-    print(code_atc)
+    # print(code_atc)
     if len(code_atc) < 4:
         return f"Código ATC {code_atc} inválido! Deve ter ao menos 4 caracteres."
     else:
@@ -147,7 +131,7 @@ def get_group_atc_code(code_atc):
         first_level = code_atc[0]
         second_level = code_atc[1:3]
         third_level = code_atc[3]
-        print(first_level, second_level, third_level)
+        # print(first_level, second_level, third_level)
         result0 = atc_reference.ATC[first_level][0][second_level][0]
         result1 = result0 + ", " + "".join(atc_reference.ATC[first_level][0][second_level][1][third_level])
         # print(result0)
@@ -177,6 +161,7 @@ def get_similarity_lists(sim_leaflet1, sim_leaflet2):
 
     return (atc_code1, drug_name1, interactions_flags1, group_atc_code1,
             drug_name2, atc_code2, interactions_flags2, group_atc_code2)
+
 
 if __name__ == '__main__':
     leaflet1 = InteractionParser(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')

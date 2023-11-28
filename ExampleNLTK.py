@@ -26,7 +26,6 @@ II – INFORMAÇÕES AO PACIENTE
 
 
 def find_ngrams(target_word, n=3):
-
     # Quebra o texto em palavras
     words = re.findall(r'\w+', text1)
 
@@ -40,11 +39,14 @@ def find_ngrams(target_word, n=3):
     for gram in relevant_grams:
         print(' '.join(gram))
 
+
 def simplify_tag(t):
     if "contém" in t:
-        return t[t.index("contém")+1:]
+        return t[t.index("contém") + 1:]
     else:
         return t
+
+
 def freq_dist(text):
     target_word = 'aroma'
     sentence = text
@@ -52,23 +54,26 @@ def freq_dist(text):
     fdist = FreqDist(tokens)
     return fdist.most_common()
 
+
 def concordance_in(word):
     a = Text(nltk.word_tokenize(text1))
     return a.concordance(word)
+
 
 # find_ngrams("amoxicilina")
 # print(simplify_tag(text1))
 
 print(freq_dist(text1))
-#concordance_in("de")
+# concordance_in("de")
 
 
 import nltk
 from nltk.stem import RSLPStemmer
 from nltk.tokenize import word_tokenize
 
+
 # Baixe o lematizador RSLP
-#nltk.download('rslp')
+# nltk.download('rslp')
 
 def stemming_portuguese_text(text):
     # Tokenize o texto em palavras
@@ -85,9 +90,11 @@ def stemming_portuguese_text(text):
 
     return lemmatized_text
 
+
 import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+
 
 # Baixe o lematizador WordNet
 # nltk.download('wordnet')
@@ -107,20 +114,23 @@ def lemmatize_portuguese_text(text):
 
     return lemmatized_text
 
+
 # Exemplo de uso:
 # texto_original = "não use medicamentos sem o conhecimento da sua médica."
 texto_original = "não use medicamentos sem o conhecimento da sua profissional médica"
 texto_lemmatizado = lemmatize_portuguese_text(texto_original)
 texto_stemming = stemming_portuguese_text(texto_original)
+print("-------------------------------------------------------")
+print("Texto Original:      Texto Lematizado:    Texto Stemming:")
+print("-------------------------------------------------------")
+for a, b, c in zip(texto_original.split(), texto_lemmatizado.split(), texto_stemming.split()):
+    print(f"{a.ljust(20)} {b.ljust(20)} {c.ljust(20)}")
+print("-------------------------------------------------------")
 
-print("Texto Original:")
-for a in texto_original.split():
-    print(a)
-print("Texto Lematizado:")
-for a in texto_lemmatizado.split():
-    print(a)
-
-print("Texto stemming:")
-for a in texto_stemming.split():
-    print(a)
-
+# print("Texto Lematizado:")
+# for a in texto_lemmatizado.split():
+#     print(a)
+#
+# print("Texto stemming:")
+# for a in texto_stemming.split():
+#     print(a)

@@ -1,5 +1,5 @@
 from spacy.matcher import Matcher
-from datasources.leaflets_section import LeafletSection
+from datasources.leaflets_section import LeafletMetadata
 from drug_leaflet import Leaflet
 import spacy
 from time import sleep
@@ -125,7 +125,7 @@ def ingredientes_matcher():
                 and not t.text.__contains__('\n')
                 and not t.is_stop
                 and not t.is_space
-                and t.text.lower() not in LeafletSection().MEASURE_UNITS
+                and t.text.lower() not in LeafletMetadata().MEASURE_UNITS
         ):
             list_final.append(t.text)
 
@@ -138,7 +138,7 @@ def ingredientes_matcher():
         #
         # print(i+1,s)
         # for c in s.noun_chunks:
-        #     if not any(value in c.text for value in LeafletSection().MEASURE_UNITS):
+        #     if not any(value in c.text for value in LeafletMetadata().MEASURE_UNITS):
         #         print(c.text)
     print(list_final)
     print("Span entre padrões:", span_entre_padroes)

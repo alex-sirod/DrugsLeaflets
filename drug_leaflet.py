@@ -8,7 +8,7 @@ from spacy.matcher import PhraseMatcher
 from tika import parser
 
 from datasources import leaflets_section
-from datasources.leaflets_section import LeafletSection
+from datasources.leaflets_section import LeafletMetadata
 
 nlp = spacy.load('pt_core_news_lg')
 
@@ -422,8 +422,8 @@ II – INFORMAÇÕES AO PACIENTE
         for s in span_between_patterns.sents:
             if s.root.text != 'contém' and not s.root.is_ancestor(s[0]):
                 ingredients = [c.text for c in s.noun_chunks if not any(
-                    value in c.text for value in LeafletSection().MEASURE_UNITS) and not any(
-                    value in c.text for value in LeafletSection().PRESENTATION)]
+                    value in c.text for value in LeafletMetadata().MEASURE_UNITS) and not any(
+                    value in c.text for value in LeafletMetadata().PRESENTATION)]
                 if ingredients:
                     return ingredients
 
@@ -436,8 +436,8 @@ II – INFORMAÇÕES AO PACIENTE
                     and not t.text.__contains__('\n')
                     and not t.is_stop
                     and not t.is_space
-                    and t.text.lower() not in LeafletSection().MEASURE_UNITS
-                    and t.text.lower() not in LeafletSection().PRESENTATION):
+                    and t.text.lower() not in LeafletMetadata().MEASURE_UNITS
+                    and t.text.lower() not in LeafletMetadata().PRESENTATION):
                 ingredients.append(t.text)
         return ingredients
 
@@ -467,7 +467,7 @@ II – INFORMAÇÕES AO PACIENTE
                     and not t.text.__contains__('\n')
                     and not t.is_stop
                     and not t.is_space
-                    and t.text.lower() not in LeafletSection().MEASURE_UNITS):
+                    and t.text.lower() not in LeafletMetadata().MEASURE_UNITS):
                 list_final.append(t.text)
         # print("Span entre padrões:", span_entre_padroes)
         # print(list_final)
