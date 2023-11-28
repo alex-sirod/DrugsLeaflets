@@ -300,21 +300,54 @@ class CalcSimilarity:
 
     def measure_similarity_by_chunk_levenshtein(self, s1, s2):
 
+        lev_measure_chunk = []
+        # mensura palavras e frase nominais iguais
+        for i in self.drug_A_quality:
+            # print(self.set_stemm(i[0].lower()))
+            for j in self.drug_B_constraint:
+                # print(self.set_stemm(j.lower()))
+                if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
+                    lev_measure_chunk.append(i[1] * self.weight_A)
+                else:
+                    lev_measure_chunk.append(0)
+
+        for i in self.drug_B_quality:
+            # print(self.set_stemm(i[0].lower()))
+            for j in self.drug_A_constraint:
+                # print(self.set_stemm(j.lower()))
+                if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
+                    lev_measure_chunk.append(i[1] * self.weight_B)
+                else:
+                    lev_measure_chunk.append(0)
+
+        print("SOMA:", sum(lev_measure_chunk))
+        print("Média:", statistics.mean(lev_measure_chunk))
+        print("Valores:", lev_measure_chunk)
+        print("% Total:",
+              sum([(a / 100) * (100 / sum(lev_measure_chunk)) for a in lev_measure_chunk if sum(lev_measure_chunk) != 0]))
+        print("% Item:", ([(a / 100) * (100 / sum(lev_measure_chunk)) for a in lev_measure_chunk if sum(lev_measure_chunk) != 0]))
+        print("Quantidade:", len(lev_measure_chunk))
+
+        print(f"********* Similaridade por frases nominais entre |{self.leaflet1.get_atc_code()[0]}| e"
+              f" |{self.leaflet2.get_atc_code()[0]}| é {statistics.mean(lev_measure_chunk)} *******")
+
+        measure_sim_chunk = sum(
+            [(a / 100) * (100 / sum(lev_measure_chunk)) for a in lev_measure_chunk if sum(lev_measure_chunk) != 0])
+        return measure_sim_chunk
+
+    def calc_levenshtein(self, s1, s2):
         if len(s1) > len(s2):
             v = len(s1)
         else:
             v = len(s2)
-
-        l = jellyfish.levenshtein_distance(s1, s2)
-
-        print(f"Maior Valor: {v}")
-        print(f"TAMANHO 1 \'{s1}\' ", len(s1))
-        print(f"TAMANHO 2 \'{s2}\' ", len(s2))
-        print("LEVENSHTEIN", jellyfish.levenshtein_distance(s1, s2))
-
-        print(((100 / v) * l) / 100)
-
-
+        lev = jellyfish.levenshtein_distance(s1, s2)
+        # print(f"Maior Valor: {v}")
+        # print(f"TAMANHO 1 \'{s1}\' ", len(s1))
+        # print(f"TAMANHO 2 \'{s2}\' ", len(s2))
+        # print("LEVENSHTEIN", jellyfish.levenshtein_distance(s1, s2))
+        #
+        # print(((100 / v) * l) / 100)
+        return ((100 / v) * lev) / 100
 
 
 
@@ -328,8 +361,8 @@ if __name__ == '__main__':
 
 
     calc = CalcSimilarity(leaflet1, leaflet2)
-    # calc.measure_similarity_by_chunk()
-    # calc.measure_similarity_by_word()
-    # calc.measure_similarity_by_bigstring()
-    # calc.measure_similarity_by_word_jaro()
-    calc.measure_similarity_by_chunk_levenshtein("gigant", "gigante")
+    calc.measure_similarity_by_chunk()
+    calc.measure_similarity_by_word()
+    calc.measure_similarity_by_bigstring()
+    calc.measure_similarity_by_word_jaro()
+    print(calc.calc_levenshtein("", "gigante"))
