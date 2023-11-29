@@ -15,11 +15,11 @@ class InteractionParser:
     def __init__(self, leaflet_path):
 
         self.cod_atc = pd.read_csv("datasources/ATC_small.csv")
-
         self.leaflet = Leaflet(leaflet_path)
-
         self.doc = self.leaflet.get_doc()
         self.drug_name = self.leaflet.get_drug_name()
+        self.excipients = self.leaflet.get_excipients()[1]
+        self.composition = self.leaflet.get_composition()
         self.stoplist_interactions = LeafletMetadata().stoplist_interactions
 
     def get_interactions_flags(self):
@@ -153,11 +153,32 @@ def get_similarity_lists(sim_leaflet1, sim_leaflet2):
     drug_name1 = sim_leaflet1.get_atc_code()[0]
     drug_name2 = sim_leaflet2.get_atc_code()[0]
 
+    # Get excipients
+    excipients1 = sim_leaflet1.excipients
+    excipients2 = sim_leaflet2.excipients
+    print("excipients1", excipients1)
+    print("excipients2", excipients2)
+
+    #Get composition
+    composition1 = sim_leaflet1.composition
+    composition2 = sim_leaflet2.composition
+    print("composition1", composition1)
+    print("composition2", composition2)
+
     # Get group ATC code
     group_atc_code1 = get_group_atc_code(atc_code1)
+    group_atc_code1.extend(excipients1)
+    group_atc_code1.extend(composition1)
+
     group_atc_code2 = get_group_atc_code(atc_code2)
+    group_atc_code2.extend(excipients2)
+    group_atc_code2.extend(composition2)
     # print("group_atc_code1", group_atc_code1)
     # print("group_atc_code2", group_atc_code2)
+
+
+
+
 
     return (atc_code1, drug_name1, interactions_flags1, group_atc_code1,
             drug_name2, atc_code2, interactions_flags2, group_atc_code2)
@@ -167,8 +188,8 @@ if __name__ == '__main__':
     leaflet1 = InteractionParser(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
     leaflet2 = InteractionParser(r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf')
     # leaflet.get_interactions_flags()
-    # leaflet3.get_whats_is()
-    # leaflet3.dependency_drug()
+    # leaflet2.get_whats_is()
+    # leaflet2.dependency_drug()
     # print(f"Nome na Bula : {leaflet1.drug_name}")
     # print(f"Código ATC {leaflet1.get_atc_code()[0]}: {leaflet1.get_atc_code()[1]}")
     # print(f"Nome na Bula : {leaflet2.drug_name}")
@@ -176,5 +197,6 @@ if __name__ == '__main__':
     # print(get_similarity_index(leaflet1, leaflet2))
     # print(get_group_atc_code("A0"))
     # print(get_group_atc_code(leaflet2.get_atc_code()[1]))
+
     for i in get_similarity_lists(leaflet1, leaflet2):
         print(i)

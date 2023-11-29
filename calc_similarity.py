@@ -101,7 +101,7 @@ class CalcSimilarity:
         # print("Quantidade:", len(measure_sim_chunk))
 
         print(f"Similaridade por frases nominais entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é {statistics.mean(measure_sim_chunk)}")
+              f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(measure_sim_chunk)} e máximo: {max(measure_sim_chunk)}")
 
         measure_sim_chunk = sum(
             [(a / 100) * (100 / sum(measure_sim_chunk)) for a in measure_sim_chunk if sum(measure_sim_chunk) != 0])
@@ -169,7 +169,7 @@ class CalcSimilarity:
             [(a / 100) * (100 / sum(measure_sim_word)) for a in measure_sim_word if sum(measure_sim_word) != 0])
 
         print(f"Similaridade por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é {measure_sim_word}")
+              f" |{self.leaflet2.get_atc_code()[0]}| é {measure_sim_word} ")
 
         return measure_sim_word
 
@@ -240,8 +240,9 @@ class CalcSimilarity:
         #       doc_local_drug_B_quality.similarity(doc_local_drug_A_constraint))
         # print("-------------------")
 
-        print(f"Similaridade por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é {statistics.mean(measure_spacy_values)}")
+        print(f"Similaridade por (join) lista entre |{self.leaflet1.get_atc_code()[0]}| e"
+              f" |{self.leaflet2.get_atc_code()[0]}| é média:{statistics.mean(measure_spacy_values)},"
+              f" máximo:{max(measure_spacy_values)}")
 
         return statistics.mean(measure_spacy_values)
 
@@ -317,7 +318,8 @@ class CalcSimilarity:
         # print("-------------------")
 
         print(f"Similaridade Distância de Jaro por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é {statistics.mean(measure_jellyfish_values)}")
+              f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(measure_jellyfish_values)} "
+              f"e máximo: {max(measure_jellyfish_values)}")
 
         return statistics.mean(measure_jellyfish_values)
 
@@ -351,7 +353,8 @@ class CalcSimilarity:
         # print("Quantidade:", len(lev_measure_chunk))
 
         print(f"Similaridade Distância de Levenshtein por frases nominais entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é {statistics.mean(lev_measure_chunk)}")
+              f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(lev_measure_chunk)} e "
+              f"máximo: {max(lev_measure_chunk)}")
 
         lev_measure_sim_chunk = sum(
             [(a / 100) * (100 / sum(lev_measure_chunk)) for a in lev_measure_chunk if sum(lev_measure_chunk) != 0])
@@ -417,7 +420,7 @@ class CalcSimilarity:
             [(a / 100) * (100 / sum(lev_measure_sim_word)) for a in lev_measure_sim_word if sum(lev_measure_sim_word) != 0])
 
         print(f"Similaridade Distância de Levenshtein por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é {lev_measure_sim_word}")
+              f" |{self.leaflet2.get_atc_code()[0]}| é  {lev_measure_sim_word}")
 
         return lev_measure_sim_word
 
@@ -439,9 +442,10 @@ class CalcSimilarity:
 if __name__ == '__main__':
     leaflet1 = r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf'
     leaflet2 = r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf'
+    leaflet3 = r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf'
     # calc.clean_list(["O outro cachorro marrom pula alto ."])
 
-    calc = CalcSimilarity(leaflet1, leaflet2)
+    calc = CalcSimilarity(leaflet1, leaflet3)
     calc.measure_similarity_by_chunk()
     calc.measure_similarity_by_word()
     calc.measure_similarity_by_bigstring()

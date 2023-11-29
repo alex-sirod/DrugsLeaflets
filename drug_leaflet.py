@@ -45,7 +45,7 @@ II – INFORMAÇÕES AO PACIENTE
     def get_text_full(self):
 
         pattern_end_of_text = r"(?i)\bhist[oó]rico de altera[çc][õo]es da bula\b"
-        pattern_end_of_text2 = r"(?i)\Hist[oó]rico de altera[çc][õo]es do texto de bula\b"
+        pattern_end_of_text2 = r"(?i)\Hist[oó]rico de altera[çc][õo]es do texto da bula\b"
 
         with open(self.file_name_leaflet, 'rb') as leaflet_file:
             reader = PyPDF2.PdfReader(leaflet_file)
@@ -304,15 +304,29 @@ II – INFORMAÇÕES AO PACIENTE
 
         pattern1 = [nlp("Interações medicamentosas"),
                     nlp("INTERAÇÕES MEDICAMENTOSAS"),
+                    nlp("Interações Medicamentosas"),
+                    nlp("Interações com medicamentos"),
+                    nlp("interações com medicamentos"),
+                    nlp("interações com outros medicamentos"),
+                    nlp("Interações com outros medicamentos")
                     ]
-        pattern2 = nlp("5. ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?")
+        pattern2 = [nlp("5. ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?"),
+                    nlp("ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO"),
+                    nlp("ONDE, COMO E POR QUANTO"),
+                    ]
 
-        for pattern in pattern1:
-            matcher.add("interaction", [pattern])
+        for p1 in pattern1:
+            matcher.add("interaction", [p1])
 
-        matcher2.add("end_interaction", [pattern2])
+        for p2 in pattern2:
+            matcher2.add("end_interaction", [p2])
+
+        span = None
+        span2 = None
 
         # Iterar nas correspondências
+
+
         for phrase_id, start, end in matcher(self.doc):
             # Obter a partição que houve correspondência
             span = self.doc[start:end]
@@ -320,15 +334,16 @@ II – INFORMAÇÕES AO PACIENTE
             # print(f"Encontrado padrão: '{phrase_id}'. Início: {start}. Fim: {end}")
             # print(matcher(self.doc)[-1][2], "Início da próxima frase após o padrão: \"" +
             #       self.doc[matcher(self.doc)[-1][2] + 1].text, "...\"")
-            # if span:  # TODO verificar se o spn é um início de sentença ou título
+            # if span:  # TODO verificar se o span é um início de sentença ou título
             #     break
-        for phrase_id, start, end in matcher2(self.doc):
-            span2 = self.doc[start:end]
-            # print("Matched span:", span2.text)
-            # print(f"Encontrado padrão: '{phrase_id}'. Início: {start}. Fim: {end}")
 
-        # print("------------------INICIO DE INTERAÇÕES---------------\n", self.doc[span.start:span2.start].text,
-        #       "\n----------------FIM DE INTERAÇÕES-----------------")
+        for phrase_id2, start2, end2 in matcher2(self.doc):
+            span2 = self.doc[start2:end2]
+            print("Matched span:", span2.text)
+            print(f"Encontrado padrão: '{phrase_id2}'. Início: {start2}. Fim: {end2}")
+
+        print("------------------INICIO DE INTERAÇÕES---------------\n", self.doc[span.start:span2.start].text,
+              "\n----------------FIM DE INTERAÇÕES-----------------")
         return [s for s in self.doc[span.start:span2.start].sents][:-2]
         # [:-2] para retirar os tokens "5" e ".", que  é o início da próxima frase após o padrão "Interações medicamentosas"
 
@@ -406,7 +421,6 @@ II – INFORMAÇÕES AO PACIENTE
         return len(excipients_list), excipients_list
 
     def get_composition(self):
-
         matcher = Matcher(nlp.vocab)
         matcher2 = Matcher(nlp.vocab)
 
@@ -428,18 +442,19 @@ II – INFORMAÇÕES AO PACIENTE
                     return ingredients
 
         # A second way to get the ingredients whether the first way doesn't work and return an empty list
-        ingredients = []
-        for t in span_between_patterns:
-            if (not t.is_punct
-                    and not t.is_digit
-                    and not t.is_currency
-                    and not t.text.__contains__('\n')
-                    and not t.is_stop
-                    and not t.is_space
-                    and t.text.lower() not in LeafletMetadata().MEASURE_UNITS
-                    and t.text.lower() not in LeafletMetadata().PRESENTATION):
-                ingredients.append(t.text)
-        return ingredients
+
+            ingredients = []
+            for t in span_between_patterns:
+                if (not t.is_punct
+                        and not t.is_digit
+                        and not t.is_currency
+                        and not t.text.__contains__('\n')
+                        and not t.is_stop
+                        and not t.is_space
+                        and t.text.lower() not in LeafletMetadata().MEASURE_UNITS
+                        and t.text.lower() not in LeafletMetadata().PRESENTATION):
+                    ingredients.append(t.text)
+            return ingredients
 
     def aux_get_composition(self):
         matcher = Matcher(nlp.vocab)
@@ -476,43 +491,156 @@ II – INFORMAÇÕES AO PACIENTE
 
 if __name__ == '__main__':
     print("-------------------------------------------------------------------")
-    leaflet = Leaflet('datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf')  # ibuprofeno
-    print("-------------------------------------------------------------------")
-    print("drug:", leaflet.get_drug_name())
-    print("FABRICANTE:", leaflet.get_manufacturer())
-    print("Excipientes:", leaflet.get_excipients())
-    print("Composição:", leaflet.get_composition())
-    print("COMPOSICAO-2", leaflet.aux_get_composition())
-    # leaflet.get_interactions_section_sents()
-    leaflet.get_definition_drug_section()
+    # leaflet1 = Leaflet('datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf')  # ibuprofeno
     # print("-------------------------------------------------------------------")
-    # # leaflet2 = Leaflet('leaflets_pdf/bula_1694968816746 - Rivaroxabana.pdf')
-    # # # print("NOME:", leaflet2.get_drug_name())
-    # # # print("FABRICANTE:", leaflet2.get_manufacturer())
-    # # # print("Excipientes:", leaflet2.get_excipients())
-    # # # print("Composição:", leaflet2.get_composition())
-    # # # print("COMPOSICAO-2", leaflet2.aux_get_composition())
-    # # leaflet2.get_interactions_section_sents()
-    # # print("-------------------------------------------------------------------")
-    # leaflet3 = Leaflet(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
-    # # print("NOME:", leaflet3.get_drug_name())
-    # # print("FABRICANTE:", leaflet3.get_manufacturer())
-    # # print("Excipientes:", leaflet3.get_excipients())
-    # # print("Composição:", leaflet3.get_composition())
+    # print("drug:", leaflet1.get_drug_name())
+    # print("FABRICANTE:", leaflet1.get_manufacturer())
+    # print("Excipientes:", leaflet1.get_excipients())
+    # print("Composição:", leaflet1.get_composition())
+    # print("COMPOSICAO-2", leaflet1.aux_get_composition())
+    # print(leaflet1.get_interactions_section_sents())
+    #
+    #
+    # # leaflet1.get_definition_drug_section()
+    # print("-------------------------------------------------------------------")
+    #
+    # leaflet2 = Leaflet(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
+    # print("NOME:", leaflet2.get_drug_name())
+    # print("FABRICANTE:", leaflet2.get_manufacturer())
+    # print("Excipientes:", leaflet2.get_excipients())
+    # print("Composição:", leaflet2.get_composition())
+    # leaflet2.get_interactions_section_sents()
+    # print("-------------------------------------------------------------------")
+    # #
+    # leaflet3 = Leaflet(r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf')
+    # print("NOME:", leaflet3.get_drug_name())
+    # print("FABRICANTE:", leaflet3.get_manufacturer())
+    # print("Excipientes:", leaflet3.get_excipients())
+    # print("Composição:", leaflet3.get_composition())
+    # # print("COMPOSICAO-AUX", leaflet3.aux_get_composition())
     # leaflet3.get_interactions_section_sents()
-    # # print("-------------------------------------------------------------------")
-    # leaflet4 = Leaflet(r'datasources/leaflets_pdf/bula_1699032061377 - tigeciclina.pdf')
-    # # print("NOME:", leaflet4.get_drug_name())
-    # # print("FABRICANTE:", leaflet4.get_manufacturer())
-    # # print("Excipientes:", leaflet4.get_excipients())
-    # # print("Composição:", leaflet4.get_composition())
-    # # # print("COMPOSICAO-AUX", leaflet4.aux_get_composition())
-    # leaflet4.get_interactions_section_sents()
-    leaflet5 = Leaflet(r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf')
-    print("NOME:", leaflet5.get_drug_name())
-    print("FABRICANTE:", leaflet5.get_manufacturer())
-    print("Excipientes:", leaflet5.get_excipients())
-    print("Composição:", leaflet5.get_composition())
+    # # # leaflet3.get_definition_drug_section()
+
+    # leaflet4 = Leaflet(r'datasources/leaflets_pdf/bula_1701258821940_enalapril.pdf')
+    # print("NOME:", leaflet4.get_drug_name())
+    # print("FABRICANTE:", leaflet4.get_manufacturer())
+    # # print("Excipientes:", leaflet4.get_excipients()) # TODO verificar se o excipiente está sendo extraído corretamente
+    # # print("Composição:", leaflet4.get_composition()) # TODO verificar se a composição está sendo extraída corretamente
+    # # print("COMPOSICAO-AUX", leaflet4.aux_get_composition())# TODO verificar se a composição está sendo extraída corretamente
+    # print(leaflet4.get_interactions_section_sents())
+
+    # leaflet5 = Leaflet(r'datasources/leaflets_pdf/bula_1701224846500_Hidroclorotiazida.pdf')
+    # print("NOME:", leaflet5.get_drug_name())
+    # print("FABRICANTE:", leaflet5.get_manufacturer())
+    # print("Excipientes:", leaflet5.get_excipients()) #
+    # print("Composição:", leaflet5.get_composition())
     # print("COMPOSICAO-AUX", leaflet5.aux_get_composition())
-    leaflet5.get_interactions_section_sents()
-    leaflet5.get_definition_drug_section()
+    # leaflet5.get_interactions_section_sents()
+    #
+    # leaflet6 = Leaflet(r'datasources/leaflets_pdf/bula_1701224202414_Sulfametoxazol.pdf')
+    # print("NOME:", leaflet6.get_drug_name())
+    # print("FABRICANTE:", leaflet6.get_manufacturer())
+    # print("Excipientes:", leaflet6.get_excipients()) #
+    # print("Composição:", leaflet6.get_composition())
+    # print("COMPOSICAO-AUX", leaflet6.aux_get_composition())
+    # leaflet6.get_interactions_section_sents() # TODO verificar porque está retornando uma string vazia
+
+    # leaflet7 = Leaflet(r'datasources/leaflets_pdf/bula_1701225057399_Acido_acetilsalicílico.pdf')
+    # print("NOME:", leaflet7.get_drug_name())
+    # print("FABRICANTE:", leaflet7.get_manufacturer())
+    # print("Excipientes:", leaflet7.get_excipients())
+    # # print("Composição:", leaflet7.get_composition()) # TODO verificar se a composição está sendo extraída corretamente
+    # #print("COMPOSICAO-AUX", leaflet7.aux_get_composition()) # TODO verificar se a composição está sendo extraída corretamente
+    # leaflet7.get_interactions_section_sents()
+    #
+    # leaflet9 = Leaflet(r'datasources/leaflets_pdf/bula_1701260642978_captopril.pdf')
+    # print("NOME:", leaflet9.get_drug_name())
+    # print("FABRICANTE:", leaflet9.get_manufacturer())
+    # print("Excipientes:", leaflet9.get_excipients())
+    # print("Composição:", leaflet9.get_composition()) #
+    # print("COMPOSICAO-AUX", leaflet9.aux_get_composition()) #
+    # leaflet9.get_interactions_section_sents()
+
+    # leaflet10 = Leaflet(r'datasources/leaflets_pdf/bula_1701263093335_Digoxina.pdf')
+    # print("NOME:", leaflet10.get_drug_name())
+    # print("FABRICANTE:", leaflet10.get_manufacturer())
+    # print("Excipientes:", leaflet10.get_excipients())
+    # print("Composição:", leaflet10.get_composition()) #
+    # print("COMPOSICAO-AUX", leaflet10.aux_get_composition()) #
+    # leaflet10.get_interactions_section_sents()
+
+
+    # leaflet11 = Leaflet(r'datasources/leaflets_pdf/bula_1701264125049_Albendazol.pdf')
+    # print("NOME:", leaflet11.get_drug_name())
+    # print("FABRICANTE:", leaflet11.get_manufacturer())
+    # print("Excipientes:", leaflet11.get_excipients())
+    # print("Composição:", leaflet11.get_composition()) #
+    # print("COMPOSICAO-AUX", leaflet11.aux_get_composition()) #
+    # leaflet11.save_text()
+    # leaflet11.get_interactions_section_sents()
+
+    # leaflet12 = Leaflet(r'datasources/leaflets_pdf/bula_1701266245626_Diazepam.pdf')
+    # print("NOME:", leaflet12.get_drug_name())
+    # print("FABRICANTE:", leaflet12.get_manufacturer())
+    # print("Excipientes:", leaflet12.get_excipients())
+    # print("Composição:", leaflet12.get_composition()) #
+    # print("COMPOSICAO-AUX", leaflet12.aux_get_composition()) #
+    # leaflet12.save_text()
+    # leaflet12.get_interactions_section_sents()
+
+    # leaflet13 = Leaflet(r'datasources/leaflets_pdf/bula_1701267208681_Bissulfato de clopidogrel.pdf')
+    # print("NOME:", leaflet13.get_drug_name())
+    # print("FABRICANTE:", leaflet13.get_manufacturer())
+    # print("Excipientes:", leaflet13.get_excipients())
+    # print("Composição:", leaflet13.get_composition()) #
+    # print("COMPOSICAO-AUX", leaflet13.aux_get_composition()) #
+    # leaflet13.save_text()
+    # leaflet13.get_interactions_section_sents()
+
+    # leaflet14 = Leaflet(r'datasources/leaflets_pdf/bula_1701267508373_Fenobarbital.pdf')
+    # print("NOME:", leaflet14.get_drug_name())
+    # print("FABRICANTE:", leaflet14.get_manufacturer())
+    # print("Excipientes:", leaflet14.get_excipients())
+    # print("Composição:", leaflet14.get_composition()) #
+    # print("COMPOSICAO-AUX", leaflet14.aux_get_composition()) #
+    # leaflet14.save_text()
+    # leaflet14.get_interactions_section_sents()
+
+    # leaflet15 = Leaflet(r'datasources/leaflets_pdf/bula_1701267803044_Remdesivir.pdf')
+    # print("NOME:", leaflet15.get_drug_name())
+    # print("FABRICANTE:", leaflet15.get_manufacturer())
+    # # print("Excipientes:", leaflet15.get_excipients())# TODO verificar se o excipiente está sendo extraído corretamente
+    # # print("Composição:", leaflet15.get_composition()) # TODO verificar se a composição está sendo extraída corretamente
+    # # print("COMPOSICAO-AUX", leaflet15.aux_get_composition()) # TODO verificar se a composição está sendo extraída corretamente
+    # leaflet15.save_text()
+    # leaflet15.get_interactions_section_sents()
+
+
+    # leaflet15 = Leaflet(r'datasources/leaflets_pdf/bula_1701268132552_Dipirona.pdf')
+    # print("NOME:", leaflet15.get_drug_name())
+    # print("FABRICANTE:", leaflet15.get_manufacturer())
+    # print("Excipientes:", leaflet15.get_excipients())
+    # print("Composição:", leaflet15.get_composition()) #
+    # print("COMPOSICAO-AUX", leaflet15.aux_get_composition()) #
+    # leaflet15.save_text()
+    # leaflet15.get_interactions_section_sents()
+
+    # leaflet16 = Leaflet(r'datasources/leaflets_pdf/bula_1701268966313_Budesonida.pdf')
+    # print("NOME:", leaflet16.get_drug_name())
+    # print("FABRICANTE:", leaflet16.get_manufacturer())
+    # print("Excipientes:", leaflet16.get_excipients())
+    # print("Composição:", leaflet16.get_composition()) #
+    # print("COMPOSICAO-AUX", leaflet16.aux_get_composition()) #
+    # leaflet16.save_text()
+    # leaflet16.get_interactions_section_sents()
+
+    # leaflet17 = Leaflet(r'datasources/leaflets_pdf/bula_1701269088550_Loratadina.pdf')
+    # print("NOME:", leaflet17.get_drug_name())
+    # print("FABRICANTE:", leaflet17.get_manufacturer())
+    # print("Excipientes:", leaflet17.get_excipients())
+    # print("Composição:", leaflet17.get_composition()) #
+    # print("COMPOSICAO-AUX", leaflet17.aux_get_composition()) #
+    # leaflet17.save_text()
+    # leaflet17.get_interactions_section_sents()
+
+
