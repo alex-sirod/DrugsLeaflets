@@ -14,7 +14,7 @@ class InteractionParser:
 
     def __init__(self, leaflet_path):
 
-        self.cod_atc = pd.read_csv("datasources/ATC_small.csv")
+        self.cod_atc = pd.read_csv("datasources/ATC_small.csv").values.tolist()
         self.leaflet = Leaflet(leaflet_path)
         self.doc = self.leaflet.get_doc()
         self.drug_name = self.leaflet.get_drug_name()
@@ -42,7 +42,7 @@ class InteractionParser:
                         if token.lemma_.lower() not in self.stoplist_interactions:
                             # print(token.text, token.lemma_, "está na lista?",
                             #       token.lemma_.lower() in self.stoplist_interactions)
-                            triggers_words_init.append(token.lemma_.lower())
+                            triggers_words_init.append(token.text.lower())
 
                 for nc in s.noun_chunks:
                     # print("Noun Chunk ------------> ", nc.root.text, nc.root.dep_, nc.root.head.text)
@@ -67,8 +67,8 @@ class InteractionParser:
                             triggers_words_temp.append(x[0])
                         triggers_words_init.append(nc.lemma_.lower())
 
-        # print("TRIGGERS WORDS INIT---> ", triggers_words_init)
-        # print("TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
+        print("TRIGGERS WORDS INIT---> ", triggers_words_init)
+        print("TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
 
         triggers_words_final = [item for item in triggers_words_init if item not in set(triggers_words_temp)]
         if "eles" in triggers_words_final:
@@ -79,6 +79,62 @@ class InteractionParser:
         # print("TRIGGERS WORDS FINAL ---> ", common_words)
         return common_words
 
+    def get_definiton_flags(self):
+        """ Return a bag of words with the most common triggers of interactions.
+        a list of tuple words and their frequency.
+        """
+
+        global word_freq
+        triggers_words_init = []
+        triggers_words_temp = []
+        clean_sents = []
+
+        for s in self.leaflet.get_definition_drug_section():
+            # print("SENTENÇA ---> ", s.text)
+            text = s.text
+            if text not in self.stoplist_interactions:
+                clean_sents.append(s)
+                for token in s:
+                    if (token.pos_ == 'NOUN' or token.pos_ == 'ADJ'):
+                        if token.lemma_.lower() not in self.stoplist_interactions:
+                            # print(token.text, token.lemma_, "está na lista?",
+                            #       token.lemma_.lower() in self.stoplist_interactions)
+                            triggers_words_init.append(token.text.lower())
+
+                for nc in s.noun_chunks:
+                    # print("Noun Chunk ------------> ", nc.root.text, nc.root.dep_, nc.root.head.text)
+                    if not any(value in nc.lemma_ for value in self.stoplist_interactions):
+
+                        # print("Noun Chunk na lista ---> ", nc)
+                        # print("Text:", nc.text)
+                        # print("Root Text:", nc.root.text)
+                        # print("Root Dependency Relation:", nc.root.dep_)
+                        # print("Start Index:", nc.start)
+                        # print("End Index:", nc.end)
+                        # print("Sentence:", nc.sent.text)
+                        #
+                        # print("span", [a for a in self.doc[nc.start:nc.end].as_doc() if not a.is_stop])
+                        # print("---")
+
+                        # Y = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.text == 'eles']
+                        # print("X ---> ", x), print("Y ---> ", Y)
+
+                        x = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.is_stop]
+                        if x:
+                            triggers_words_temp.append(x[0])
+                        triggers_words_init.append(nc.lemma_.lower())
+
+        print("TRIGGERS WORDS INIT---> ", triggers_words_init)
+        print("TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
+
+        triggers_words_final = [item for item in triggers_words_init if item not in set(triggers_words_temp)]
+        if "eles" in triggers_words_final:
+            triggers_words_final.remove("eles")  # ??? o termo "eles" não deveria estar na lista
+        # print("T1 sem T2 ---> ", triggers_words_final)
+        word_freq = Counter(triggers_words_final)
+        common_words = word_freq.most_common()
+        # print("TRIGGERS WORDS FINAL ---> ", common_words)
+        return common_words
     def get_whats_is(self):
         """ Return a list of root words of the noun chunks in the document. self.doc.noun_chunks
         """
@@ -115,9 +171,20 @@ class InteractionParser:
     def get_atc_code(self):
         """ Return the ATC code of the drug. """
 
-        for i in range(len(self.cod_atc)):
-            if self.cod_atc.iloc[i, 0].lower() == self.drug_name:
-                return self.cod_atc.iloc[i, 0].lower(), self.cod_atc.iloc[i, 1]
+        # for i in range(len(self.cod_atc)):
+
+        for i in self.cod_atc:
+            # print(i[0].lower(), i[1])
+            if i[0].lower() == self.drug_name:
+                print(i[0].lower(), i[1])
+                return i[0].lower(), i[1]
+            # if i[0].lower() == self.drug_name:
+            #     print(i[0].lower(), i[1])
+            #     return i[0].lower(), i[1]
+            # # if self.cod_atc.iloc[i, 0].lower() == self.drug_name:
+            # #     return print(self.cod_atc.iloc[i, 0].lower(), self.cod_atc.iloc[i, 1])
+            # else:
+            #     return print("Código ATC não encontrado para o medicamento:", self.drug_name)
 
 
 ###### ESTAS FUNÇÕES NÃO PERTENCEM A CLASSE INTERACTIONPARSER, MAS ESTÃO AQUI POR ENQUANTO ########
@@ -149,6 +216,9 @@ def get_similarity_lists(sim_leaflet1, sim_leaflet2):
     # Get the ATC code of each leaflet
     atc_code1 = sim_leaflet1.get_atc_code()[1]
     atc_code2 = sim_leaflet2.get_atc_code()[1]
+    print("atc_code1", atc_code1)
+    print("atc_code2", atc_code2)
+
     # Get drug name
     drug_name1 = sim_leaflet1.get_atc_code()[0]
     drug_name2 = sim_leaflet2.get_atc_code()[0]
@@ -173,8 +243,8 @@ def get_similarity_lists(sim_leaflet1, sim_leaflet2):
     group_atc_code2 = get_group_atc_code(atc_code2)
     group_atc_code2.extend(excipients2)
     group_atc_code2.extend(composition2)
-    # print("group_atc_code1", group_atc_code1)
-    # print("group_atc_code2", group_atc_code2)
+    print("group_atc_code1", group_atc_code1)
+    print("group_atc_code2", group_atc_code2)
 
 
 
@@ -187,16 +257,18 @@ def get_similarity_lists(sim_leaflet1, sim_leaflet2):
 if __name__ == '__main__':
     leaflet1 = InteractionParser(r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
     leaflet2 = InteractionParser(r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf')
-    # leaflet.get_interactions_flags()
+    leaflet3 = InteractionParser(r'datasources/leaflets_pdf/bula_1701266245626_Diazepam.pdf')
+    leaflet1.get_interactions_flags()
+    leaflet1.get_definiton_flags()
     # leaflet2.get_whats_is()
     # leaflet2.dependency_drug()
     # print(f"Nome na Bula : {leaflet1.drug_name}")
     # print(f"Código ATC {leaflet1.get_atc_code()[0]}: {leaflet1.get_atc_code()[1]}")
     # print(f"Nome na Bula : {leaflet2.drug_name}")
-    print(f"Código ATC {leaflet2.get_atc_code()[0]}: {leaflet2.get_atc_code()[1]}")
-    # print(get_similarity_index(leaflet1, leaflet2))
+    # leaflet2.get_atc_code()
+    # print(get_similarity_lists(leaflet1, leaflet2))
     # print(get_group_atc_code("A0"))
     # print(get_group_atc_code(leaflet2.get_atc_code()[1]))
-
-    for i in get_similarity_lists(leaflet1, leaflet2):
-        print(i)
+    #
+    # for i in get_similarity_lists(leaflet1, leaflet2):
+    #     print(i)

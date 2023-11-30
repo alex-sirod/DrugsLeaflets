@@ -1,4 +1,3 @@
-Designação Genérica,Código ATC
 Ácido Ursodesoxicólico,A05AA02
 Ácido Ursodesoxicólico,A05AA02
 Ácido Ursodesoxicólico,A05AA02
@@ -96,13 +95,13 @@ Palmitato de Retinol Cápsula Mole 200.000 UI,A11CA01
 Soro Antirrábico,J06AA06
 Soro Antitetânico,J06AA02
 Sulfadiazina,J01EC02
-Sulfametoxazol + Trimetoprima Suspensão,J01EE01
-Sulfametoxazol + Trimetoprima Solução,J01EE01
+Trimetoprima,J01EE01
+Sulfametoxazol,J01EE01
 Sulfametoxazol + Trimetoprima Comprimido,J01EE01
 Sulfato de Abacavir Solução Oral,J05AF06
 Sulfato de Abacavir Comprimido,J05AF06
 Sulfato de Amicacina Solução Injetável,J01GB06
-Sulfato de Atazanavir Cápsula,J05AE08
+Sulfato de Atazanavir Cápsula,J05AE08Fdiaze
 Sulfato de Estreptomicina Pó Injetável,J01GA01
 Terizidona,J04AK03
 Tipranavir Cápsula Mole,J05AE09
@@ -144,9 +143,7 @@ Cloridrato de Dopamina,C01CA04
 Cloridrato de Hidralazina,C02DB02
 Cloridrato de Hidralazina,C02DB02
 Cloridrato de Lidocaína,C01BB01;
-,N01BB02
 Cloridrato de Lidocaína,C01BB01;
-,N01BB02
 Cloridrato de Propafenona,C01BC03
 Cloridrato de Propafenona,C01BC03
 Cloridrato de Propranolol,C07AA05
@@ -190,7 +187,7 @@ Bromidrato de Fenoterol,R03AC04
 Budesonida,R01AD05
 Budesonida,R01AD05
 Budesonida,R01AD05
-"Cloreto de Sódio 0,9% (9 mg/mL)",R01AX10
+Cloreto de Sódio,R01AX10
 Cloridrato de Prometazina,R06AD02
 Dipropionato de Beclometasona,R03BA01
 Dipropionato de Beclometasona,R03BA01
@@ -212,7 +209,7 @@ Loratadina,R06AX13
 Hidroclorotiazida,C03AA03
 Hidroclorotiazida,C03AA03
 Losartana Potássica,C09CA01
-Maleato de Enalapril,C09AA02
+Enalapril,C09AA02
 Maleato de Enalapril,C09AA02
 Maleato de Enalapril,C09AA02
 Mesilato de Doxazosina,C02CA04
@@ -234,3 +231,12 @@ Succinato de Metoprolol,C07AB02
 Succinato de Metoprolol,C07AB02
 Succinato de Metoprolol,C07AB02
 Tartarato de Metoprolol,C07AB02
+Diazepam,N05BA01
+Fenobarbital,N03AA02
+Captopril,C09AA01
+albendazol,P02CA03
+clopidogrel,B01AC04
+bissulfato de clopidogrel,B01AC04
+dipirona,N02BB02
+paracetamol,N02BE01
+varfarina,B01AA03

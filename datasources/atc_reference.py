@@ -170,7 +170,7 @@ ATC = {
             "C": ["Agentes estabilizadores capilares"],
         }],
 
-        "07": ["]beta-bloqueadores", {
+        "07": ["beta-bloqueadores", {
             "A": ["AGENTES BLOQUEADORES BETA"],
             "B": ["AGENTES BLOQUEADORES BETA E TIAZIDAS"],
             "C": ["AGENTES BLOQUEADORES BETA E OUTROS DIURÉTICOS"],

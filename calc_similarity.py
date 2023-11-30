@@ -49,9 +49,9 @@ class CalcSimilarity:
         self.weight_B = weight_j / len(self.drug_B_quality)
         print(f"Tamanho de B:{self.qty_B}, peso de B:{self.weight_B}")
         print(self.drug_B_quality)
-        print("--------------------------------------------------")
-        print("                     RESULTADOS                   ")
-        print("--------------------------------------------------")
+        print("----------------------------------------------------------------------------------------------------")
+        print("                                 RESULTADOS DE SIMILARIDADE                                         ")
+        print("----------------------------------------------------------------------------------------------------")
     def set_stemm(self, text):
         words = word_tokenize(text, language='portuguese')
         lemmatizer = RSLPStemmer()
@@ -352,13 +352,17 @@ class CalcSimilarity:
         #       ([(a / 100) * (100 / sum(lev_measure_chunk)) for a in lev_measure_chunk if sum(lev_measure_chunk) != 0]))
         # print("Quantidade:", len(lev_measure_chunk))
 
+        max_lev_measure_sim_word = max([a for a in lev_measure_chunk if sum(lev_measure_chunk) != 0])
+        min_lev_measure_sim_word = min([a for a in lev_measure_chunk if sum(lev_measure_chunk) != 0])
+
         print(f"Similaridade Distância de Levenshtein por frases nominais entre |{self.leaflet1.get_atc_code()[0]}| e"
               f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(lev_measure_chunk)} e "
               f"máximo: {max(lev_measure_chunk)}")
 
+
         lev_measure_sim_chunk = sum(
             [(a / 100) * (100 / sum(lev_measure_chunk)) for a in lev_measure_chunk if sum(lev_measure_chunk) != 0])
-        return lev_measure_sim_chunk
+        return print("printstatistics", lev_measure_sim_chunk)
 
     def measure_similarity_by_word_levenshtein(self):
 
@@ -416,13 +420,17 @@ class CalcSimilarity:
         # print("% Item:",
         #       ([(a / 100) * (100 / sum(lev_measure_sim_word)) for a in lev_measure_sim_word if sum(lev_measure_sim_word) != 0]))
         # print("Quantidade:", len(lev_measure_sim_word))
-        lev_measure_sim_word = sum(
-            [(a / 100) * (100 / sum(lev_measure_sim_word)) for a in lev_measure_sim_word if sum(lev_measure_sim_word) != 0])
+        max_lev_measure_sim_word = max([a for a in lev_measure_sim_word if sum(lev_measure_sim_word) != 0])
+        min_lev_measure_sim_word = min([a for a in lev_measure_sim_word if sum(lev_measure_sim_word) != 0])
+        mean_lev_measure_sim_word = sum(
+            [(a / 100) * (100 / sum(lev_measure_sim_word)) for a in lev_measure_sim_word if
+             sum(lev_measure_sim_word) != 0])
 
         print(f"Similaridade Distância de Levenshtein por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é  {lev_measure_sim_word}")
+              f" |{self.leaflet2.get_atc_code()[0]}| é  mín: {min_lev_measure_sim_word}, "
+              f"méd: {mean_lev_measure_sim_word}, máx:{max_lev_measure_sim_word}")
 
-        return lev_measure_sim_word
+        return min_lev_measure_sim_word, mean_lev_measure_sim_word, max_lev_measure_sim_word
 
     def calc_levenshtein(self, s1, s2):
         if len(s1) > len(s2):
@@ -440,12 +448,32 @@ class CalcSimilarity:
 
 
 if __name__ == '__main__':
-    leaflet1 = r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf'
-    leaflet2 = r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf'
-    leaflet3 = r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf'
+
+    leaflet1 = r'datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf'  # ibuprofeno
+    leaflet2 = (r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
+    leaflet3 = (r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf')
+    # leaflet4 = (r'datasources/leaflets_pdf/bula_1701258821940_enalapril.pdf')
+    leaflet5 = (r'datasources/leaflets_pdf/bula_1701224846500_Hidroclorotiazida.pdf')
+    # leaflet6 = (r'datasources/leaflets_pdf/bula_1701224202414_Sulfametoxazol.pdf')
+    # # leaflet7 = (r'datasources/leaflets_pdf/bula_1701225057399_Acido_acetilsalicílico.pdf')
+    # # leaflet8 = (r'datasources/leaflets_pdf/bula_1701267803044_Remdesivir.pdf')
+    leaflet9 = (r'datasources/leaflets_pdf/bula_1701260642978_captopril.pdf')
+    leaflet10 = (r'datasources/leaflets_pdf/bula_1701263093335_Digoxina.pdf')
+    leaflet11 = (r'datasources/leaflets_pdf/bula_1701264125049_Albendazol.pdf')
+    leaflet12 = (r'datasources/leaflets_pdf/bula_1701266245626_Diazepam.pdf')
+    leaflet13 = (r'datasources/leaflets_pdf/bula_1701267208681_Bissulfato de clopidogrel.pdf')
+    leaflet14 = (r'datasources/leaflets_pdf/bula_1701267508373_Fenobarbital.pdf')
+    leaflet15 = (r'datasources/leaflets_pdf/bula_1701268132552_Dipirona.pdf')
+    leaflet16 = (r'datasources/leaflets_pdf/bula_1701268966313_Budesonida.pdf')
+    leaflet17 = (r'datasources/leaflets_pdf/bula_1701269088550_Loratadina.pdf')
+    leaflet18 = (r'datasources/leaflets_pdf/bula_1701266792068_Paracetamol.pdf')
+    leaflet19 = (r'datasources/leaflets_pdf/bula_1701266990892_Varfarina.pdf')
+    leaflet20 = (r'datasources/leaflets_pdf/bula_1701224718747_Cefalexina.pdf')
+    leaflet21 = (r'datasources/leaflets_pdf/bula_1701224448044_Trimetoprima.pdf')
+
     # calc.clean_list(["O outro cachorro marrom pula alto ."])
 
-    calc = CalcSimilarity(leaflet1, leaflet3)
+    calc = CalcSimilarity(leaflet12, leaflet14)
     calc.measure_similarity_by_chunk()
     calc.measure_similarity_by_word()
     calc.measure_similarity_by_bigstring()
