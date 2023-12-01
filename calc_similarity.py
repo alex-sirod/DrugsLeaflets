@@ -66,8 +66,7 @@ class CalcSimilarity:
                        and token.is_stop is False
                        and token.is_space is False
                        ]
-
-        # print("Tokens sem determinantes:", det_removed)
+        # print("Tokens limpos:", det_removed)
 
         return det_removed
 

@@ -8,19 +8,22 @@ import spacy
 import pandas as pd
 from spacy.matcher import DependencyMatcher
 
-
+from nltk.stem import RSLPStemmer
+from nltk.tokenize import word_tokenize
 class InteractionParser:
     """Class to parse interaction data from a file."""
 
     def __init__(self, leaflet_path):
 
         self.cod_atc = pd.read_csv("datasources/ATC_small.csv").values.tolist()
+
         self.leaflet = Leaflet(leaflet_path)
         self.doc = self.leaflet.get_doc()
         self.drug_name = self.leaflet.get_drug_name()
         self.excipients = self.leaflet.get_excipients()[1]
         self.composition = self.leaflet.get_composition()
         self.stoplist_interactions = LeafletMetadata().stoplist_interactions
+        self.group_list = atc_reference.list_group
 
     def get_interactions_flags(self):
         """ Return a bag of words with the most common triggers of interactions.
@@ -30,19 +33,27 @@ class InteractionParser:
         global word_freq
         triggers_words_init = []
         triggers_words_temp = []
-        clean_sents = []
+        #clean_sents = []
 
         for s in self.leaflet.get_interactions_section_sents():
             # print("SENTENÇA ---> ", s.text)
             text = s.text
-            if text not in self.stoplist_interactions:
-                clean_sents.append(s)
+            if text not in self.stoplist_interactions: # Verifica se a sentença está na lista de stoplist
+                # clean_sents.append(s)
                 for token in s:
                     if (token.pos_ == 'NOUN' or token.pos_ == 'ADJ'):
                         if token.lemma_.lower() not in self.stoplist_interactions:
                             # print(token.text, token.lemma_, "está na lista?",
                             #       token.lemma_.lower() in self.stoplist_interactions)
                             triggers_words_init.append(token.text.lower())
+                        # if token.lemma_.lower() not in self.stoplist_interactions:
+                        #     # Verifica se o token está na lista de stoplist
+                        #     for i in self.stoplist_interactions:
+                        #         if self.set_stemm(token.text) == self.set_stemm(i):
+                        #             print("ENTROU NO IF")
+                        #             print("Texto consultado:",token.text, "está na lista?",
+                        #                   self.set_stemm(token.text) in self.stoplist_interactions, '--->', i, self.set_stemm(i))
+                        #             triggers_words_init.append(token.text.lower())
 
                 for nc in s.noun_chunks:
                     # print("Noun Chunk ------------> ", nc.root.text, nc.root.dep_, nc.root.head.text)
@@ -67,8 +78,8 @@ class InteractionParser:
                             triggers_words_temp.append(x[0])
                         triggers_words_init.append(nc.lemma_.lower())
 
-        print("TRIGGERS WORDS INIT---> ", triggers_words_init)
-        print("TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
+        print("INTERACTIONS TRIGGERS WORDS INIT---> ", triggers_words_init)
+        print("INTERACTIONS TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
 
         triggers_words_final = [item for item in triggers_words_init if item not in set(triggers_words_temp)]
         if "eles" in triggers_words_final:
@@ -76,30 +87,37 @@ class InteractionParser:
         # print("T1 sem T2 ---> ", triggers_words_final)
         word_freq = Counter(triggers_words_final)
         common_words = word_freq.most_common()
-        # print("TRIGGERS WORDS FINAL ---> ", common_words)
+        print("INTERACTIONS WORDS FINAL ---> ", common_words)
         return common_words
 
     def get_definiton_flags(self):
         """ Return a bag of words with the most common triggers of interactions.
         a list of tuple words and their frequency.
         """
+        print("ENTROU NO DEFINITION FLAGS")
+        for i in self.group_list:
+            print(self.set_stemm(i))
 
         global word_freq
         triggers_words_init = []
         triggers_words_temp = []
-        clean_sents = []
+        # clean_sents = []
 
         for s in self.leaflet.get_definition_drug_section():
             # print("SENTENÇA ---> ", s.text)
             text = s.text
             if text not in self.stoplist_interactions:
-                clean_sents.append(s)
+                # clean_sents.append(s)
                 for token in s:
-                    if (token.pos_ == 'NOUN' or token.pos_ == 'ADJ'):
+                    if token.pos_ == 'NOUN' or token.pos_ == 'ADJ':
                         if token.lemma_.lower() not in self.stoplist_interactions:
-                            # print(token.text, token.lemma_, "está na lista?",
-                            #       token.lemma_.lower() in self.stoplist_interactions)
-                            triggers_words_init.append(token.text.lower())
+                            for i in self.group_list:
+                                if self.set_stemm(token.text) == self.set_stemm(i):
+                                    print("ENTROU NO IF")
+
+                                    print("Texto consultado:",token.text, "está na lista?",
+                                          self.set_stemm(token.text) in self.group_list, '--->', i, self.set_stemm(i))
+                                    triggers_words_init.append(token.text.lower())
 
                 for nc in s.noun_chunks:
                     # print("Noun Chunk ------------> ", nc.root.text, nc.root.dep_, nc.root.head.text)
@@ -120,12 +138,12 @@ class InteractionParser:
                         # print("X ---> ", x), print("Y ---> ", Y)
 
                         x = [a.text for a in self.doc[nc.start:nc.end].as_doc() if a.is_stop]
-                        if x:
-                            triggers_words_temp.append(x[0])
-                        triggers_words_init.append(nc.lemma_.lower())
+                        # if x:
+                        #     triggers_words_temp.append(x[0])
+                        # triggers_words_init.append(nc.lemma_.lower())
 
-        print("TRIGGERS WORDS INIT---> ", triggers_words_init)
-        print("TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
+        print("DEFINITION TRIGGERS WORDS INIT---> ", triggers_words_init)
+        print("DEFINITION TRIGGERS WORDS TEMP ---> ", triggers_words_temp)
 
         triggers_words_final = [item for item in triggers_words_init if item not in set(triggers_words_temp)]
         if "eles" in triggers_words_final:
@@ -133,7 +151,7 @@ class InteractionParser:
         # print("T1 sem T2 ---> ", triggers_words_final)
         word_freq = Counter(triggers_words_final)
         common_words = word_freq.most_common()
-        # print("TRIGGERS WORDS FINAL ---> ", common_words)
+        print("DEFINITION TRIGGERS WORDS FINAL ---> ", common_words)
         return common_words
     def get_whats_is(self):
         """ Return a list of root words of the noun chunks in the document. self.doc.noun_chunks
@@ -186,6 +204,12 @@ class InteractionParser:
             # else:
             #     return print("Código ATC não encontrado para o medicamento:", self.drug_name)
 
+    def set_stemm(self, text):
+        words = word_tokenize(text, language='portuguese')
+        lemmatizer = RSLPStemmer()
+        lemmatized_words = [lemmatizer.stem(word) for word in words]
+        lemmatized_text = ' '.join(lemmatized_words)
+        return lemmatized_text
 
 ###### ESTAS FUNÇÕES NÃO PERTENCEM A CLASSE INTERACTIONPARSER, MAS ESTÃO AQUI POR ENQUANTO ########
 def get_group_atc_code(code_atc):
@@ -259,7 +283,7 @@ if __name__ == '__main__':
     leaflet2 = InteractionParser(r'datasources/leaflets_pdf/bula_1700662857659_Ibuprofeno.pdf')
     leaflet3 = InteractionParser(r'datasources/leaflets_pdf/bula_1701266245626_Diazepam.pdf')
     leaflet1.get_interactions_flags()
-    leaflet1.get_definiton_flags()
+    # leaflet1.get_definiton_flags()
     # leaflet2.get_whats_is()
     # leaflet2.dependency_drug()
     # print(f"Nome na Bula : {leaflet1.drug_name}")

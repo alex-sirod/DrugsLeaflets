@@ -380,8 +380,8 @@ II – INFORMAÇÕES AO PACIENTE
             # print("Matched span:", span2.text)
             # print(f"Encontrado padrão: '{phrase_id}'. Início: {start}. Fim: {end}")
 
-        print("------------------INICIO DE DEFINIÇÃO    ---------------\n", self.doc[span.start-2:span2.start -2 ].text,
-              "\n----------------FIM DE DEFINIÇÃO -----------------")
+        # print("------------------INICIO DE DEFINIÇÃO    ---------------\n", self.doc[span.start-2:span2.start -2 ].text,
+        #       "\n----------------FIM DE DEFINIÇÃO -----------------")
         return [s for s in self.doc[span.start:span2.start].sents][:-2]
         # [:-2] para retirar os tokens "5" e ".", que  é o início da próxima frase após o padrão "Interações medicamentosas"
 
