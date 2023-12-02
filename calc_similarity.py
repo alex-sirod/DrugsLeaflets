@@ -26,29 +26,32 @@ class CalcSimilarity:
 
         result = get_similarity_lists(self.leaflet1, self.leaflet2)
         for __ in enumerate(result):
-            self.drug_A_quality = result[2]  # list contains tuples
-            self.drug_A_constraint = result[3]  # list simple
-            self.drug_B_quality = result[6]  # list contains tuples
-            self.drug_B_constraint = result[7]  # list simple
+            self.drug_A_constraint = result[2]  # list contains tuples
+            self.drug_A_quality = result[3]  # list simple
+            self.drug_B_contraint = result[6]  # list contains tuples
+            self.drug_B_quality = result[7]  # list simple
 
-        self.qty_A = len(self.drug_A_quality)
-        self.qty_B = len(self.drug_B_quality)
+        # return (atc_code1, drug_name1, interactions_flags1, group_atc_code1,
+        #         atc_code2, drug_name2, interactions_flags2, group_atc_code2)
+
+        self.qty_A = len(self.drug_A_constraint)
+        self.qty_B = len(self.drug_B_contraint)
 
         # Calculate the weight_A of each list of tuples
         weight_i = 0
-        for w_A in self.drug_A_quality:
+        for w_A in self.drug_A_constraint:
             weight_i += w_A[1]
-        self.weight_A = weight_i / len(self.drug_A_quality)
+        self.weight_A = weight_i / len(self.drug_A_constraint)
         print(f"Tamanho de A:{self.qty_A}, peso de A:{self.weight_A}")
-        print(self.drug_A_quality)
+        print(self.drug_A_constraint)
 
         # Calculate the weight_B of each list of tuples
         weight_j = 0
-        for w_B in self.drug_B_quality:
+        for w_B in self.drug_B_contraint:
             weight_j += w_B[1]
-        self.weight_B = weight_j / len(self.drug_B_quality)
+        self.weight_B = weight_j / len(self.drug_B_contraint)
         print(f"Tamanho de B:{self.qty_B}, peso de B:{self.weight_B}")
-        print(self.drug_B_quality)
+        print(self.drug_B_contraint)
         print("----------------------------------------------------------------------------------------------------")
         print("                                 RESULTADOS DE SIMILARIDADE                                         ")
         print("----------------------------------------------------------------------------------------------------")
@@ -66,25 +69,26 @@ class CalcSimilarity:
                        and token.is_stop is False
                        and token.is_space is False
                        ]
-        # print("Tokens limpos:", det_removed)
+
+        # print("Tokens sem determinantes:", det_removed)
 
         return det_removed
 
     def measure_similarity_by_chunk(self):
         measure_sim_chunk = []
         # mensura palavras e frase nominais iguais
-        for i in self.drug_A_quality:
+        for i in self.drug_A_constraint:
             # print(self.set_stemm(i[0].lower()))
-            for j in self.drug_B_constraint:
+            for j in self.drug_B_quality:
                 # print(self.set_stemm(j.lower()))
                 if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
                     measure_sim_chunk.append(i[1] * self.weight_A)
                 else:
                     measure_sim_chunk.append(0)
 
-        for i in self.drug_B_quality:
+        for i in self.drug_B_contraint:
             # print(self.set_stemm(i[0].lower()))
-            for j in self.drug_A_constraint:
+            for j in self.drug_A_quality:
                 # print(self.set_stemm(j.lower()))
                 if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
                     measure_sim_chunk.append(i[1] * self.weight_B)
@@ -113,26 +117,26 @@ class CalcSimilarity:
         local_drug_A_constraint = []
         local_drug_B_constraint = []
 
-        # print("  Lista Original:", self.drug_A_quality)
-        for i in self.drug_A_quality:
+        # print("  Lista Original:", self.drug_A_constraint)
+        for i in self.drug_A_constraint:
             for j in self.clean_list((i[0].lower().split())):
                 local_drug_A_quality.append((j, i[1]))
         # print("     Lista Local:", local_drug_A_quality)
 
-        # print("  Lista Original:", self.drug_B_quality)
-        for i in self.drug_B_quality:
+        # print("  Lista Original:", self.drug_B_contraint2)
+        for i in self.drug_B_contraint:
             for j in self.clean_list((i[0].lower().split())):
                 local_drug_B_quality.append((j, i[1]))
         # print("     Lista Local:", local_drug_B_quality)
 
         # print("  Lista Original:", self.drug_A_constraint)
-        for i in self.drug_A_constraint:
+        for i in self.drug_A_quality:
             for j in self.clean_list((i.lower().split())):
                 local_drug_A_constraint.append(j)
         # print("     Lista Local:", local_drug_A_constraint)
 
-        # print("  Lista Original:", self.drug_B_constraint)
-        for i in self.drug_B_constraint:
+        # print("  Lista Original:", self.drug_B_quality)
+        for i in self.drug_B_quality:
             for j in self.clean_list((i.lower().split())):
                 local_drug_B_constraint.append(j)
         # print("     Lista Local:", local_drug_B_constraint)
@@ -179,8 +183,8 @@ class CalcSimilarity:
         local_drug_A_constraint = []
         local_drug_B_constraint = []
 
-        # print("  Lista Original:", self.drug_A_quality)
-        for i in self.drug_A_quality:
+        # print("  Lista Original:", self.drug_A_constraint)
+        for i in self.drug_A_constraint:
             for j in self.clean_list((i[0].lower().split())):
                 local_drug_A_quality.append((j, i[1]))
         # print("Lista Local:", local_drug_A_quality)
@@ -188,8 +192,8 @@ class CalcSimilarity:
         doc_local_drug_A_quality = nlp(" ".join([i[0] for i in local_drug_A_quality]))
         # print("Sentença Local:", local_drug_A_quality)
 
-        # print("  Lista Original:", self.drug_B_quality)
-        for i in self.drug_B_quality:
+        # print("  Lista Original:", self.drug_B_contraint2)
+        for i in self.drug_B_contraint:
             for j in self.clean_list((i[0].lower().split())):
                 local_drug_B_quality.append((j, i[1]))
         # print("Lista Local:", local_drug_B_quality)
@@ -198,7 +202,7 @@ class CalcSimilarity:
         # print("Sentença Local:", local_drug_B_quality)
 
         # print("  Lista Original:", self.drug_A_constraint)
-        for i in self.drug_A_constraint:
+        for i in self.drug_A_quality:
             for j in self.clean_list((i.lower().split())):
                 local_drug_A_constraint.append(j)
         # print("Lista Local A_constraint:", local_drug_A_constraint)
@@ -206,8 +210,8 @@ class CalcSimilarity:
         doc_local_drug_A_constraint = nlp(" ".join([i for i in local_drug_A_constraint]))
         # print("Sentença Local A_constraint:", local_drug_A_constraint)
 
-        # print("  Lista Original:", self.drug_B_constraint)
-        for i in self.drug_B_constraint:
+        # print("  Lista Original:", self.drug_B_quality)
+        for i in self.drug_B_quality:
             for j in self.clean_list((i.lower().split())):
                 local_drug_B_constraint.append(j)
         # print("Lista Local B_constraint:", local_drug_B_constraint)
@@ -252,8 +256,8 @@ class CalcSimilarity:
         jellyfish_drug_A_constraint = []
         jellyfish_drug_B_constraint = []
 
-        # print("  Lista Original:", self.drug_A_quality)
-        for i in self.drug_A_quality:
+        # print("  Lista Original:", self.drug_A_constraint)
+        for i in self.drug_A_constraint:
             for j in self.clean_list((i[0].lower().split())):
                 jellyfish_drug_A_quality.append((j, i[1]))
         # print("Lista Local:", jellyfish_drug_A_quality)
@@ -261,8 +265,8 @@ class CalcSimilarity:
         jellyfish_drug_A_quality = " ".join([i[0] for i in jellyfish_drug_A_quality])
         # print("Sentença Jellyfish:", jellyfish_drug_A_quality)
 
-        # print("  Lista Original:", self.drug_B_quality)
-        for i in self.drug_B_quality:
+        # print("  Lista Original:", self.drug_B_contraint2)
+        for i in self.drug_B_contraint:
             for j in self.clean_list((i[0].lower().split())):
                 jellyfish_drug_B_quality.append((j, i[1]))
         # print("Lista Local:", jellyfish_drug_B_quality)
@@ -271,7 +275,7 @@ class CalcSimilarity:
         # print("Sentença Jellyfish:", jellyfish_drug_B_quality)
 
         # print("  Lista Original:", self.drug_A_constraint)
-        for i in self.drug_A_constraint:
+        for i in self.drug_A_quality:
             for j in self.clean_list((i.lower().split())):
                 jellyfish_drug_A_constraint.append(j)
         # print("Lista Local A_constraint:", jellyfish_drug_A_constraint)
@@ -279,8 +283,8 @@ class CalcSimilarity:
         jellyfish_drug_A_constraint = " ".join([i for i in jellyfish_drug_A_constraint])
         # print("Sentença Local A_constraint:", jellyfish_drug_A_constraint)
 
-        # print("  Lista Original:", self.drug_B_constraint)
-        for i in self.drug_B_constraint:
+        # print("  Lista Original:", self.drug_B_quality)
+        for i in self.drug_B_quality:
             for j in self.clean_list((i.lower().split())):
                 jellyfish_drug_B_constraint.append(j)
         # print("Lista Local B_constraint:", jellyfish_drug_B_constraint)
@@ -327,16 +331,16 @@ class CalcSimilarity:
         lev_measure_chunk = []
         # mensura palavras e frase nominais iguais
 
-        for i in self.drug_A_quality:
+        for i in self.drug_A_constraint:
             # print(self.set_stemm(i[0].lower()))
-            for j in self.drug_B_constraint:
+            for j in self.drug_B_quality:
                 # print("(A)", self.set_stemm(j.lower()), "(B)", self.set_stemm(i[0].lower()))
                 value_l = self.calc_levenshtein(self.set_stemm(i[0].lower()), self.set_stemm(j.lower()))
                 lev_measure_chunk.append(value_l)
 
-        for i in self.drug_B_quality:
+        for i in self.drug_B_contraint:
             # print(self.set_stemm(i[0].lower()))
-            for j in self.drug_A_constraint:
+            for j in self.drug_A_quality:
                 # print("(A)", self.set_stemm(j.lower()), "(B)", self.set_stemm(i[0].lower()))
                 value_l = self.calc_levenshtein(self.set_stemm(i[0].lower()), self.set_stemm(j.lower()))
                 lev_measure_chunk.append(value_l)
@@ -370,26 +374,26 @@ class CalcSimilarity:
         lev_local_drug_A_constraint = []
         lev_local_drug_B_constraint = []
 
-        # print("  Lista Original:", self.drug_A_quality)
-        for i in self.drug_A_quality:
+        # print("  Lista Original:", self.drug_A_constraint)
+        for i in self.drug_A_constraint:
             for j in self.clean_list((i[0].lower().split())):
                 lev_local_drug_A_quality.append((j, i[1]))
         # print("     Lista Local:", local_drug_A_quality)
 
-        # print("  Lista Original:", self.drug_B_quality)
-        for i in self.drug_B_quality:
+        # print("  Lista Original:", self.drug_B_contraint2)
+        for i in self.drug_B_contraint:
             for j in self.clean_list((i[0].lower().split())):
                 lev_local_drug_B_quality.append((j, i[1]))
         # print("     Lista Local:", local_drug_B_quality)
 
         # print("  Lista Original:", self.drug_A_constraint)
-        for i in self.drug_A_constraint:
+        for i in self.drug_A_quality:
             for j in self.clean_list((i.lower().split())):
                 lev_local_drug_A_constraint.append(j)
         # print("     Lista Local:", local_drug_A_constraint)
 
-        # print("  Lista Original:", self.drug_B_constraint)
-        for i in self.drug_B_constraint:
+        # print("  Lista Original:", self.drug_B_quality)
+        for i in self.drug_B_quality:
             for j in self.clean_list((i.lower().split())):
                 lev_local_drug_B_constraint.append(j)
         # print("     Lista Local:", local_drug_B_constraint)

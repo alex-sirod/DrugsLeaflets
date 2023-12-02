@@ -31,16 +31,7 @@ class Leaflet:
         self.doc = self.get_doc()
         # self.manufacturer = self.get_manufacturer()
         self.file_name_txt = 'sample.txt'
-        self.doc_test = nlp(u'''APRESENTAÇÃO
-Pó para suspensão oral de 250 mg/5 mL: embalagem com frasco contendo pó para reconstituição de 150 mL de suspensão acompanhado de uma seringa dosadora de 10 mL.
-USO ORAL
-USO ADULTO E PEDIÁTRICO
-COMPOSIÇÃO 
-Cada 5 mL de suspensão oral contém:
-amoxicilina tri-hidratada (equivalente a 250 mg de amoxicilina) ............................................................. 287,0 mg
-Excipientes: sorbitol, dióxido de silício, celulose microcristalina, crospovidona, goma xantana, aspartamo, ciclamato de sódio, sacarina sódica di-hidratada, ácido cítrico, citrato de sódio, propilparabeno, metilparabeno, benzoato de sódio, aroma de laranja e estearato de magnésio.
-II – INFORMAÇÕES AO PACIENTE
-1. PARA QUE ESTE MEDICAMENTO É INDICADO?''')
+
 
     def get_text_full(self):
 
