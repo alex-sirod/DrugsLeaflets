@@ -1,4 +1,3 @@
-
 class LeafletMetadata:
     """
     This class is a container for the sections of the leaflet.
@@ -107,24 +106,28 @@ class LeafletMetadata:
         # U = unidade
         # % = porcentagem
 
-        self.PRESENTATION = ["cápsula", "comprimido", "cápsulas", "comprimidos", "drágea", "drágeas",
-                             "solução", "solução oral", "solução injetável",
-                             "solução nasal", "solução oftálmica", "solução otológica", "suspensão", "suspensão oral",
-                             "suspensão injetável", "suspensão nasal", "suspensão oftálmica", "suspensão otológica",
-                             "pó", "pó para solução", "pó para solução injetável", "pó para solução oral", "pó oral",
-                             "pó para solução nasal", "pó para solução oftálmica", "pó para solução otológica",
-                             "pó para suspensão oral", "pó para suspensão injetável", "pó para suspensão nasal",
-                             "pó para suspensão oftálmica", "pó para suspensão otológica", "pó para solução oral",
-                             "pó para solução injetável", "pó para solução nasal", "pó para solução oftálmica",
-                             "pó para solução otológica", "pó para suspensão oral", "pó para suspensão injetável",
-                             "pó para suspensão nasal", "pó para suspensão oftálmica", "pó para suspensão otológica",
-                             "pó para solução oral", "pó para solução injetável", "pó para solução nasal",
-                             "pó para solução oftálmica", "pó para solução otológica", "pó para suspensão oral",
-                             "pó para suspensão injetável", "pó para suspensão nasal", "pó para suspensão oftálmica",
-                             "pó para suspensão otológica", "pó para solução oral", "pó para solução injetável",
-                             "pó para solução nasal", "pó para solução oftálmica", "pó para solução otológica",
-                             "pó para suspensão oral", "pó para suspensão injetável", "pó para suspensão nasal",
-                             "pó para suspensão oftálmica", "pó para suspensão otológica"]
+        self.PRESENTATION = [
+            "veículo", "veículo q.s.p", "veículo qsp", "veículo q.s.p.", "veículo qsp.",
+            "excipientes", "excipientes q.s.p", "excipientes qsp", "excipientes q.s.p.", "excipientes qsp.",
+            "Equivalente a", "equivalente a", "equivalente", "equivalente a", "equivalente", "equivalente a",
+            "cápsula", "comprimido", "cápsulas", "comprimidos", "drágea", "drágeas",
+            "solução", "solução oral", "solução injetável",
+            "solução nasal", "solução oftálmica", "solução otológica", "suspensão", "suspensão oral",
+            "suspensão injetável", "suspensão nasal", "suspensão oftálmica", "suspensão otológica",
+            "pó", "pó para solução", "pó para solução injetável", "pó para solução oral", "pó oral",
+            "pó para solução nasal", "pó para solução oftálmica", "pó para solução otológica",
+            "pó para suspensão oral", "pó para suspensão injetável", "pó para suspensão nasal",
+            "pó para suspensão oftálmica", "pó para suspensão otológica", "pó para solução oral",
+            "pó para solução injetável", "pó para solução nasal", "pó para solução oftálmica",
+            "pó para solução otológica", "pó para suspensão oral", "pó para suspensão injetável",
+            "pó para suspensão nasal", "pó para suspensão oftálmica", "pó para suspensão otológica",
+            "pó para solução oral", "pó para solução injetável", "pó para solução nasal",
+            "pó para solução oftálmica", "pó para solução otológica", "pó para suspensão oral",
+            "pó para suspensão injetável", "pó para suspensão nasal", "pó para suspensão oftálmica",
+            "pó para suspensão otológica", "pó para solução oral", "pó para solução injetável",
+            "pó para solução nasal", "pó para solução oftálmica", "pó para solução otológica",
+            "pó para suspensão oral", "pó para suspensão injetável", "pó para suspensão nasal",
+            "pó para suspensão oftálmica", "pó para suspensão otológica"]
 
         self.stoplist_interactions = [
             # FRASES sem relevância para a RECUPERAÇÃO

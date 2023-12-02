@@ -1,5 +1,19 @@
 # https://www.paho.org/pt/oms-uma-organizacao-global-saude
 
+ATC_LABELS = [{"A": "SISTEMA DIGESTIVO E METABOLISMO"},
+              {"B": "SANGUE E ÓRGÃOS HEMATOPOIÉTICOS"},
+              {"C": "SISTEMA CARDIOVASCULAR"},
+              {"D": "PELE E ANEXOS"},
+              {"G": "SISTEMA GENITURINÁRIO E HORMÔNIOS SEXUAIS"},
+              {"H": "HORMÔNIOS SISTÊMICOS"},
+              {"J": "ANTI-INFECCIOSOS DE USO SISTÊMICO"},
+              {"L": "ANTINEOPLÁSICOS E IMUNOMODULADORES"},
+              {"M": "SISTEMA MÚSCULO-ESQUELÉTICO"},
+              {"N": "SISTEMA NERVOSO"},
+              {"P": "ANTI-PARASITÁRIOS, INSETICIDAS E REPELENTES"},
+              {"R": "SISTEMA RESPIRATÓRIO"},
+              {"S": "ÓRGÃOS DO SENTIDO"},
+              {"V": "VÁRIOS"}]
 
 ATC = {
     'A': [{
@@ -573,22 +587,22 @@ ATC = {
             "D": ["MEIOS DE CONTRASTE DE ULTRASSOM"],
         }],
         "09": ["meios de contraste", {
-            "A":["SISTEMA NERVOSO CENTRAL"],
-            "B":["ESQUELETO"],
-            "C":["SISTEMA RENAL"],
-            "D":["SISTEMA HEPÁTICO E RETÍCULO ENDOTELIAL"],
-            "E":["SISTEMA RESPIRATÓRIO"],
-            "F":["TIREÓIDE"],
-            "G":["SISTEMA CARDIOVASCULAR"],
-            "H":["DETECÇÃO DE INFLAMAÇÃO E INFECÇÃO"],
-            "I":["DETECÇÃO DE TUMORES"],
-            "X":["OUTROS RADIOFARMACÊUTICOS PARA DIAGNÓSTICO"],
+            "A": ["SISTEMA NERVOSO CENTRAL"],
+            "B": ["ESQUELETO"],
+            "C": ["SISTEMA RENAL"],
+            "D": ["SISTEMA HEPÁTICO E RETÍCULO ENDOTELIAL"],
+            "E": ["SISTEMA RESPIRATÓRIO"],
+            "F": ["TIREÓIDE"],
+            "G": ["SISTEMA CARDIOVASCULAR"],
+            "H": ["DETECÇÃO DE INFLAMAÇÃO E INFECÇÃO"],
+            "I": ["DETECÇÃO DE TUMORES"],
+            "X": ["OUTROS RADIOFARMACÊUTICOS PARA DIAGNÓSTICO"],
 
         }],
-        "10": ["radiofármacos",{
-            "A":["AGENTES ANTIINFLAMATÓRIOS"],
-            "B":["PALIAÇÃO DA DOR, AGENTES DE BUSCA DE OSSO"],
-            "X":["OUTROS RADIOFARMACÊUTICOS TERAPÊUTICOS"],
+        "10": ["radiofármacos", {
+            "A": ["AGENTES ANTIINFLAMATÓRIOS"],
+            "B": ["PALIAÇÃO DA DOR, AGENTES DE BUSCA DE OSSO"],
+            "X": ["OUTROS RADIOFARMACÊUTICOS TERAPÊUTICOS"],
 
         }],
 
@@ -602,23 +616,11 @@ ATC = {
     }]  # Fim do grupo V
 }
 
-ATC_LABELS = [{"A": "SISTEMA DIGESTIVO E METABOLISMO"},
-              {"B": "SANGUE E ÓRGÃOS HEMATOPOIÉTICOS"},
-              {"C": "SISTEMA CARDIOVASCULAR"},
-              {"D": "PELE E ANEXOS"},
-              {"G": "SISTEMA GENITURINÁRIO E HORMÔNIOS SEXUAIS"},
-              {"H": "HORMÔNIOS SISTÊMICOS"},
-              {"J": "ANTI-INFECCIOSOS DE USO SISTÊMICO"},
-              {"L": "ANTINEOPLÁSICOS E IMUNOMODULADORES"},
-              {"M": "SISTEMA MÚSCULO-ESQUELÉTICO"},
-              {"N": "SISTEMA NERVOSO"},
-              {"P": "ANTI-PARASITÁRIOS, INSETICIDAS E REPELENTES"},
-              {"R": "SISTEMA RESPIRATÓRIO"},
-              {"S": "ÓRGÃOS DO SENTIDO"},
-              {"V": "VÁRIOS"}]
 
 
 
+# the list below is based on the list of ATC codes from the WHO Collaborating Centre for Drug Statistics Methodology
+# https://www.whocc.no/atc_ddd_index/
 list_group = ['preparados estomatológicos', 'preparados estomatológicos',
               'Agentes profiláticos contra cárie', 'Antiinfecciosos e anti-sépticos',
               'Corticosteróides', 'Outros agentes para tratamento oral local',
@@ -780,7 +782,40 @@ list_group = ['preparados estomatológicos', 'preparados estomatológicos',
               'AGENTES ANTIINFLAMATÓRIOS', 'PALIAÇÃO DA DOR', 'BUSCA DE OSSO',
               'RADIOFARMACÊUTICOS TERAPÊUTICOS', 'CURATIVOS CIRÚRGICOS', 'CURATIVOS CIRÚRGICOS',
               'antroposóficos', 'fitoterápicos', 'homeopáticos', 'fórmulas ou associações manipuladas',
-              'medicamentos veterinários']
+              'medicamentos veterinários',
+
+              "Analgésicos e Antitérmicos",
+              "Anti-inflamatórios",
+              "Antibióticos",
+              "Antidepressivos",
+              "Antieméticos",
+              "Antipiréticos",
+              "Antissépticos e Desinfetantes",
+              "Antivirais",
+              "Corticoides",
+              "Hormônios",
+              "Anti-hipertensivos",
+              "Anticoagulantes",
+              "Antialérgicos",
+              "Broncodilatadores",
+              "Diuréticos",
+              "Antifúngicos",
+              "Anti-histamínicos",
+              "Imunossupressores",
+              "Vitaminas e Suplementos",
+              "Tranquilizantes e Ansiolíticos",
+              "Antiemergenciais",
+              "Antirretrovirais",
+              "Antiespasmódicos",
+              "Agentes Anestésicos",
+              "Antifibrinolíticos",
+              "Agentes Imunológicos",
+              "Antiprotozoários",
+              "Agentes Miorrelaxantes",
+              "Antipsicóticos",
+              "Agentes Estimulantes do Apetite"
+
+              ]
 
 # def extract_values(dicionario):
 #     valores = []
@@ -798,7 +833,6 @@ list_group = ['preparados estomatológicos', 'preparados estomatológicos',
 #     return valores
 #
 # print(extract_values(ATC))
-
 
 
 if __name__ == '__main__':
@@ -822,7 +856,6 @@ if __name__ == '__main__':
     # print("0 - EXIT")
     # print("--------------------------------------------------------")
     # group = input(str("Type a letter to show or zero to exit and press <enter>: "))
-
 
     print(ATC['A'][0])
     print(ATC['A'][0]['01'])
@@ -870,4 +903,3 @@ if __name__ == '__main__':
     print(ATC['H'][0]['02'][1]['A'])
 
     print(ATC['H'][0]['03'][1]['A'])
-
