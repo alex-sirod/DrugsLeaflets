@@ -286,6 +286,48 @@ class CalcSimilarity:
 
         return statistics.mean(measure_spacy_values)
 
+    def measure_similarity_by_chunk_jaro(self):
+        global i
+        measure_sim_chunk_jaro = [0]  # inicializa a lista com zero para evitar erro de média
+        store_similar_chunks = []
+        # mensura palavras e frase nominais iguais
+
+        for j in self.drug_B_quality:
+            # print(self.set_stemm(j.lower()))
+            for i in self.drug_A_constraint:
+                # print(self.set_stemm(i[0].lower()))
+                measure_j = jellyfish.jaro_winkler_similarity(self.set_stemm(i[0].lower()), self.set_stemm(j.lower()))
+                # measure_j = jellyfish.jaro_winkler_similarity(i[0].lower(), j.lower())
+                # print(measure_j, i[0].lower(), " == ", j.lower())
+                if measure_j > 0.8:
+                    print(measure_j, i[0].lower(), " == ", j.lower())
+                    print(measure_j, self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
+                    store_similar_chunks.append(f"{i[0].lower()} == {j.lower()}")
+                    measure_sim_chunk_jaro.append(measure_j)
+
+        for j in self.drug_A_quality:
+            # print(self.set_stemm(j.lower()))
+            for i in self.drug_B_constraint:
+                # print(self.set_stemm(i[0].lower()))
+                measure_j = jellyfish.jaro_winkler_similarity(self.set_stemm(i[0].lower()), self.set_stemm(j.lower()))
+                if measure_j > 0.8:
+                    print(measure_j, i[0].lower(), " == ", j.lower())
+                    print(measure_j, self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
+                    store_similar_chunks.append(f"{i[0].lower()} == {j.lower()}")
+                    measure_sim_chunk_jaro.append(measure_j)
+
+        print(f"Similaridade por frases nominais entre |{self.leaflet1.get_atc_code()[0]}| e"
+              f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(measure_sim_chunk_jaro)} "
+              f"e máximo: {max(measure_sim_chunk_jaro)}")
+
+        print(f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
+              f" |{self.leaflet2.get_atc_code()[0]}| requerem sua atenção pela presença dos seguintes termos: \n"
+              f" {store_similar_chunks}" if max(measure_sim_chunk_jaro) == 1
+              else f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
+                   f" |{self.leaflet2.get_atc_code()[0]}| parece não ter interações medicamentosas!")
+
+        return  max(measure_sim_chunk_jaro)
+
     def measure_similarity_by_word_jaro(self):
         measure_jellyfish_values = []
         jellyfish_drug_A_quality = []
@@ -338,7 +380,6 @@ class CalcSimilarity:
             jellyfish.jaro_winkler_similarity(jellyfish_drug_A_constraint, jellyfish_drug_B_quality))
         measure_jellyfish_values.append(
             jellyfish.jaro_winkler_similarity(jellyfish_drug_B_quality, jellyfish_drug_A_constraint))
-
 
         print(f"Similaridade Distância de Jaro por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
               f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(measure_jellyfish_values)} "
@@ -497,9 +538,10 @@ if __name__ == '__main__':
     # calc.measure_similarity_by_chunk()
     # calc.measure_similarity_by_word()
     # calc2.measure_similarity_by_word()
-    calc.measure_similarity_by_bigstring()
-    calc2.measure_similarity_by_bigstring()
-    # calc.measure_similarity_by_word_jaro()
+    # calc.measure_similarity_by_bigstring()
+    # calc2.measure_similarity_by_bigstring()
+    calc.measure_similarity_by_chunk_jaro()
+    # calc2.measure_similarity_by_chunk_jaro()
     # calc.measure_similarity_by_chunk_levenshtein()
     # calc.measure_similarity_by_word_levenshtein()
     # print("--------------------------------------------------")
