@@ -41,7 +41,10 @@ class CalcSimilarity:
         weight_i = 0
         for w_A in self.drug_A_constraint:
             weight_i += w_A[1]
-        self.weight_A = weight_i / len(self.drug_A_constraint)
+        if weight_i:
+            self.weight_A = weight_i / len(self.drug_A_constraint)
+        else:
+            self.weight_A = 1
         print(f"Tamanho de A:{self.qty_A}, peso de A:{self.weight_A}")
         print(self.drug_A_constraint)
 
@@ -49,13 +52,15 @@ class CalcSimilarity:
         weight_j = 0
         for w_B in self.drug_B_constraint:
             weight_j += w_B[1]
-        self.weight_B = weight_j / len(self.drug_B_constraint)
-
+        if weight_j:
+            self.weight_B = weight_j / len(self.drug_B_constraint)
+        else:
+            self.weight_B = 1
         print(f"Tamanho de B:{self.qty_B}, peso de B:{self.weight_B}")
         print(self.drug_B_constraint)
 
         print("----------------------------------------------------------------------------------------------------")
-        print("                                 PROCESSANDO SIMILARIDADE                                           ")
+        print("                                      PROCESSING SIMILARITY                                         ")
         print("----------------------------------------------------------------------------------------------------")
 
     def set_stemm(self, text):
@@ -88,7 +93,7 @@ class CalcSimilarity:
             for i in self.drug_A_constraint:
                 # print(self.set_stemm(i[0].lower()))
                 if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
-                    print(self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
+                    # print(self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
                     store_sim_chunk.append(f"{i[0].lower()} == {j.lower()}")
                     measure_sim_chunk.append(i[1] * self.weight_A)
                 else:
@@ -100,7 +105,7 @@ class CalcSimilarity:
                 # print(self.set_stemm(i[0].lower()))
 
                 if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
-                    print(self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
+                    # print(self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
                     store_sim_chunk.append(f"{i[0].lower()} == {j.lower()}")
                     measure_sim_chunk.append(i[1] * self.weight_B)
                 else:
@@ -114,18 +119,19 @@ class CalcSimilarity:
         # print("% Item:", ([(a / 100) * (100 / sum(measure_sim_chunk)) for a in measure_sim_chunk if sum(measure_sim_chunk) != 0]))
         # print("Quantidade:", len(measure_sim_chunk))
 
-        print(f"Similaridade por frases nominais entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(measure_sim_chunk)} "
-              f"e máximo: {max(measure_sim_chunk)}")
+        print(f"Similarity for noun phrases between |{self.leaflet1.get_atc_code()[0]}| and"
+              f" |{self.leaflet2.get_atc_code()[0]}| is:\naverage: {statistics.mean(measure_sim_chunk)} "
+              f" maximum: {max(measure_sim_chunk)}")
 
         measure_sim_chunk = sum(
             [(a / 100) * (100 / sum(measure_sim_chunk)) for a in measure_sim_chunk if sum(measure_sim_chunk) != 0])
 
-        print(f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| requerem sua atenção pela presença dos seguintes termos: \n"
-              f" {store_sim_chunk}" if measure_sim_chunk > 0
-              else f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
-                   f" |{self.leaflet2.get_atc_code()[0]}| parece não ter interações medicamentosas!")
+        print(f"Prescrition with medications|{self.leaflet1.get_atc_code()[0]}| and"
+              f" |{self.leaflet2.get_atc_code()[0]}| require your attention due to the presence of the "
+              f"following terms: \n{store_sim_chunk}" if measure_sim_chunk > 0
+              else f"Prescrition with medications |{self.leaflet1.get_atc_code()[0]}| e"
+                   f" |{self.leaflet2.get_atc_code()[0]}| appears to have no drug interactions!")
+
 
         return measure_sim_chunk
 
@@ -197,14 +203,15 @@ class CalcSimilarity:
         measure_sim_word = sum(
             [(a / 100) * (100 / sum(measure_sim_word)) for a in measure_sim_word if sum(measure_sim_word) != 0])
 
-        print(f"Similaridade por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é {measure_sim_word} ")
+        print(f"Similarity by words between |{self.leaflet1.get_atc_code()[0]}| and"
+              f" |{self.leaflet2.get_atc_code()[0]}| is {measure_sim_word} ")
 
-        print(f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| requerem sua atenção pela presença dos seguintes termos: \n"
+        print(f"Prescription with medications |{self.leaflet1.get_atc_code()[0]}| and"
+              f" |{self.leaflet2.get_atc_code()[0]}| require your attention due to the presence of the "
+              f"following terms: \n"
               f" {store_similar_words}" if measure_sim_word > 0
-              else f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
-                   f" |{self.leaflet2.get_atc_code()[0]}| parece não ter interações medicamentosas!")
+              else f"Prescrition with medications |{self.leaflet1.get_atc_code()[0]}| e"
+                   f" |{self.leaflet2.get_atc_code()[0]}| appears to have no drug interactions!")
 
         return measure_sim_word
 
@@ -298,9 +305,9 @@ class CalcSimilarity:
                 measure_j = jellyfish.jaro_winkler_similarity(self.set_stemm(i[0].lower()), self.set_stemm(j.lower()))
                 # measure_j = jellyfish.jaro_winkler_similarity(i[0].lower(), j.lower())
                 # print(measure_j, i[0].lower(), " == ", j.lower())
-                if measure_j > 0.8:
-                    print(measure_j, i[0].lower(), " == ", j.lower())
-                    print(measure_j, self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
+                if measure_j > 0.99:
+                    # print(measure_j, i[0].lower(), " == ", j.lower())
+                    # print(measure_j, self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
                     store_similar_chunks.append(f"{i[0].lower()} == {j.lower()}")
                     measure_sim_chunk_jaro.append(measure_j)
 
@@ -309,21 +316,22 @@ class CalcSimilarity:
             for i in self.drug_B_constraint:
                 # print(self.set_stemm(i[0].lower()))
                 measure_j = jellyfish.jaro_winkler_similarity(self.set_stemm(i[0].lower()), self.set_stemm(j.lower()))
-                if measure_j > 0.8:
-                    print(measure_j, i[0].lower(), " == ", j.lower())
-                    print(measure_j, self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
+                if measure_j > 0.99:
+                    # print(measure_j, i[0].lower(), " == ", j.lower())
+                    # print(measure_j, self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
                     store_similar_chunks.append(f"{i[0].lower()} == {j.lower()}")
                     measure_sim_chunk_jaro.append(measure_j)
 
-        print(f"Similaridade por frases nominais entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(measure_sim_chunk_jaro)} "
-              f"e máximo: {max(measure_sim_chunk_jaro)}")
+        print(f"Similarity Jaro distance for noun phrases between |{self.leaflet1.get_atc_code()[0]}| and"
+              f" |{self.leaflet2.get_atc_code()[0]}| is:\naverage: {statistics.mean(measure_sim_chunk_jaro)} "
+              f"maximum: {max(measure_sim_chunk_jaro)}")
 
-        print(f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| requerem sua atenção pela presença dos seguintes termos: \n"
+        print(f"Prescription with medications |{self.leaflet1.get_atc_code()[0]}| and"
+              f" |{self.leaflet2.get_atc_code()[0]}| require your attention due to the presence of the "
+              f"following terms: \n"
               f" {store_similar_chunks}" if max(measure_sim_chunk_jaro) == 1
-              else f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
-                   f" |{self.leaflet2.get_atc_code()[0]}| parece não ter interações medicamentosas!")
+              else f"Prescription with medications |{self.leaflet1.get_atc_code()[0]}| and"
+                   f" |{self.leaflet2.get_atc_code()[0]}| appears to have no drug interactions!")
 
         return max(measure_sim_chunk_jaro)
 
@@ -398,7 +406,7 @@ class CalcSimilarity:
                 # print("(A)", self.set_stemm(j.lower()), "(B)", self.set_stemm(i[0].lower()))
                 value_l = self.calc_levenshtein(self.set_stemm(i[0].lower()), self.set_stemm(j.lower()))
                 if value_l == 0:
-                    print("adicionado ZERO")
+                    # print("adicionado ZERO")
                     store_similar_lev_chunks.append(f"{i[0].lower()} == {j.lower()}")
                 lev_measure_chunk.append(value_l)
 
@@ -408,19 +416,20 @@ class CalcSimilarity:
                 # print("(A)", self.set_stemm(j.lower()), "(B)", self.set_stemm(i[0].lower()))
                 value_l = self.calc_levenshtein(self.set_stemm(i[0].lower()), self.set_stemm(j.lower()))
                 if value_l == 0:
-                    print("adicionado ZERO")
+                    # print("adicionado ZERO")
                     store_similar_lev_chunks.append(f"{i[0].lower()} == {j.lower()}")
                 lev_measure_chunk.append(value_l)
 
-        print(f"Similaridade Distância de Levenshtein por frases nominais entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(lev_measure_chunk)} e "
-              f"máximo: {max(lev_measure_chunk)} mínima : {(min(lev_measure_chunk))}")
+        print(f"Similarity Levenshtein distance for noun phrases between  |{self.leaflet1.get_atc_code()[0]}| and"
+              f" |{self.leaflet2.get_atc_code()[0]}| is:\naverage: {statistics.mean(lev_measure_chunk)}, "
+              f"maximum: {max(lev_measure_chunk)} and minimum : {(min(lev_measure_chunk))}")
 
-        print(f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| requerem sua atenção pela presença dos seguintes termos: \n"
+        print(f"Prescription with medications |{self.leaflet1.get_atc_code()[0]}| and"
+              f" |{self.leaflet2.get_atc_code()[0]}| require your attention due to the presence of the "
+              f"following terms: \n"
               f" {store_similar_lev_chunks}" if min(lev_measure_chunk) == 0
-              else f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
-                   f" |{self.leaflet2.get_atc_code()[0]}| parece não ter interações medicamentosas!")
+              else f"Prescription with medications |{self.leaflet1.get_atc_code()[0]}| and"
+                   f" |{self.leaflet2.get_atc_code()[0]}| appears to have no drug interactions!")
 
         lev_measure_sim_chunk = sum(
             [(a / 100) * (100 / sum(lev_measure_chunk)) for a in lev_measure_chunk if sum(lev_measure_chunk) != 0])
@@ -513,20 +522,132 @@ class CalcSimilarity:
 
 
 if __name__ == '__main__':
-    leaflet1 = r'datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf'  # ibuprofeno
+
+    # calc1 = CalcSimilarity(leaflet1, leaflet2)
+    # calc2 = CalcSimilarity(leaflet1, leaflet3)
+
+    # calc3 = CalcSimilarity(leaflet12, leaflet14) # omeprazol e enalapril
+    # calc3.measure_similarity_by_chunk()
+    # calc3.measure_similarity_by_chunk_jaro()
+    # calc3.measure_similarity_by_chunk_levenshtein()
+    #
+    # calc4 = CalcSimilarity(leaflet10, leaflet11) # omeprazol e dipirona
+    # calc4.measure_similarity_by_chunk()
+    # calc4.measure_similarity_by_chunk_jaro()
+    # calc4.measure_similarity_by_chunk_levenshtein()
+
+    # # diazepam - clopidogrel
+    # calc5 = CalcSimilarity(leaflet4, leaflet13) # diazepam e clopidogrel
+    # calc5.measure_similarity_by_chunk()
+    # calc5.measure_similarity_by_chunk_jaro()
+    # calc5.measure_similarity_by_chunk_levenshtein()
+
+    # # fenobarbital - remdesivir Não possi=ui código ATC
+    # calc6 = CalcSimilarity(leaflet3, leaflet8) # fenobarbital e remdesivir
+    # calc6.measure_similarity_by_chunk()
+    # calc6.measure_similarity_by_chunk_jaro()
+    # calc6.measure_similarity_by_chunk_levenshtein()
+
+    # omeprazol - amoxicilina
+    # calc7 = CalcSimilarity(leaflet12, leaflet2) # omeprazol e amoxicilina
+    # calc7.measure_similarity_by_chunk()
+    # calc7.measure_similarity_by_chunk_jaro()
+    # calc7.measure_similarity_by_chunk_levenshtein()
+    #
+    # #hidroclorotiazida - diazepam
+    # calc8 = CalcSimilarity(leaflet5, leaflet4) # hidroclorotiazida e diazepam
+    # calc8.measure_similarity_by_chunk()
+    # calc8.measure_similarity_by_chunk_jaro()
+    # calc8.measure_similarity_by_chunk_levenshtein()
+
+    # # enalapril - loratadina
+    # calc9 = CalcSimilarity(leaflet14, leaflet17) # enalapril e loratadina
+    # calc9.measure_similarity_by_chunk()
+    # calc9.measure_similarity_by_chunk_jaro()
+    # calc9.measure_similarity_by_chunk_levenshtein()
+
+    # # omeprazol - loratadina
+    # calc10 = CalcSimilarity(leaflet12, leaflet17) # omeprazol e loratadina
+    # calc10.measure_similarity_by_chunk()
+    # calc10.measure_similarity_by_chunk_jaro()
+    # calc10.measure_similarity_by_chunk_levenshtein()
+
+    # # digoxina - diazepam
+    # calc11 = CalcSimilarity(leaflet10, leaflet4) # digoxina e diazepam
+    # calc11.measure_similarity_by_chunk()
+    # calc11.measure_similarity_by_chunk_jaro()
+    # calc11.measure_similarity_by_chunk_levenshtein()
+
+    # # sulfametoxazol - budesonida
+    # calc12 = CalcSimilarity(leaflet6, leaflet16) # sulfametoxazol e budesonida
+    # calc12.measure_similarity_by_chunk()
+    # calc12.measure_similarity_by_chunk_jaro()
+    # calc12.measure_similarity_by_chunk_levenshtein()
+
+    # # amoxicilina - loratadina
+    # calc13 = CalcSimilarity(leaflet2, leaflet17) # amoxicilina e loratadina
+    # calc13.measure_similarity_by_chunk()
+    # calc13.measure_similarity_by_chunk_jaro()
+    # calc13.measure_similarity_by_chunk_levenshtein()
+
+    # # omeprazol - captopril
+
+    # calc14 = CalcSimilarity(leaflet12, leaflet9) # omeprazol e captopril
+    # calc14.measure_similarity_by_chunk()
+    # calc14.measure_similarity_by_chunk_jaro()
+    # calc14.measure_similarity_by_chunk_levenshtein()
+
+
+    # # captopril - diazepam
+    # calc15 = CalcSimilarity(leaflet9, leaflet4) # captopril e diazepam
+    # calc15.measure_similarity_by_chunk()
+    # calc15.measure_similarity_by_chunk_jaro()
+    # calc15.measure_similarity_by_chunk_levenshtein()
+
+    # # enalapril - sulfametoxazole
+    # calc16 = CalcSimilarity(leaflet14, leaflet6) # enalapril e sulfametoxazole
+    # calc16.measure_similarity_by_chunk()
+    # calc16.measure_similarity_by_chunk_jaro()
+    # calc16.measure_similarity_by_chunk_levenshtein()
+
+    # # ácido acetilsalicílico - captopril
+    # calc17 = CalcSimilarity(leaflet7, leaflet9) # ácido acetilsalicílico e captopril
+    # calc17.measure_similarity_by_chunk()
+    # calc17.measure_similarity_by_chunk_jaro()
+    # calc17.measure_similarity_by_chunk_levenshtein()
+
+    # # omeprazol - budesonida
+    # calc18 = CalcSimilarity(leaflet12, leaflet16) # omeprazol e budesonida
+    # calc18.measure_similarity_by_chunk()
+    # calc18.measure_similarity_by_chunk_jaro()
+    # calc18.measure_similarity_by_chunk_levenshtein()
+
+    # # clopidogrel - budesonida
+    # calc19 = CalcSimilarity(leaflet13, leaflet16) # clopidogrel e budesonida
+    # calc19.measure_similarity_by_chunk()
+    # calc19.measure_similarity_by_chunk_jaro()
+    # calc19.measure_similarity_by_chunk_levenshtein()
+
+    # # sulfametoxazol - fenobarbital
+    # calc20 = CalcSimilarity(leaflet6, leaflet3) # sulfametoxazol e fenobarbital
+    # calc20.measure_similarity_by_chunk()
+    # calc20.measure_similarity_by_chunk_jaro()
+    # calc20.measure_similarity_by_chunk_levenshtein()
+
+    leaflet1 = r'datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf'
     leaflet2 = r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf'
-    leaflet3 = r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf'
-    # leaflet4 = (r'datasources/leaflets_pdf/bula_1701258821940_enalapril.pdf')
+    leaflet3 = r'datasources/leaflets_pdf/bula_1701267508373_Fenobarbital.pdf'
+    leaflet4 = r'datasources/leaflets_pdf/bula_1701266245626_Diazepam.pdf'
     leaflet5 = r'datasources/leaflets_pdf/bula_1701224846500_Hidroclorotiazida.pdf'
-    # leaflet6 = (r'datasources/leaflets_pdf/bula_1701224202414_Sulfametoxazol.pdf')
-    # # leaflet7 = (r'datasources/leaflets_pdf/bula_1701225057399_Acido_acetilsalicílico.pdf')
-    # # leaflet8 = (r'datasources/leaflets_pdf/bula_1701267803044_Remdesivir.pdf')
+    leaflet6 = (r'datasources/leaflets_pdf/bula_1701224202414_Sulfametoxazol.pdf')
+    leaflet7 = (r'datasources/leaflets_pdf/bula_1701225057399_Acido_acetilsalicílico.pdf')
+    leaflet8 = (r'datasources/leaflets_pdf/bula_1701267803044_Remdesivir.pdf')
     leaflet9 = r'datasources/leaflets_pdf/bula_1701260642978_captopril.pdf'
-    leaflet10 = r'datasources/leaflets_pdf/bula_1701263093335_Digoxina.pdf'
-    leaflet11 = r'datasources/leaflets_pdf/bula_1701264125049_Albendazol.pdf'
-    leaflet12 = r'datasources/leaflets_pdf/bula_1701266245626_Diazepam.pdf'
+    leaflet10 = r'datasources/leaflets_pdf/bula_1701263093335_Digoxina.pdf' # digoxina
+    leaflet11 = r'datasources/leaflets_pdf/bula_1701264125049_Albendazol.pdf' # albendazol
+    leaflet12 = r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf'
     leaflet13 = (r'datasources/leaflets_pdf/bula_1701267208681_Bissulfato de clopidogrel.pdf')
-    leaflet14 = (r'datasources/leaflets_pdf/bula_1701267508373_Fenobarbital.pdf')
+    leaflet14 = (r'datasources/leaflets_pdf/bula_1701258821940_enalapril.pdf')
     leaflet15 = (r'datasources/leaflets_pdf/bula_1701268132552_Dipirona.pdf')
     leaflet16 = (r'datasources/leaflets_pdf/bula_1701268966313_Budesonida.pdf')
     leaflet17 = (r'datasources/leaflets_pdf/bula_1701269088550_Loratadina.pdf')
@@ -534,17 +655,48 @@ if __name__ == '__main__':
     leaflet19 = (r'datasources/leaflets_pdf/bula_1701266990892_Varfarina.pdf')
     leaflet20 = (r'datasources/leaflets_pdf/bula_1701224718747_Cefalexina.pdf')
     leaflet21 = (r'datasources/leaflets_pdf/bula_1701224448044_Trimetoprima.pdf')
+    leaflet22 = (r'datasources/leaflets_pdf/bula_1701631169096_Dexametasona.pdf')
 
-    calc = CalcSimilarity(leaflet12, leaflet14)
-    calc2 = CalcSimilarity(leaflet1, leaflet2)
-    # calc.measure_similarity_by_chunk()
-    # calc.measure_similarity_by_word()
-    # calc2.measure_similarity_by_word()
-    # calc.measure_similarity_by_bigstring()
-    # calc2.measure_similarity_by_bigstring()
-    # calc.measure_similarity_by_chunk_jaro()
-    # calc2.measure_similarity_by_chunk_jaro()
-    calc.measure_similarity_by_chunk_levenshtein()
-    # calc2.measure_similarity_by_chunk_levenshtein()
-    # calc.measure_similarity_by_chunk_levenshtein()
-    # print("--------------------------------------------------")
+
+    # # ibuprofeno - enalapril
+    # calc21 = CalcSimilarity(leaflet1, leaflet14) # ibuprofeno e enalapril
+    # calc21.measure_similarity_by_chunk()
+    # calc21.measure_similarity_by_chunk_jaro()
+    # calc21.measure_similarity_by_chunk_levenshtein()
+    #
+    # # hidroclorotiazida - captopril
+    # calc22 = CalcSimilarity(leaflet5, leaflet9) # hidroclorotiazida e captopril
+    # calc22.measure_similarity_by_chunk()
+    # calc22.measure_similarity_by_chunk_jaro()
+    # calc22.measure_similarity_by_chunk_levenshtein()
+
+    # # captopril - fenobarbital
+    # calc23 = CalcSimilarity(leaflet9, leaflet3) # captopril e fenobarbital
+    # calc23.measure_similarity_by_chunk()
+    # calc23.measure_similarity_by_chunk_jaro()
+    # calc23.measure_similarity_by_chunk_levenshtein()
+
+    # # hidroclorotiazida - budesonida
+    # calc24 = CalcSimilarity(leaflet5, leaflet16) # hidroclorotiazida e budesonida
+    # calc24.measure_similarity_by_chunk()
+    # calc24.measure_similarity_by_chunk_jaro()
+    # calc24.measure_similarity_by_chunk_levenshtein()
+
+    # # dexametasona - albendazole
+    # calc25 = CalcSimilarity(leaflet22, leaflet11) # dexametasona e albendazole
+    # calc25.measure_similarity_by_chunk()
+    # calc25.measure_similarity_by_chunk_jaro()
+    # calc25.measure_similarity_by_chunk_levenshtein()
+
+    # # # dexametasona - omepazol
+    # calc26 = CalcSimilarity(leaflet22, leaflet12) # dexametasona e omepazol
+    # calc26.measure_similarity_by_chunk()
+    # calc26.measure_similarity_by_chunk_jaro()
+    # calc26.measure_similarity_by_chunk_levenshtein()
+
+    # # # dexametasona - ibuprofeno
+    calc27 = CalcSimilarity(leaflet22, leaflet1) # dexametasona e ibuprofeno
+    calc27.measure_similarity_by_chunk()
+    calc27.measure_similarity_by_chunk_jaro()
+    calc27.measure_similarity_by_chunk_levenshtein()
+

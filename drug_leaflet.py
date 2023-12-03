@@ -338,7 +338,7 @@ class Leaflet:
 
         # print("------------------INICIO DE INTERAÇÕES---------------\n", self.doc[span.start:span2.start].text,
         #       "\n----------------FIM DE INTERAÇÕES-----------------")
-        print("Seção de Interações Medicamentosas extraída com sucesso!")
+        print("Drug Interactions Section successfully extracted!")
         # print([s for s in self.doc[span.start:span2.start].sents][:-2])
         return [s for s in self.doc[span.start:span2.start].sents][:-2]
         # [:-2] para retirar os tokens "5" e ".", que  é o início da próxima frase após o padrão "Interações medicamentosas"
@@ -376,7 +376,7 @@ class Leaflet:
 
         # print("------------------INICIO DE DEFINIÇÃO    ---------------\n", self.doc[span.start-2:span2.start -2 ].text,
         #       "\n----------------FIM DE DEFINIÇÃO -----------------")
-        # print("Extração da seção de Caracterização do Medicamento extraída com sucesso!")
+        print("Medicine Characterization Section extracted successfully!")
         return [s for s in self.doc[span.start:span2.start].sents][:-2]
         # [:-2] para retirar os tokens "5" e ".", que  é o início da próxima frase após o padrão "Interações medicamentosas"
 
@@ -496,14 +496,16 @@ class Leaflet:
 
 
 if __name__ == '__main__':
-    # leaflet1 = Leaflet('datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf')  # ibuprofeno
-    # print("Drug name:", leaflet1.get_drug_name())
-    # print("Manufacturer:", leaflet1.get_manufacturer())
-    # print("Excipients:", leaflet1.get_excipients())
-    # print("Composition:", leaflet1.get_composition())
-    # leaflet1.get_interactions_section_sents()
-    # leaflet1.get_definitions_section_sents()
-    #
+    leaflet1 = Leaflet('datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf')  # ibuprofeno
+    print("Drug name:", leaflet1.get_drug_name())
+    print("Manufacturer:", leaflet1.get_manufacturer())
+    print("Excipients:", leaflet1.get_excipients())
+    print("Composition:", leaflet1.get_composition())
+    leaflet1.get_interactions_section_sents()
+    leaflet1.get_definitions_section_sents()
+
+
+
     # # leaflet1.get_definition_drug_section()
     # print("-------------------------------------------------------------------")
     #
@@ -515,7 +517,7 @@ if __name__ == '__main__':
     # leaflet2.get_interactions_section_sents()
     # leaflet2.get_definitions_section_sents()
     # print("-------------------------------------------------------------------")
-    # #
+    #
     # leaflet3 = Leaflet(r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf')
     # print("Drug name:", leaflet3.get_drug_name())
     # print("Manufacturer:", leaflet3.get_manufacturer())
@@ -600,12 +602,12 @@ if __name__ == '__main__':
     # print("-------------------------------------------------------------------")
     # #
     #
-    leaflet12 = Leaflet(r'datasources/leaflets_pdf/bula_1701266245626_Diazepam.pdf')
+    # leaflet12 = Leaflet(r'datasources/leaflets_pdf/bula_1701266245626_Diazepam.pdf')
     # print("Drug name:", leaflet12.get_drug_name())
     # print("Manufacturer:", leaflet12.get_manufacturer())
     # print("Excipients:", leaflet12.get_excipients())
     # print("Composition:", leaflet12.get_composition())
-    leaflet12.get_interactions_section_sents()
+    # leaflet12.get_interactions_section_sents()
     # leaflet12.get_definitions_section_sents()
     # print("-------------------------------------------------------------------")
     # # #
@@ -618,13 +620,13 @@ if __name__ == '__main__':
     # leaflet13.get_definitions_section_sents()
     # print("-------------------------------------------------------------------")
     # #
-    leaflet14 = Leaflet(r'datasources/leaflets_pdf/bula_1701267508373_Fenobarbital.pdf')
+    # leaflet14 = Leaflet(r'datasources/leaflets_pdf/bula_1701267508373_Fenobarbital.pdf')
     # print("Drug name:", leaflet14.get_drug_name())
     # print("Manufacturer:", leaflet14.get_manufacturer())
     # print("Excipients:", leaflet14.get_excipients())
     # print("Composition:", leaflet14.get_composition())
     # leaflet14.get_interactions_section_sents()
-    leaflet14.get_definitions_section_sents()
+    # leaflet14.get_definitions_section_sents()
     # print("-------------------------------------------------------------------")
     # #
     # leaflet15 = Leaflet(r'datasources/leaflets_pdf/bula_1701268132552_Dipirona.pdf')
