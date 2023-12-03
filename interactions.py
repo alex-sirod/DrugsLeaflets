@@ -118,10 +118,10 @@ class InteractionParser:
                         if token.lemma_.lower() not in self.stoplist_interactions:
                             for i in self.group_list:
                                 if self.set_stemm(token.text) == self.set_stemm(i):
-                                    print("ENTROU NO IF")
-                                    #
-                                    print("Texto consultado:",token.text, "está na lista?",
-                                          self.set_stemm(token.text) in self.group_list, '--->', i, self.set_stemm(i))
+                                    # print("ENTROU NO IF")
+                                    # #
+                                    # print("Texto consultado:",token.text, "está na lista?",
+                                    #       self.set_stemm(token.text) in self.group_list, '--->', i, self.set_stemm(i))
                                     triggers_words_init.append(token.text.lower())
                 # # print("Processing chunks...")
                 # for nc in s.noun_chunks:
