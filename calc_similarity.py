@@ -54,10 +54,10 @@ class CalcSimilarity:
         print(f"Tamanho de B:{self.qty_B}, peso de B:{self.weight_B}")
         print(self.drug_B_constraint)
 
-
         print("----------------------------------------------------------------------------------------------------")
         print("                                 RESULTADOS DE SIMILARIDADE                                         ")
         print("----------------------------------------------------------------------------------------------------")
+
     def set_stemm(self, text):
         words = word_tokenize(text, language='portuguese')
         lemmatizer = RSLPStemmer()
@@ -80,6 +80,7 @@ class CalcSimilarity:
     def measure_similarity_by_chunk(self):
         global i
         measure_sim_chunk = []
+        store_sim_chunk = []
         # mensura palavras e frase nominais iguais
 
         for j in self.drug_B_quality:
@@ -87,7 +88,8 @@ class CalcSimilarity:
             for i in self.drug_A_constraint:
                 # print(self.set_stemm(i[0].lower()))
                 if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
-                    print(self.set_stemm(i[0].lower()), "< == >", self.set_stemm(j.lower()))
+                    print(self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
+                    store_sim_chunk.append(f"{i[0].lower()} == {j.lower()}")
                     measure_sim_chunk.append(i[1] * self.weight_A)
                 else:
                     measure_sim_chunk.append(0)
@@ -95,10 +97,11 @@ class CalcSimilarity:
         for j in self.drug_A_quality:
             # print(self.set_stemm(j.lower()))
             for i in self.drug_B_constraint:
-            # print(self.set_stemm(i[0].lower()))
+                # print(self.set_stemm(i[0].lower()))
 
                 if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
-                    print(self.set_stemm(i[0].lower()), "< == >", self.set_stemm(j.lower()))
+                    print(self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
+                    store_sim_chunk.append(f"{i[0].lower()} == {j.lower()}")
                     measure_sim_chunk.append(i[1] * self.weight_B)
                 else:
                     measure_sim_chunk.append(0)
@@ -112,14 +115,26 @@ class CalcSimilarity:
         # print("Quantidade:", len(measure_sim_chunk))
 
         print(f"Similaridade por frases nominais entre |{self.leaflet1.get_atc_code()[0]}| e"
-              f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(measure_sim_chunk)} e máximo: {max(measure_sim_chunk)}")
+              f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(measure_sim_chunk)} "
+              f"e máximo: {max(measure_sim_chunk)}")
 
         measure_sim_chunk = sum(
             [(a / 100) * (100 / sum(measure_sim_chunk)) for a in measure_sim_chunk if sum(measure_sim_chunk) != 0])
+
+        print(f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
+              f" |{self.leaflet2.get_atc_code()[0]}| requerem sua atenção pela presença dos seguintes termos: \n"
+              f" {store_sim_chunk}" if measure_sim_chunk > 0
+              else f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
+                   f" |{self.leaflet2.get_atc_code()[0]}| parece não ter interações medicamentosas!")
+
         return measure_sim_chunk
 
     def measure_similarity_by_word(self):
+        """A similaridade por palavras é muito sensível a variações sutis de termos,
+        capturando palavra simples sem valor de informação"""
+
         measure_sim_word = []
+        store_similar_words = []
         local_drug_A_quality = []
         local_drug_B_quality = []
         local_drug_A_constraint = []
@@ -152,12 +167,13 @@ class CalcSimilarity:
 
         # mensura palavras iguais
 
-
         for i in local_drug_A_quality:
             # print(self.set_stemm(i[0].lower()))
             for j in local_drug_B_constraint:
                 # print(self.set_stemm(j.lower()))
                 if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
+                    print(self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
+                    store_similar_words.append(f"{i[0].lower()} == {j.lower()}")
                     measure_sim_word.append(i[1] * self.weight_A)
                 else:
                     measure_sim_word.append(0)
@@ -167,6 +183,8 @@ class CalcSimilarity:
             for j in local_drug_A_constraint:
                 # print(self.set_stemm(j.lower()))
                 if self.set_stemm(i[0].lower()) == self.set_stemm(j.lower()):
+                    print(self.set_stemm(i[0].lower()), " == ", self.set_stemm(j.lower()))
+                    store_similar_words.append(f"{i[0].lower()} == {j.lower()}")
                     measure_sim_word.append(i[1] * self.weight_B)
                 else:
                     measure_sim_word.append(0)
@@ -183,9 +201,19 @@ class CalcSimilarity:
         print(f"Similaridade por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
               f" |{self.leaflet2.get_atc_code()[0]}| é {measure_sim_word} ")
 
+        print(f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
+              f" |{self.leaflet2.get_atc_code()[0]}| requerem sua atenção pela presença dos seguintes termos: \n"
+              f" {store_similar_words}" if measure_sim_word > 0
+              else f"A prescrição com os medicamentos |{self.leaflet1.get_atc_code()[0]}| e"
+                   f" |{self.leaflet2.get_atc_code()[0]}| parece não ter interações medicamentosas!")
+
         return measure_sim_word
 
     def measure_similarity_by_bigstring(self):
+
+        """A similaridade por bigstring é uma opção exemplificativa e provocativa de uso do medidor interno de spacy,
+        uma sugestão de melhoria seria estabelecer um limite de avaliação baseadao no tamanho da menor lista
+        """
         measure_spacy_values = []
         local_drug_A_quality = []
         local_drug_B_quality = []
@@ -311,23 +339,6 @@ class CalcSimilarity:
         measure_jellyfish_values.append(
             jellyfish.jaro_winkler_similarity(jellyfish_drug_B_quality, jellyfish_drug_A_constraint))
 
-        # print("Measure Jellyfish Jaro-Winkler Values:", statistics.mean(measure_jellyfish_values))
-        #
-        # print("-------Calibrando ------------")
-        # print("Similaridade por jellyfish:       A_quality / A_quality",
-        #       jellyfish.jaro_winkler_similarity(jellyfish_drug_A_quality, jellyfish_drug_A_quality))
-        # print("Similaridade por jellyfish:       B_quality / B_quality",
-        #       jellyfish.jaro_winkler_similarity(jellyfish_drug_B_quality, jellyfish_drug_B_quality))
-        # print("----------Testando---------")
-        # print("Similaridade por jellyfish:    A_quality / B_constraint",
-        #       jellyfish.jaro_winkler_similarity(jellyfish_drug_A_quality, jellyfish_drug_B_constraint))
-        # print("Similaridade por jellyfish:    B_constraint / A_quality",
-        #       jellyfish.jaro_winkler_similarity(jellyfish_drug_B_constraint, jellyfish_drug_A_quality))
-        # print("Similaridade por jellyfish:    A_constraint / B_quality",
-        #       jellyfish.jaro_winkler_similarity(jellyfish_drug_A_constraint, jellyfish_drug_B_quality))
-        # print("Similaridade por jellyfish:    B_quality / A_constraint",
-        #       jellyfish.jaro_winkler_similarity(jellyfish_drug_B_quality, jellyfish_drug_A_constraint))
-        # print("-------------------")
 
         print(f"Similaridade Distância de Jaro por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
               f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(measure_jellyfish_values)} "
@@ -370,7 +381,6 @@ class CalcSimilarity:
         print(f"Similaridade Distância de Levenshtein por frases nominais entre |{self.leaflet1.get_atc_code()[0]}| e"
               f" |{self.leaflet2.get_atc_code()[0]}| é média: {statistics.mean(lev_measure_chunk)} e "
               f"máximo: {max(lev_measure_chunk)}")
-
 
         lev_measure_sim_chunk = sum(
             [(a / 100) * (100 / sum(lev_measure_chunk)) for a in lev_measure_chunk if sum(lev_measure_chunk) != 0])
@@ -460,7 +470,6 @@ class CalcSimilarity:
 
 
 if __name__ == '__main__':
-
     leaflet1 = r'datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf'  # ibuprofeno
     leaflet2 = (r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf')
     leaflet3 = (r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf')
@@ -483,11 +492,13 @@ if __name__ == '__main__':
     leaflet20 = (r'datasources/leaflets_pdf/bula_1701224718747_Cefalexina.pdf')
     leaflet21 = (r'datasources/leaflets_pdf/bula_1701224448044_Trimetoprima.pdf')
 
-
     calc = CalcSimilarity(leaflet12, leaflet14)
-    #calc.measure_similarity_by_chunk()
-    calc.measure_similarity_by_word()
-    # calc.measure_similarity_by_bigstring()
+    calc2 = CalcSimilarity(leaflet1, leaflet2)
+    # calc.measure_similarity_by_chunk()
+    # calc.measure_similarity_by_word()
+    # calc2.measure_similarity_by_word()
+    calc.measure_similarity_by_bigstring()
+    calc2.measure_similarity_by_bigstring()
     # calc.measure_similarity_by_word_jaro()
     # calc.measure_similarity_by_chunk_levenshtein()
     # calc.measure_similarity_by_word_levenshtein()

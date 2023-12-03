@@ -120,8 +120,8 @@ class InteractionParser:
                                 if self.set_stemm(token.text) == self.set_stemm(i):
                                     print("ENTROU NO IF")
                                     #
-                                    # print("Texto consultado:",token.text, "está na lista?",
-                                    #       self.set_stemm(token.text) in self.group_list, '--->', i, self.set_stemm(i))
+                                    print("Texto consultado:",token.text, "está na lista?",
+                                          self.set_stemm(token.text) in self.group_list, '--->', i, self.set_stemm(i))
                                     triggers_words_init.append(token.text.lower())
                 # # print("Processing chunks...")
                 # for nc in s.noun_chunks:
@@ -306,8 +306,8 @@ if __name__ == '__main__':
     leaflet3 = InteractionParser(r'datasources/leaflets_pdf/bula_1701267508373_Fenobarbital.pdf')
     # leaflet1.get_interactions_flags()
     # leaflet4.get_definitions_flags()
-    # leaflet3.get_interactions_flags()
-    leaflet3.get_definitions_flags()
+    # leaflet2.get_interactions_flags()
+    # leaflet1.get_definitions_flags()
     # leaflet2.get_whats_is()
     # leaflet2.dependency_drug()
     # print(f"Nome na Bula : {leaflet1.drug_name}")
@@ -318,6 +318,6 @@ if __name__ == '__main__':
     # print(get_group_atc_code("A0"))
     # print(get_group_atc_code(leaflet2.get_atc_code()[1]))
     #
-    # for i in get_similarity_lists(leaflet3, leaflet4):
-    #     print(i)
+    for i in get_similarity_lists(leaflet1, leaflet2):
+        print(i)
     # get_similarity_lists(leaflet3, leaflet4)
