@@ -440,7 +440,7 @@ ATC = {
             "C": ["PREPARAÇÕES ANTIMIGRÂNICAS"],
         }],
 
-        "03": ["antiepiléticos", {
+        "03": ["antiepiléticos anticonvulsionantes", {
             "A": ["ANTIEPILÉTICOS"],
         }],
         "04": ["antiparksonianos", {
@@ -796,6 +796,7 @@ list_group = ['preparados estomatológicos', 'preparados estomatológicos',
               "Hormônios",
               "Anti-hipertensivos",
               "Anticoagulantes",
+              "Anticonvulsivantes", "anticonvulsivantes",
               "Antialérgicos",
               "Broncodilatadores",
               "Diuréticos",
