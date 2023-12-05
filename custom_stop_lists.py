@@ -20,6 +20,7 @@ class StopListInteraction:
 
         ]
 
+
     def get_stoplist_interactions(self):
         return self.stoplist_interactions
 

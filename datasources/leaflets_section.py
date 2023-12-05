@@ -41,7 +41,6 @@ class LeafletMetadata:
             "Informe também à empresa através do seu serviço de atendimento.",
             "Em caso de uso de grande quantidade deste medicamento, procure rapidamente socorro médico e leve a embalagem ou bula do medicamento, se possível.",
             "Ligue para 0800 722 6001, se você precisar de mais orientações.",
-            # TODO verificar se esse número é o mesmo para todos os medicamentos
             "Siga corretamente o modo de usar, não desaparecendo os sintomas procure orientação médica.",
             "contraindicado para"
         ],
