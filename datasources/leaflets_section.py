@@ -1,46 +1,33 @@
-
-
-class LeafletSection:
+class LeafletMetadata:
     """
     This class is a container for the sections of the leaflet.
     """
+    stoplist_interactions = None
+
     def __init__(self):
-        self.main_section = [
-            'IDENTIFICAÇÃO DO MEDICAMENTO',
-            'INFORMAÇÕES AO PACIENTE',
-            'DIZERES LEGAIS',
+        self.MAIN_SECTION = [
+            "IDENTIFICAÇÃO DO MEDICAMENTO",
+            "INFORMAÇÕES AO PACIENTE",
+            "DIZERES LEGAIS",
         ]
         # INFORMAÇÕES AO PACIENTE
-        self.secondary_section = [
+        self.SECONDARY_SECTION = [
             "APRESENTAÇÃO", "APRESENTAÇÕES", "APRESENTAÇÕES COMERCIALIZADAS",
             # nesse intervalo são exibidas administração
             'COMPOSIÇÃO',
             "PARA QUE ESTE MEDICAMENTO É INDICADO?",
             "COMO ESTE MEDICAMENTO FUNCIONA?",
             "QUANDO NÃO DEVO USAR ESTE MEDICAMENTO?",
-            "O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?",# aqui encontra-se a secção de interações medicamentosas
+            "O QUE DEVO SABER ANTES DE USAR ESTE MEDICAMENTO?",
+            # aqui encontra-se a secção de interações medicamentosas
             "ONDE, COMO E POR QUANTO TEMPO POSSO GUARDAR ESTE MEDICAMENTO?",
-            "COMO DEVO USAR ESTE MEDICAMENTO?", #POSOLOGIA
+            "COMO DEVO USAR ESTE MEDICAMENTO?",  # POSOLOGIA
             "O QUE DEVO FAZER QUANDO EU ME ESQUECER DE USAR ESTE MEDICAMENTO?",
             "QUAIS OS MALES QUE ESTE MEDICAMENTO PODE ME CAUSAR?",
             "O QUE FAZER SE ALGUÉM USAR UMA QUANTIDADE MAIOR DO QUE A INDICADA DESTE MEDICAMENTO?",
         ]
-        self.administration = [
-            "VIA DE ADMINISTRAÇÃO:"
-            "USO ADULTO E PEDIÁTRICO",
-            "USO ADULTO",
-            "USO PEDIÁTRICO",
-            "PEDIÁTRICO ACIMA DE 3 MESES.",
-            "USO EM IDOSOS",
-        ]
 
-        self.infos_general = [
-            "Após preparo",
-            "modo de usar",
-
-        ]
-
-        self.alerts_general = [
+        self.GENERAL_WARNINGS = [
             "Este medicamento não deve ser usado por mulheres grávidas sem orientação médica ou do cirurgião-dentista.",
             "Informe ao seu médico ou cirurgião-dentista se você está fazendo uso de algum outro medicamento."
             "Não use medicamento sem o conhecimento do seu médico. Pode ser perigoso para a sua saúde.",
@@ -53,14 +40,12 @@ class LeafletSection:
             "Informe ao seu médico, cirurgião - dentista ou farmacêutico o aparecimento de reações indesejáveis pelo uso do medicamento.",
             "Informe também à empresa através do seu serviço de atendimento.",
             "Em caso de uso de grande quantidade deste medicamento, procure rapidamente socorro médico e leve a embalagem ou bula do medicamento, se possível.",
-            "Ligue para 0800 722 6001, se você precisar de mais orientações.", # TODO verificar se esse número é o mesmo para todos os medicamentos
+            "Ligue para 0800 722 6001, se você precisar de mais orientações.",
             "Siga corretamente o modo de usar, não desaparecendo os sintomas procure orientação médica.",
             "contraindicado para"
-
-
         ],
 
-        self.interactions_types = [
+        self.INTERACTION_TYPES = [
             "Interações medicamentosas",
             "Interação com alimentos",
             "Interação com álcool",
@@ -106,12 +91,57 @@ class LeafletSection:
             "Interação medicamento-substância química",
         ]
 
-        self.what_i_should_know = [
-            "Efeitos sobre a capacidade de dirigir veículos e de operar máquinas",
-            "Gravidez e amamentação",
-            "Uso em idosos, crianças e outros grupos de risco",
-            "Interações medicamentosas",
-            "Alterações na capacidade de dirigir veículos e operar máquinas",
+        self.MEASURE_UNITS = ["mg", "ml", "g", "mcg", "ui", "mg/ml", "g/ml", "mg/g",
+                              "mcl", "l", "u", "q.s.p", "qsp", "%"]
 
-            ]
-        self.measures_units = ['mg', 'ml', 'g', 'mcg', 'ui', 'mg/ml', 'g/ml', 'mg/g', 'mg/ml,']
+        # MCG = micrograma
+        # MG = miligrama
+        # G = grama
+        # MCL = microlitro
+        # ML = mililitro
+        # L = litro
+        # UI = unidade
+        # internacional
+        # U = unidade
+        # % = porcentagem
+
+        self.PRESENTATION = [
+            "veículo", "veículo q.s.p", "veículo qsp", "veículo q.s.p.", "veículo qsp.",
+            "excipientes", "excipientes q.s.p", "excipientes qsp", "excipientes q.s.p.", "excipientes qsp.",
+            "Equivalente a", "equivalente a", "equivalente", "equivalente a", "equivalente", "equivalente a",
+            "cápsula", "comprimido", "cápsulas", "comprimidos", "drágea", "drágeas",
+            "solução", "solução oral", "solução injetável",
+            "solução nasal", "solução oftálmica", "solução otológica", "suspensão", "suspensão oral",
+            "suspensão injetável", "suspensão nasal", "suspensão oftálmica", "suspensão otológica",
+            "pó", "pó para solução", "pó para solução injetável", "pó para solução oral", "pó oral",
+            "pó para solução nasal", "pó para solução oftálmica", "pó para solução otológica",
+            "pó para suspensão oral", "pó para suspensão injetável", "pó para suspensão nasal",
+            "pó para suspensão oftálmica", "pó para suspensão otológica", "pó para solução oral",
+            "pó para solução injetável", "pó para solução nasal", "pó para solução oftálmica",
+            "pó para solução otológica", "pó para suspensão oral", "pó para suspensão injetável",
+            "pó para suspensão nasal", "pó para suspensão oftálmica", "pó para suspensão otológica",
+            "pó para solução oral", "pó para solução injetável", "pó para solução nasal",
+            "pó para solução oftálmica", "pó para solução otológica", "pó para suspensão oral",
+            "pó para suspensão injetável", "pó para suspensão nasal", "pó para suspensão oftálmica",
+            "pó para suspensão otológica", "pó para solução oral", "pó para solução injetável",
+            "pó para solução nasal", "pó para solução oftálmica", "pó para solução otológica",
+            "pó para suspensão oral", "pó para suspensão injetável", "pó para suspensão nasal",
+            "pó para suspensão oftálmica", "pó para suspensão otológica"]
+
+        self.stoplist_interactions = [
+            # FRASES sem relevância para a RECUPERAÇÃO
+            "Interações medicamentosas", "Interações Medicamentosas",
+            "Não há interações medicamentosas descritas para este medicamento",
+            "Informe ao seu médico ou cirurgião-dentista se você está fazendo uso de algum outro medicamento.",
+            "Não use medicamento sem o conhecimento do seu médico.",
+            "Pode ser perigoso para a sua saúde. ",
+            # PALAVRAS sem relevância para a RECUPERAÇÃO
+            "precaução", "necessário", "adicionais", "efeito", "tratamento", "medicamento",
+            "adicional", "refeição", "médico", "cirurgião-dentista", "conhecimento", "Interações medicamentosas",
+            "ação", "o gravidez", "gravidez", "amamentação", "criança", "idoso", "uso", "os", "caso", "saúde",
+            "pílulas", "indesejável", "indesejáveis", "Pílulas", "interação", "interações", "medicamentoso",
+            "ouro", "inibidor", "inibidores", "inibidora", "inibidoras", "inibitório", "inibitórios", "inibitória",
+            "exame", "exames", "examinado", "examinada", "examinados", "examinadas", "o exame", "os exames", "fez",
+            "seguinte", "pesquisa", "pesquisas", "pesquisado", "pesquisada", "pesquisados", "pesquisadas",
+
+        ]
