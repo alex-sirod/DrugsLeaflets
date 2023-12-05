@@ -11,11 +11,13 @@ import spacy  # used in clean list and measure similarity by spacy
 nlp = spacy.load("pt_core_news_lg")
 
 
-# # Baixe o stemmer RSLP
-# try:
-#     nltk.data.find('tokenizers/rslp')
-# except LookupError:
-#     nltk.download('rslp')
+# Baixe o stemmer RSLP
+try:
+    nltk.data.find('tokenizers/rslp')
+except LookupError:
+    nltk.download('rslp')
+
+
 class CalcSimilarity:
     def __init__(self, calc_leaflet1, calc_leaflet2):
         self.nlp = spacy.load("pt_core_news_lg")
@@ -132,11 +134,9 @@ class CalcSimilarity:
               else f"Prescrition with medications |{self.leaflet1.get_atc_code()[0]}| e"
                    f" |{self.leaflet2.get_atc_code()[0]}| appears to have no drug interactions!")
 
-
         return measure_sim_chunk
 
     def measure_similarity_by_word(self):
-
 
         measure_sim_word = []
         store_similar_words = []
@@ -499,7 +499,6 @@ class CalcSimilarity:
             [(a / 100) * (100 / sum(lev_measure_sim_word)) for a in lev_measure_sim_word if
              sum(lev_measure_sim_word) != 0])
 
-
         print(f"Similaridade Distância de Levenshtein por palavras entre |{self.leaflet1.get_atc_code()[0]}| e"
               f" |{self.leaflet2.get_atc_code()[0]}| é  mín: {min_lev_measure_sim_word}, "
               f"méd: {mean_lev_measure_sim_word}, máx:{max_lev_measure_sim_word}")
@@ -522,181 +521,176 @@ class CalcSimilarity:
 
 
 if __name__ == '__main__':
+    leaflet1 = r'datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf'
+    leaflet2 = r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf'
+    leaflet3 = r'datasources/leaflets_pdf/bula_1701267508373_Fenobarbital.pdf'
+    leaflet4 = r'datasources/leaflets_pdf/bula_1701266245626_Diazepam.pdf'
+    leaflet5 = r'datasources/leaflets_pdf/bula_1701224846500_Hidroclorotiazida.pdf'
+    leaflet6 = r'datasources/leaflets_pdf/bula_1701224202414_Sulfametoxazol.pdf'
+    leaflet7 = r'datasources/leaflets_pdf/bula_1701225057399_Acido_acetilsalicílico.pdf'
+    leaflet8 = r'datasources/leaflets_pdf/bula_1701267803044_Remdesivir.pdf'
+    leaflet9 = r'datasources/leaflets_pdf/bula_1701260642978_captopril.pdf'
+    leaflet10 = r'datasources/leaflets_pdf/bula_1701263093335_Digoxina.pdf'
+    leaflet11 = r'datasources/leaflets_pdf/bula_1701264125049_Albendazol.pdf'
+    leaflet12 = r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf'
+    leaflet13 = r'datasources/leaflets_pdf/bula_1701267208681_Bissulfato de clopidogrel.pdf'
+    leaflet14 = r'datasources/leaflets_pdf/bula_1701258821940_enalapril.pdf'
+    leaflet15 = r'datasources/leaflets_pdf/bula_1701268132552_Dipirona.pdf'
+    leaflet16 = r'datasources/leaflets_pdf/bula_1701268966313_Budesonida.pdf'
+    leaflet17 = r'datasources/leaflets_pdf/bula_1701269088550_Loratadina.pdf'
+    leaflet18 = r'datasources/leaflets_pdf/bula_1701266792068_Paracetamol.pdf'
+    leaflet19 = r'datasources/leaflets_pdf/bula_1701266990892_Varfarina.pdf'
+    leaflet20 = r'datasources/leaflets_pdf/bula_1701224718747_Cefalexina.pdf'
+    leaflet21 = r'datasources/leaflets_pdf/bula_1701224448044_Trimetoprima.pdf'
+    leaflet22 = r'datasources/leaflets_pdf/bula_1701631169096_Dexametasona.pdf'
 
     # calc1 = CalcSimilarity(leaflet1, leaflet2)
     # calc2 = CalcSimilarity(leaflet1, leaflet3)
 
-    # calc3 = CalcSimilarity(leaflet12, leaflet14) # omeprazol e enalapril
-    # calc3.measure_similarity_by_chunk()
-    # calc3.measure_similarity_by_chunk_jaro()
-    # calc3.measure_similarity_by_chunk_levenshtein()
-    #
-    # calc4 = CalcSimilarity(leaflet10, leaflet11) # omeprazol e dipirona
-    # calc4.measure_similarity_by_chunk()
-    # calc4.measure_similarity_by_chunk_jaro()
-    # calc4.measure_similarity_by_chunk_levenshtein()
+    calc3 = CalcSimilarity(leaflet12, leaflet14)  # omeprazol e enalapril
+    calc3.measure_similarity_by_chunk()
+    calc3.measure_similarity_by_chunk_jaro()
+    calc3.measure_similarity_by_chunk_levenshtein()
 
-    # # diazepam - clopidogrel
-    # calc5 = CalcSimilarity(leaflet4, leaflet13) # diazepam e clopidogrel
-    # calc5.measure_similarity_by_chunk()
-    # calc5.measure_similarity_by_chunk_jaro()
-    # calc5.measure_similarity_by_chunk_levenshtein()
+    calc4 = CalcSimilarity(leaflet10, leaflet11)  # omeprazol e dipirona
+    calc4.measure_similarity_by_chunk()
+    calc4.measure_similarity_by_chunk_jaro()
+    calc4.measure_similarity_by_chunk_levenshtein()
 
-    # # fenobarbital - remdesivir Não possi=ui código ATC
+    # diazepam - clopidogrel
+    calc5 = CalcSimilarity(leaflet4, leaflet13)  # diazepam e clopidogrel
+    calc5.measure_similarity_by_chunk()
+    calc5.measure_similarity_by_chunk_jaro()
+    calc5.measure_similarity_by_chunk_levenshtein()
+
+    # # fenobarbital - remdesivir Não possui código ATC
     # calc6 = CalcSimilarity(leaflet3, leaflet8) # fenobarbital e remdesivir
     # calc6.measure_similarity_by_chunk()
     # calc6.measure_similarity_by_chunk_jaro()
     # calc6.measure_similarity_by_chunk_levenshtein()
 
     # omeprazol - amoxicilina
-    # calc7 = CalcSimilarity(leaflet12, leaflet2) # omeprazol e amoxicilina
-    # calc7.measure_similarity_by_chunk()
-    # calc7.measure_similarity_by_chunk_jaro()
-    # calc7.measure_similarity_by_chunk_levenshtein()
-    #
-    # #hidroclorotiazida - diazepam
-    # calc8 = CalcSimilarity(leaflet5, leaflet4) # hidroclorotiazida e diazepam
-    # calc8.measure_similarity_by_chunk()
-    # calc8.measure_similarity_by_chunk_jaro()
-    # calc8.measure_similarity_by_chunk_levenshtein()
+    calc7 = CalcSimilarity(leaflet12, leaflet2)  # omeprazol e amoxicilina
+    calc7.measure_similarity_by_chunk()
+    calc7.measure_similarity_by_chunk_jaro()
+    calc7.measure_similarity_by_chunk_levenshtein()
 
-    # # enalapril - loratadina
-    # calc9 = CalcSimilarity(leaflet14, leaflet17) # enalapril e loratadina
-    # calc9.measure_similarity_by_chunk()
-    # calc9.measure_similarity_by_chunk_jaro()
-    # calc9.measure_similarity_by_chunk_levenshtein()
+    # hidroclorotiazida - diazepam
+    calc8 = CalcSimilarity(leaflet5, leaflet4)  # hidroclorotiazida e diazepam
+    calc8.measure_similarity_by_chunk()
+    calc8.measure_similarity_by_chunk_jaro()
+    calc8.measure_similarity_by_chunk_levenshtein()
 
-    # # omeprazol - loratadina
-    # calc10 = CalcSimilarity(leaflet12, leaflet17) # omeprazol e loratadina
-    # calc10.measure_similarity_by_chunk()
-    # calc10.measure_similarity_by_chunk_jaro()
-    # calc10.measure_similarity_by_chunk_levenshtein()
+    # enalapril - loratadina
+    calc9 = CalcSimilarity(leaflet14, leaflet17)  # enalapril e loratadina
+    calc9.measure_similarity_by_chunk()
+    calc9.measure_similarity_by_chunk_jaro()
+    calc9.measure_similarity_by_chunk_levenshtein()
 
-    # # digoxina - diazepam
-    # calc11 = CalcSimilarity(leaflet10, leaflet4) # digoxina e diazepam
-    # calc11.measure_similarity_by_chunk()
-    # calc11.measure_similarity_by_chunk_jaro()
-    # calc11.measure_similarity_by_chunk_levenshtein()
+    # omeprazol - loratadina
+    calc10 = CalcSimilarity(leaflet12, leaflet17)  # omeprazol e loratadina
+    calc10.measure_similarity_by_chunk()
+    calc10.measure_similarity_by_chunk_jaro()
+    calc10.measure_similarity_by_chunk_levenshtein()
 
-    # # sulfametoxazol - budesonida
-    # calc12 = CalcSimilarity(leaflet6, leaflet16) # sulfametoxazol e budesonida
-    # calc12.measure_similarity_by_chunk()
-    # calc12.measure_similarity_by_chunk_jaro()
-    # calc12.measure_similarity_by_chunk_levenshtein()
+    # digoxina - diazepam
+    calc11 = CalcSimilarity(leaflet10, leaflet4)  # digoxina e diazepam
+    calc11.measure_similarity_by_chunk()
+    calc11.measure_similarity_by_chunk_jaro()
+    calc11.measure_similarity_by_chunk_levenshtein()
 
-    # # amoxicilina - loratadina
-    # calc13 = CalcSimilarity(leaflet2, leaflet17) # amoxicilina e loratadina
-    # calc13.measure_similarity_by_chunk()
-    # calc13.measure_similarity_by_chunk_jaro()
-    # calc13.measure_similarity_by_chunk_levenshtein()
+    # sulfametoxazol - budesonida
+    calc12 = CalcSimilarity(leaflet6, leaflet16)  # sulfametoxazol e budesonida
+    calc12.measure_similarity_by_chunk()
+    calc12.measure_similarity_by_chunk_jaro()
+    calc12.measure_similarity_by_chunk_levenshtein()
 
-    # # omeprazol - captopril
+    # amoxicilina - loratadina
+    calc13 = CalcSimilarity(leaflet2, leaflet17)  # amoxicilina e loratadina
+    calc13.measure_similarity_by_chunk()
+    calc13.measure_similarity_by_chunk_jaro()
+    calc13.measure_similarity_by_chunk_levenshtein()
 
-    # calc14 = CalcSimilarity(leaflet12, leaflet9) # omeprazol e captopril
-    # calc14.measure_similarity_by_chunk()
-    # calc14.measure_similarity_by_chunk_jaro()
-    # calc14.measure_similarity_by_chunk_levenshtein()
+    # omeprazol - captopril
+    calc14 = CalcSimilarity(leaflet12, leaflet9)  # omeprazol e captopril
+    calc14.measure_similarity_by_chunk()
+    calc14.measure_similarity_by_chunk_jaro()
+    calc14.measure_similarity_by_chunk_levenshtein()
 
+    # captopril - diazepam
+    calc15 = CalcSimilarity(leaflet9, leaflet4)  # captopril e diazepam
+    calc15.measure_similarity_by_chunk()
+    calc15.measure_similarity_by_chunk_jaro()
+    calc15.measure_similarity_by_chunk_levenshtein()
 
-    # # captopril - diazepam
-    # calc15 = CalcSimilarity(leaflet9, leaflet4) # captopril e diazepam
-    # calc15.measure_similarity_by_chunk()
-    # calc15.measure_similarity_by_chunk_jaro()
-    # calc15.measure_similarity_by_chunk_levenshtein()
+    # enalapril - sulfametoxazole
+    calc16 = CalcSimilarity(leaflet14, leaflet6)  # enalapril e sulfametoxazole
+    calc16.measure_similarity_by_chunk()
+    calc16.measure_similarity_by_chunk_jaro()
+    calc16.measure_similarity_by_chunk_levenshtein()
 
-    # # enalapril - sulfametoxazole
-    # calc16 = CalcSimilarity(leaflet14, leaflet6) # enalapril e sulfametoxazole
-    # calc16.measure_similarity_by_chunk()
-    # calc16.measure_similarity_by_chunk_jaro()
-    # calc16.measure_similarity_by_chunk_levenshtein()
+    # ácido acetilsalicílico - captopril
+    calc17 = CalcSimilarity(leaflet7, leaflet9)  # ácido acetilsalicílico e captopril
+    calc17.measure_similarity_by_chunk()
+    calc17.measure_similarity_by_chunk_jaro()
+    calc17.measure_similarity_by_chunk_levenshtein()
 
-    # # ácido acetilsalicílico - captopril
-    # calc17 = CalcSimilarity(leaflet7, leaflet9) # ácido acetilsalicílico e captopril
-    # calc17.measure_similarity_by_chunk()
-    # calc17.measure_similarity_by_chunk_jaro()
-    # calc17.measure_similarity_by_chunk_levenshtein()
+    # omeprazol - budesonida
+    calc18 = CalcSimilarity(leaflet12, leaflet16)  # omeprazol e budesonida
+    calc18.measure_similarity_by_chunk()
+    calc18.measure_similarity_by_chunk_jaro()
+    calc18.measure_similarity_by_chunk_levenshtein()
 
-    # # omeprazol - budesonida
-    # calc18 = CalcSimilarity(leaflet12, leaflet16) # omeprazol e budesonida
-    # calc18.measure_similarity_by_chunk()
-    # calc18.measure_similarity_by_chunk_jaro()
-    # calc18.measure_similarity_by_chunk_levenshtein()
+    # clopidogrel - budesonida
+    calc19 = CalcSimilarity(leaflet13, leaflet16)  # clopidogrel e budesonida
+    calc19.measure_similarity_by_chunk()
+    calc19.measure_similarity_by_chunk_jaro()
+    calc19.measure_similarity_by_chunk_levenshtein()
 
-    # # clopidogrel - budesonida
-    # calc19 = CalcSimilarity(leaflet13, leaflet16) # clopidogrel e budesonida
-    # calc19.measure_similarity_by_chunk()
-    # calc19.measure_similarity_by_chunk_jaro()
-    # calc19.measure_similarity_by_chunk_levenshtein()
+    # sulfametoxazol - fenobarbital
+    calc20 = CalcSimilarity(leaflet6, leaflet3)  # sulfametoxazol e fenobarbital
+    calc20.measure_similarity_by_chunk()
+    calc20.measure_similarity_by_chunk_jaro()
+    calc20.measure_similarity_by_chunk_levenshtein()
 
-    # # sulfametoxazol - fenobarbital
-    # calc20 = CalcSimilarity(leaflet6, leaflet3) # sulfametoxazol e fenobarbital
-    # calc20.measure_similarity_by_chunk()
-    # calc20.measure_similarity_by_chunk_jaro()
-    # calc20.measure_similarity_by_chunk_levenshtein()
+    # ibuprofeno - enalapril
+    calc21 = CalcSimilarity(leaflet1, leaflet14)  # ibuprofeno e enalapril
+    calc21.measure_similarity_by_chunk()
+    calc21.measure_similarity_by_chunk_jaro()
+    calc21.measure_similarity_by_chunk_levenshtein()
 
-    leaflet1 = r'datasources/leaflets_pdf/bula_1700662857659_ibuprofeno.pdf'
-    leaflet2 = r'datasources/leaflets_pdf/bula_1689362421673_Amoxicilina.pdf'
-    leaflet3 = r'datasources/leaflets_pdf/bula_1701267508373_Fenobarbital.pdf'
-    leaflet4 = r'datasources/leaflets_pdf/bula_1701266245626_Diazepam.pdf'
-    leaflet5 = r'datasources/leaflets_pdf/bula_1701224846500_Hidroclorotiazida.pdf'
-    leaflet6 = (r'datasources/leaflets_pdf/bula_1701224202414_Sulfametoxazol.pdf')
-    leaflet7 = (r'datasources/leaflets_pdf/bula_1701225057399_Acido_acetilsalicílico.pdf')
-    leaflet8 = (r'datasources/leaflets_pdf/bula_1701267803044_Remdesivir.pdf')
-    leaflet9 = r'datasources/leaflets_pdf/bula_1701260642978_captopril.pdf'
-    leaflet10 = r'datasources/leaflets_pdf/bula_1701263093335_Digoxina.pdf' # digoxina
-    leaflet11 = r'datasources/leaflets_pdf/bula_1701264125049_Albendazol.pdf' # albendazol
-    leaflet12 = r'datasources/leaflets_pdf/bula_1700827705685_Omeprazol.pdf'
-    leaflet13 = (r'datasources/leaflets_pdf/bula_1701267208681_Bissulfato de clopidogrel.pdf')
-    leaflet14 = (r'datasources/leaflets_pdf/bula_1701258821940_enalapril.pdf')
-    leaflet15 = (r'datasources/leaflets_pdf/bula_1701268132552_Dipirona.pdf')
-    leaflet16 = (r'datasources/leaflets_pdf/bula_1701268966313_Budesonida.pdf')
-    leaflet17 = (r'datasources/leaflets_pdf/bula_1701269088550_Loratadina.pdf')
-    leaflet18 = (r'datasources/leaflets_pdf/bula_1701266792068_Paracetamol.pdf')
-    leaflet19 = (r'datasources/leaflets_pdf/bula_1701266990892_Varfarina.pdf')
-    leaflet20 = (r'datasources/leaflets_pdf/bula_1701224718747_Cefalexina.pdf')
-    leaflet21 = (r'datasources/leaflets_pdf/bula_1701224448044_Trimetoprima.pdf')
-    leaflet22 = (r'datasources/leaflets_pdf/bula_1701631169096_Dexametasona.pdf')
+    # hidroclorotiazida - captopril
+    calc22 = CalcSimilarity(leaflet5, leaflet9)  # hidroclorotiazida e captopril
+    calc22.measure_similarity_by_chunk()
+    calc22.measure_similarity_by_chunk_jaro()
+    calc22.measure_similarity_by_chunk_levenshtein()
 
+    # captopril - fenobarbital
+    calc23 = CalcSimilarity(leaflet9, leaflet3)  # captopril e fenobarbital
+    calc23.measure_similarity_by_chunk()
+    calc23.measure_similarity_by_chunk_jaro()
+    calc23.measure_similarity_by_chunk_levenshtein()
 
-    # # ibuprofeno - enalapril
-    # calc21 = CalcSimilarity(leaflet1, leaflet14) # ibuprofeno e enalapril
-    # calc21.measure_similarity_by_chunk()
-    # calc21.measure_similarity_by_chunk_jaro()
-    # calc21.measure_similarity_by_chunk_levenshtein()
-    #
-    # # hidroclorotiazida - captopril
-    # calc22 = CalcSimilarity(leaflet5, leaflet9) # hidroclorotiazida e captopril
-    # calc22.measure_similarity_by_chunk()
-    # calc22.measure_similarity_by_chunk_jaro()
-    # calc22.measure_similarity_by_chunk_levenshtein()
+    # hidroclorotiazida - budesonida
+    calc24 = CalcSimilarity(leaflet5, leaflet16)  # hidroclorotiazida e budesonida
+    calc24.measure_similarity_by_chunk()
+    calc24.measure_similarity_by_chunk_jaro()
+    calc24.measure_similarity_by_chunk_levenshtein()
 
-    # # captopril - fenobarbital
-    # calc23 = CalcSimilarity(leaflet9, leaflet3) # captopril e fenobarbital
-    # calc23.measure_similarity_by_chunk()
-    # calc23.measure_similarity_by_chunk_jaro()
-    # calc23.measure_similarity_by_chunk_levenshtein()
+    # dexametasona - albendazole
+    calc25 = CalcSimilarity(leaflet22, leaflet11)  # dexametasona e albendazole
+    calc25.measure_similarity_by_chunk()
+    calc25.measure_similarity_by_chunk_jaro()
+    calc25.measure_similarity_by_chunk_levenshtein()
 
-    # # hidroclorotiazida - budesonida
-    # calc24 = CalcSimilarity(leaflet5, leaflet16) # hidroclorotiazida e budesonida
-    # calc24.measure_similarity_by_chunk()
-    # calc24.measure_similarity_by_chunk_jaro()
-    # calc24.measure_similarity_by_chunk_levenshtein()
+    # # dexametasona - omepazol
+    calc26 = CalcSimilarity(leaflet22, leaflet12)  # dexametasona e omepazol
+    calc26.measure_similarity_by_chunk()
+    calc26.measure_similarity_by_chunk_jaro()
+    calc26.measure_similarity_by_chunk_levenshtein()
 
-    # # dexametasona - albendazole
-    # calc25 = CalcSimilarity(leaflet22, leaflet11) # dexametasona e albendazole
-    # calc25.measure_similarity_by_chunk()
-    # calc25.measure_similarity_by_chunk_jaro()
-    # calc25.measure_similarity_by_chunk_levenshtein()
-
-    # # # dexametasona - omepazol
-    # calc26 = CalcSimilarity(leaflet22, leaflet12) # dexametasona e omepazol
-    # calc26.measure_similarity_by_chunk()
-    # calc26.measure_similarity_by_chunk_jaro()
-    # calc26.measure_similarity_by_chunk_levenshtein()
-
-    # # # dexametasona - ibuprofeno
-    calc27 = CalcSimilarity(leaflet22, leaflet1) # dexametasona e ibuprofeno
+    # # dexametasona - ibuprofeno
+    calc27 = CalcSimilarity(leaflet22, leaflet1)  # dexametasona e ibuprofeno
     calc27.measure_similarity_by_chunk()
     calc27.measure_similarity_by_chunk_jaro()
     calc27.measure_similarity_by_chunk_levenshtein()
-
